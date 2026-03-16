@@ -836,6 +836,7 @@ function buildEmail(data, showTotal) {
   }
 
   if (isEN) {
+    console.log('EN mode, selData:', selData.length, 'bureaux, toTr pending count will follow');
     smsg.innerHTML = 'Traduction en cours\u2026'; smsg.classList.add('on');
     var toTr = selData.filter(function(b){ return b.desc && !b.descEN; });
     if (!toTr.length) { openPreview(selData); return; }
@@ -848,12 +849,19 @@ function buildEmail(data, showTotal) {
         if (xhr.readyState !== 4) return;
         try {
           var res = JSON.parse(xhr.responseText);
-          if (res && res.responseData && res.responseData.translatedText) b.descEN = res.responseData.translatedText;
-        } catch(ex) {}
+          if (res && res.responseData && res.responseData.translatedText) {
+            b.descEN = res.responseData.translatedText;
+            console.log('Translated', b.ref, '->', b.descEN.substring(0,40));
+          }
+        } catch(ex) { console.error('Parse error:', ex); }
         done++;
+        console.log('Done', done, '/', toTr.length);
         if (done === toTr.length) openPreview(selData);
       };
-      xhr.ontimeout = xhr.onerror = function() { done++; if (done===toTr.length) openPreview(selData); };
+      xhr.ontimeout = xhr.onerror = function() {
+        console.warn('Translation failed for', b.ref);
+        done++; if (done===toTr.length) openPreview(selData);
+      };
       xhr.send();
     });
   } else {
