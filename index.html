@@ -707,12 +707,30 @@ function buildCard(b) {
     var postes = b.cap + (isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'));
 
     var tarifs = '';
-    paliers.forEach(function(p) {
-      var price = Math.round(b.prix*(1-p.d));
+    var basePrice = Math.round(b.prix*(1-paliers[0].d));
+    paliers.forEach(function(p, pi) {
+      var price   = Math.round(b.prix*(1-p.d));
+      var saving  = basePrice - price;
+      var months  = [0,12,24,36][pi] || 0;
+      var totalSaving = saving * months;
       var bg = p.d>0?'#eef5f0':'#fafaf8'; var fw = p.d>0?'500':'300';
+      var savingHtml = '';
+      if (p.d > 0 && totalSaving > 0) {
+        var annualSaving = Math.round(saving * 12);
+        var savingLabel = isEN
+          ? ('\u2713 Saves '+fmt(annualSaving)+'&nbsp;&euro;&nbsp;/&nbsp;year')
+          : ('\u2713 \u00c9conomie\u00a0: '+fmt(annualSaving)+'&nbsp;&euro;&nbsp;/ an');
+        savingHtml = true; /* marker only — chip is inline */
+      }
+      var savingChip = '';
+      if (savingHtml) {
+        var annualSaving2 = Math.round((basePrice - price) * 12);
+        var chipLabel = isEN ? '\u2713 '+fmt(annualSaving2)+'&nbsp;&euro;&thinsp;/ yr' : '\u2713 '+fmt(annualSaving2)+'&nbsp;&euro;&thinsp;/ an';
+        savingChip = '&nbsp;&nbsp;<span style="display:inline;background:rgba(74,122,85,0.1);border:1px solid rgba(74,122,85,0.25);border-radius:50px;padding:1px 8px;font-size:9px;color:#4a7a55;font-family:Jost,Arial,sans-serif;font-weight:500;white-space:nowrap">'+chipLabel+'</span>';
+      }
       tarifs += '<tr style="background:'+bg+'">'
-        +'<td style="padding:5px 16px;font-size:12px;color:'+GR+';font-weight:'+fw+';font-family:Jost,Arial,sans-serif">'+p.label+'</td>'
-        +'<td style="padding:5px 16px;font-size:13px;color:'+INK+';font-weight:'+fw+';text-align:right;white-space:nowrap;font-family:Jost,Arial,sans-serif">'
+        +'<td style="padding:6px 16px;font-size:12px;color:'+GR+';font-weight:'+fw+';font-family:Jost,Arial,sans-serif">'+p.label+savingChip+'</td>'
+        +'<td style="padding:6px 16px;font-size:13px;color:'+INK+';font-weight:'+fw+';text-align:right;white-space:nowrap;font-family:Jost,Arial,sans-serif">'
         +fmt(price)+'&nbsp;&euro;<span style="font-size:10px;color:'+GR+';font-weight:300"> '+vatLabel+'</span></td>'
         +'</tr>';
     });
