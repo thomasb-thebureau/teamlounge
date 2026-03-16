@@ -168,6 +168,59 @@ footer{background:var(--encre);position:relative;overflow:hidden}
 .fbot{padding:11px 48px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(201,169,110,.06)}
 .fbot-logo{height:19px;mix-blend-mode:screen;filter:brightness(.8)}
 .fbot-copy{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.17)}
+
+/* ============================================================
+   MOBILE RESPONSIVE
+============================================================ */
+@media (max-width: 768px) {
+  .top-bar{padding:10px 16px}
+  .logo-main{height:24px}
+  .dlabel{display:none}
+  .hero{padding:20px 16px 18px}
+  .fp{padding:10px 12px;gap:8px;top:50px}
+  .fd{display:none}
+  .fl{display:none}
+  .site-chips{gap:3px}
+  .sc{padding:4px 9px;font-size:10px}
+  .sr{flex-wrap:wrap;border-radius:8px}
+  .sb{padding:4px 9px;font-size:10px}
+  .fsel{padding:4px 18px 4px 9px;font-size:10px}
+  .ri{width:44px;font-size:10px}
+  .reset{font-size:9px}
+  .tb{padding:8px 12px}
+  .grid{grid-template-columns:1fr;gap:1px;margin-bottom:80px}
+  .card{padding:16px 14px}
+  .selbar{padding:10px 14px}
+  .sel-cnt{font-size:14px}
+  .sel-chips{max-width:200px}
+  .btn-prop{padding:8px 14px;font-size:10px}
+  .modal{max-height:96vh;border-radius:8px 8px 0 0}
+  .mhdr{padding:18px 18px 14px}
+  .mbody{padding:16px 18px}
+  .mftr{padding:14px 18px}
+  .fgrid{grid-template-columns:1fr}
+  footer .fbody{padding:20px 16px 16px;flex-direction:column;gap:16px}
+  footer .fbot{padding:8px 16px}
+  .hero h1{font-size:26px}
+  /* Filter panel scrollable on mobile */
+  .fp{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .fp::-webkit-scrollbar{height:0}
+  /* Modal full screen on mobile */
+  .moverlay{align-items:flex-end;padding:0}
+  .modal{max-width:100%;border-radius:12px 12px 0 0;max-height:90vh}
+  /* Email overlay on mobile */
+  #emailOverlay > div:first-child{flex-wrap:wrap;gap:6px;padding:10px 12px}
+  #emailOverlay button{padding:7px 12px;font-size:10px}
+}
+
+@media (max-width: 480px) {
+  .sc{padding:3px 7px;font-size:9px}
+  .hero{padding:16px 12px 14px}
+  .hero h1{font-size:22px}
+  .tb{flex-direction:column;align-items:flex-start;gap:4px}
+  .hint{display:none}
+  .btn-prop svg{display:none}
+}
 </style>
 </head>
 <body>
