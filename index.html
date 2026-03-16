@@ -775,7 +775,85 @@ function buildEmail(data, showTotal) {
     return h;
   }
 
+  function isMobile() {
+    return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  function buildPlainText(data) {
+    var nl = '\n';
+    var sep = '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500';
+    var t = '';
+    t += (isEN ? 'Dear ' : 'Bonjour ') + civ + (soc ? ' | ' + soc : '') + ',' + nl + nl;
+    t += (isEN
+      ? 'Following our discussions, please find below our selection of available offices at The Bureau.'
+      : 'Suite \u00e0 nos \u00e9changes, veuillez trouver ci-dessous notre s\u00e9lection de bureaux disponibles au sein de The Bureau.')
+      + nl + nl;
+    t += sep + nl;
+    t += '  ' + (isEN ? 'SELECTED OFFICES' : 'BUREAUX S\u00c9LECTIONN\u00c9S') + ' (' + data.length + ')' + nl;
+    t += sep + nl + nl;
+    data.forEach(function(b, idx) {
+      var etageLabel = isEN
+        ? (b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor')
+        : etLbl(b.etage);
+      t += '  \u25cf  ' + b.ref + '  \u2014  ' + etageLabel + nl;
+      t += '     ' + b.adresse + nl;
+      if (b.surface) t += '     ' + b.surface.toLocaleString('fr-FR') + '\u00a0m\u00b2  \u00b7  ';
+      else t += '     ';
+      t += b.cap + (isEN ? ' desk' + (b.cap>1?'s':'') : ' poste' + (b.cap>1?'s':'')) + nl;
+      t += '     ' + (b.dispo==='immediate'
+        ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
+        : (isEN?'From ':'A partir du ') + dtLbl(b.date)) + nl;
+      if (b.desc) t += nl + '     ' + (isEN&&b.descEN?b.descEN:b.desc) + nl;
+      t += nl;
+      paliers.forEach(function(p) {
+        var price = Math.round(b.prix*(1-p.d));
+        t += '     ' + p.label + ' : ' + fmt(price) + ' \u20ac' + (isEN?' excl. VAT/month':' H.T./mois') + nl;
+      });
+      if (idx < data.length-1) t += nl + '\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7' + nl + nl;
+    });
+    if (grouped && data.length > 1) {
+      t += sep + nl;
+      t += '  ' + (isEN?'TOTAL MONTHLY EXCL. VAT':'TOTAL MENSUEL H.T.') + nl;
+      t += sep + nl + nl;
+      paliers.forEach(function(p) {
+        var tot = data.reduce(function(acc,b){ return acc+Math.round(b.prix*(1-p.d)); },0);
+        t += '  ' + p.label + ' : ' + fmt(tot) + ' \u20ac' + (isEN?' / month':' / mois') + nl;
+      });
+      t += nl;
+    }
+    t += sep + nl + nl;
+    var ccItems = isEN
+      ? ['3-month minimum commitment, then rolling monthly until notice.',
+         'Security deposit: 2 months subscription excl. VAT (specified in the contract).',
+         'Installation fee: 100\u20ac excl. VAT per workstation capacity.',
+         'Notice period: one month plus the current month.']
+      : ['3 mois d\u2019engagement minimum puis contrat renouvel\u00e9 au mois le mois jusqu\u2019au pr\u00e9avis.',
+         'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
+         'Frais d\u2019installation\u00a0: 100\u20ac H.T. par poste capacitaire.',
+         'Pr\u00e9avis de d\u00e9part\u00a0: un mois plus le mois en cours.'];
+    t += (isEN?'CONDITIONS':'CONDITIONS CONTRACTUELLES') + nl;
+    ccItems.forEach(function(c){ t += '  \u2022 ' + c + nl; });
+    t += nl + sep + nl + nl;
+    t += (isEN?'I remain available to arrange a visit at your convenience.':'Je reste disponible pour organiser une visite \u00e0 votre convenance.') + nl + nl;
+    t += 'Thomas Bougeard' + nl;
+    t += (isEN?'Commercial Director':'Directeur Commercial') + ' \u2014 The Bureau' + nl;
+    t += '+33 6 59 23 15 92' + nl + 'thomasb@thebureau.paris' + nl + 'www.thebureau.paris';
+    return t;
+  }
+
   function openPreview(data) {
+    /* On mobile: open native mail client via mailto: */
+    if (isMobile()) {
+      var plain = buildPlainText(data);
+      window.location.href = 'mailto:' + encodeURIComponent(email)
+        + '?cc=' + encodeURIComponent('thomasb@thebureau.paris')
+        + '&subject=' + encodeURIComponent(sujet)
+        + '&body=' + encodeURIComponent(plain);
+      smsg.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#4a7a55" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
+        + ' Client mail ouvert';
+      smsg.classList.add('on');
+      return;
+    }
     var html    = buildEmail(data, grouped);
     var gUrl    = gmailUrl;
 
