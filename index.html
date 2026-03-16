@@ -691,11 +691,11 @@ function buildEmail(data, showTotal) {
     var ccTitle = isEN ? 'CONTRACTUAL CONDITIONS' : 'CONDITIONS CONTRACTUELLES';
     var ccItems = isEN
       ? ['3-month minimum commitment, then rolling monthly contract until notice.',
-         'Security deposit: 2 months\u2019 rent.',
+         'Security deposit: 2 months\u2019 subscription excl. VAT (specified in the contract).',
          'Installation fee: 100\u20ac excl. VAT per workstation capacity.',
          'Notice period: one month plus the current month.']
       : ['3 mois d\u2019engagement minimum puis contrat renouvel\u00e9 au mois le mois jusqu\u2019au pr\u00e9avis.',
-         'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement.',
+         'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
          'Frais d\u2019installation\u00a0: 100\u20ac H.T. par poste capacitaire.',
          'Pr\u00e9avis de d\u00e9part\u00a0: un mois plus le mois en cours.'];
     var ccList = ccItems.map(function(i){ return '<li style="margin:0 0 5px;font-size:11px;color:rgba(244,239,230,0.65);font-family:Jost,Arial,sans-serif">'+i+'</li>'; }).join('');
