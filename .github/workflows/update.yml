@@ -20,7 +20,19 @@ jobs:
           import csv, re, json, io, urllib.request
 
           URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQb6cYJyF8leoIASCx3SnpaZAJyhmV3easzUYoRfo5LQ9-VKZudCfJz94scDoveEQ/pub?gid=150731932&single=true&output=csv"
-          raw = urllib.request.urlopen(URL).read().decode('utf-8')
+          import time
+          raw = None
+          for attempt in range(3):
+              try:
+                  req = urllib.request.Request(URL, headers={'User-Agent': 'Mozilla/5.0'})
+                  raw = urllib.request.urlopen(req, timeout=30).read().decode('utf-8')
+                  break
+              except Exception as ex:
+                  print(f"Attempt {attempt+1} failed: {ex}")
+                  if attempt < 2: time.sleep(10)
+          if raw is None:
+              print("All attempts failed — keeping existing data.json")
+              exit(0)
           reader = csv.reader(io.StringIO(raw))
           rows = list(reader)
           while rows and all(c.strip()=='' for c in rows[0]):
@@ -77,5 +89,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           touch updated_at.txt
           git add data.json updated_at.txt
-          git diff --cached --quiet || git commit -m "Update disponibilites $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git diff --cached --quiet && echo 'No changes' && exit 0
+          git commit -m "Update disponibilites $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git pull --rebase origin main
           git push
