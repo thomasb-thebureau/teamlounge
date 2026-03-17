@@ -305,9 +305,11 @@ function rowToOffice(row) {
     var dp = dlr.split('/');
     if (dp.length===3) dateNorm = dp[2]+'-'+(dp[1].length<2?'0':'')+dp[1]+'-'+(dp[0].length<2?'0':'')+dp[0];
   }
-  var dek = Object.keys(row).find(function(k){ return k.indexOf('desc')>=0; })||'';
-  var desc = dek?(row[dek]||'').replace(/\n/g,' ').substring(0,500):'';
-  return {site:siteKey,label:siteRaw,adresse:(row['adresse']||'').trim(),etage:etage,ref:ref,surface:surface,cap:cap,prix:prix,dispo:dateNorm?'future':'immediate',date:dateNorm,desc:desc,plateau:false};
+  var dek   = Object.keys(row).find(function(k){ return k.indexOf('description (fr)')>=0 || (k.indexOf('desc')>=0 && k.indexOf('(en)')<0); })||'';
+  var dekEN = Object.keys(row).find(function(k){ return k.indexOf('description (en)')>=0; })||'';
+  var desc   = dek  ?(row[dek]  ||'').replace(/\n/g,' ').substring(0,500):'';
+  var descEN = dekEN?(row[dekEN]||'').replace(/\n/g,' ').substring(0,500):'';
+  return {site:siteKey,label:siteRaw,adresse:(row['adresse']||'').trim(),etage:etage,ref:ref,surface:surface,cap:cap,prix:prix,dispo:dateNorm?'future':'immediate',date:dateNorm,desc:desc,descEN:descEN,plateau:false};
 }
 
 /* ============================================================
@@ -764,7 +766,7 @@ function buildCard(b) {
           +'</span>'
           +'</div>'
           /* Description */
-          +(b.desc?'<p style="margin:6px 0 0;font-size:12px;color:#5a5248;line-height:1.55;font-family:Jost,Arial,sans-serif">'+(isEN&&(b.descEN&&b.descEN.length>3)?b.descEN:cleanDesc(b.desc))+'</p>':'')
+          +(b.desc?'<p style="margin:6px 0 0;font-size:12px;color:#5a5248;line-height:1.55;font-family:Jost,Arial,sans-serif">'+(isEN?(b.descEN&&b.descEN.length>3?b.descEN:cleanDesc(b.desc)):cleanDesc(b.desc))+'</p>':'')
         +'</td></tr>'
         +'<tr><td style="border-top:1px solid #ece5d6">'
           +'<table width="100%" cellpadding="0" cellspacing="0" border="0">'
@@ -1075,37 +1077,7 @@ function buildEmail(data, showTotal) {
     });
   }
 
-  if (isEN) {
-    smsg.innerHTML = 'Traduction en cours\u2026'; smsg.classList.add('on');
-    var toTr = selData.filter(function(b){ return b.desc && !b.descEN; });
-    if (!toTr.length) { openPreview(selData); return; }
-    var done = 0;
-    toTr.forEach(function(b) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET','https://api.mymemory.translated.net/get?q='+encodeURIComponent(b.desc.substring(0,200))+'&langpair=fr|en',true);
-      xhr.timeout = 6000;
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState !== 4) return;
-        try {
-          var res = JSON.parse(xhr.responseText);
-          if (res && res.responseData && res.responseData.translatedText) {
-            var tr = res.responseData.translatedText || '';
-            /* Strip ref prefix like "B002: " if present */
-            tr = tr.replace(/^[A-Z]\d{3}\s*:\s*/i, '');
-            b.descEN = tr;
-          }
-        } catch(ex) {}
-        done++;
-        if (done === toTr.length) openPreview(selData);
-      };
-      xhr.ontimeout = xhr.onerror = function() {
-        done++; if (done===toTr.length) openPreview(selData);
-      };
-      xhr.send();
-    });
-  } else {
-    openPreview(selData);
-  }
+  openPreview(selData);
 });
 
 /* ============================================================
@@ -1189,6 +1161,16 @@ function fetchData() {
         if (!offices || offices.length < 3) throw new Error('empty');
         DATA = offices;
         setStatus('live', 'Donn\u00e9es en direct');
+        var lm = xhr.getResponseHeader ? xhr.getResponseHeader('Last-Modified') : null;
+        if (lm) {
+          var d = new Date(lm);
+          var mo = ['jan.','f\u00e9v.','mars','avr.','mai','juin','juil.','\u00e9t','sept.','oct.','nov.','\u00e9c.'];
+          var mo2 = ['jan.','f\u00e9v.','mars','avr.','mai','juin','juil.','ao\u00fbt','sept.','oct.','nov.','d\u00e9c.'];
+          var hh = d.getHours().toString().padStart(2,'0');
+          var mn = d.getMinutes().toString().padStart(2,'0');
+          var dlbl = document.getElementById('dlabel');
+          if (dlbl) dlbl.textContent = d.getDate()+'\u00a0'+mo2[d.getMonth()]+' \u2014 '+hh+'h'+mn;
+        }
         render();
       } catch(e) { onFail(e.message); }
     } else { onFail('HTTP ' + xhr.status); }
