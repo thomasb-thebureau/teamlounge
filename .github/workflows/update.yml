@@ -53,13 +53,15 @@ jobs:
               if date_raw and len(date_raw) >= 8:
                   dp = date_raw.split('/')
                   if len(dp)==3: date_norm = dp[2]+'-'+dp[1].zfill(2)+'-'+dp[0].zfill(2)
-              desc_raw = col(row,'description')
+              desc_raw = col(row,'description (fr)') or col(row,'description')
               desc = re.sub(r'\s+',' ', desc_raw).strip()[:500]
+              desc_en_raw = col(row,'description (en)')
+              desc_en = re.sub(r'\s+',' ', desc_en_raw).strip()[:500] if desc_en_raw else ''
               offices.append({
                   'site':site,'label':site_raw,'adresse':col(row,'adresse'),
                   'etage':etage,'ref':col(row,'bureau'),'surface':surface,
                   'cap':cap,'prix':prix,'dispo':'future' if date_norm else 'immediate',
-                  'date':date_norm,'desc':desc,'plateau':False
+                  'date':date_norm,'desc':desc,'descEN':desc_en,'plateau':False
               })
           with open('data.json','w') as f:
               json.dump(offices, f, ensure_ascii=False)
