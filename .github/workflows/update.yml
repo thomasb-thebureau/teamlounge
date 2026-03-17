@@ -65,6 +65,9 @@ jobs:
               })
           with open('data.json','w') as f:
               json.dump(offices, f, ensure_ascii=False)
+          from datetime import datetime, timezone
+          with open('updated_at.txt','w') as f:
+              f.write(datetime.now(timezone.utc).isoformat())
           print(f"Generated data.json with {len(offices)} bureaux")
           PYEOF2
 
@@ -72,6 +75,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json
+          git add data.json updated_at.txt
           git diff --cached --quiet || git commit -m "Update disponibilites $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
