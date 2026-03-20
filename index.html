@@ -332,8 +332,8 @@ function rowToOffice(row) {
     var dp = dlr.split('/');
     if (dp.length===3) dateNorm = dp[2]+'-'+(dp[1].length<2?'0':'')+dp[1]+'-'+(dp[0].length<2?'0':'')+dp[0];
   }
-  var dek   = Object.keys(row).find(function(k){ return k.indexOf('description (fr)')>=0 || (k.indexOf('desc')>=0 && k.indexOf('(en)')<0); })||'';
-  var dekEN = Object.keys(row).find(function(k){ return k.indexOf('description (en)')>=0; })||'';
+  var dek   = Object.keys(row).find(function(k){ var kl=k.toLowerCase(); return kl.indexOf('description (fr)')>=0 || kl.indexOf('description fr')>=0 || (kl.indexOf('desc')>=0 && kl.indexOf('en')<0); })||'';
+  var dekEN = Object.keys(row).find(function(k){ var kl=k.toLowerCase(); return kl.indexOf('description (en)')>=0 || kl.indexOf('description en')>=0; })||'';
   var desc   = dek  ?(row[dek]  ||'').replace(/\n/g,' ').substring(0,500):'';
   var descEN = dekEN?(row[dekEN]||'').replace(/\n/g,' ').substring(0,500):'';
   return {site:siteKey,label:siteRaw,adresse:(row['adresse']||'').trim(),etage:etage,ref:ref,surface:surface,cap:cap,prix:prix,dispo:dateNorm?'future':'immediate',date:dateNorm,desc:desc,descEN:descEN,plateau:false};
@@ -375,10 +375,12 @@ function etLbl(n) {
   if (n===1) return '1er \u00e9tage';
   return n+'e \u00e9tage';
 }
-function dtLbl(d) {
+function dtLbl(d, useEN) {
   if (!d) return '';
   var p = d.split('-');
-  var mo = ['jan.','f\u00e9v.','mars','avr.','mai','juin','juil.','ao\u00fbt','sept.','oct.','nov.','d\u00e9c.'];
+  var moFR = ['jan.','f\u00e9v.','mars','avr.','mai','juin','juil.','ao\u00fbt','sept.','oct.','nov.','d\u00e9c.'];
+  var moEN = ['Jan.','Feb.','Mar.','Apr.','May','Jun.','Jul.','Aug.','Sep.','Oct.','Nov.','Dec.'];
+  var mo = useEN ? moEN : moFR;
   return p[2].replace(/^0/,'')+' '+mo[parseInt(p[1])-1]+' '+p[0];
 }
 function disc() {
@@ -767,6 +769,7 @@ function openModal() {
 
   if (ltog) ltog.onchange = function() {
     var on  = ltog.checked;
+    EP_LANG = on ? 'en' : 'fr';
     var lt  = document.getElementById('lttrack');
     var lth = document.getElementById('ltthumb');
     var ll  = document.getElementById('langLabel');
@@ -877,10 +880,18 @@ document.getElementById('bsnd').addEventListener('click', function() {
 
 
 function buildCard(b) {
-    var dispo_color = b.dispo==='immediate'?'#4a7a55':'#c07830';
+    /* Always derive language from global EP_LANG — never from closure */
+    var isEN = EP_LANG === 'en';
+    var remEl_c = document.getElementById('remiseInput');
+    var remise_c = remEl_c ? Math.min(25, Math.max(0, parseFloat(remEl_c.value)||0)) / 100 : 0;
+    var remLabel_c = remise_c > 0 ? (isEN ? ' (incl. '+Math.round(remise_c*100)+'% discount)' : ' (remise '+Math.round(remise_c*100)+'% incluse)') : '';
+    var paliers = isEN
+      ? [{label:'Monthly (3 months minimum)'+remLabel_c,d:remise_c},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise_c)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise_c)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise_c)}]
+      : [{label:'Mensuel (3 mois minimum)'+remLabel_c,d:remise_c},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise_c)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise_c)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise_c)}];
+    var dispo_color = b.dispo==='immediate' ? '#4a7a55' : '#c07830';
     var dispo_label = b.dispo==='immediate'
       ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
-      : (isEN?'From ':'A partir du ') + dtLbl(b.date);
+      : (isEN?'From ':'A partir du ') + dtLbl(b.date, isEN);
     var etageLabel = isEN
       ? (b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor')
       : etLbl(b.etage);
@@ -959,7 +970,19 @@ function buildCard(b) {
   }
 
 function buildEmail(data, showTotal) {
-    var isEN = EP_LANG === 'en'; /* use module-level EP_LANG */
+    var isEN = EP_LANG === 'en'; /* always from global EP_LANG */
+    /* Recompute all language-dependent vars locally — never rely on outer closure */
+    var prenomEl = document.getElementById('fp'), nomEl = document.getElementById('fn');
+    var _pren = prenomEl ? prenomEl.value.trim() : (typeof prenom !== 'undefined' ? prenom : '');
+    var _nom  = nomEl  ? nomEl.value.trim()  : (typeof nom  !== 'undefined' ? nom  : '');
+    var civ = _pren ? (_pren + (_nom ? ' ' + _nom : '')) : (isEN ? 'Sir/Madam' : 'Madame, Monsieur');
+    /* Local paliers for recap — recomputed from DOM remise */
+    var _remEl = document.getElementById('remiseInput');
+    var _remise = _remEl ? Math.min(25, Math.max(0, parseFloat(_remEl.value)||0)) / 100 : 0;
+    var _remLabel = _remise > 0 ? (isEN ? ' (incl. '+Math.round(_remise*100)+'% discount)' : ' (remise '+Math.round(_remise*100)+'% incluse)') : '';
+    var paliers = isEN
+      ? [{label:'Monthly (3 months minimum)'+_remLabel,d:_remise},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-_remise)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-_remise)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-_remise)}]
+      : [{label:'Mensuel (3 mois minimum)'+_remLabel,d:_remise},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-_remise)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-_remise)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-_remise)}];
     var cards = ''; data.forEach(function(b){ cards += buildCard(b); });
     var nbLabel   = isEN?(data.length+' office'+(data.length>1?'s':'')+' selected'):(data.length+' bureau'+(data.length>1?'x':'')+' s\u00e9lectionn\u00e9'+(data.length>1?'s':''));
     var introText = isEN?'Following our discussions, please find below our selection of available offices at The Bureau.':'Suite \u00e0 nos \u00e9changes, veuillez trouver ci-dessous notre s\u00e9lection de bureaux disponibles au sein de The Bureau.';
@@ -1073,6 +1096,17 @@ function buildEmail(data, showTotal) {
   }
 
   function buildPlainText(data) {
+    var isEN = EP_LANG === 'en';
+    var remElPt = document.getElementById('remiseInput');
+    var remisePt = remElPt ? Math.min(25, Math.max(0, parseFloat(remElPt.value)||0)) / 100 : 0;
+    var remLabelPt = remisePt > 0 ? (isEN ? ' (incl. '+Math.round(remisePt*100)+'% discount)' : ' (remise '+Math.round(remisePt*100)+'% incluse)') : '';
+    var paliers = isEN
+      ? [{label:'Monthly (3 months minimum)'+remLabelPt,d:remisePt},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remisePt)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remisePt)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remisePt)}]
+      : [{label:'Mensuel (3 mois minimum)'+remLabelPt,d:remisePt},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remisePt)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remisePt)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remisePt)}];
+    var prenomElPt = document.getElementById('fp'), nomElPt = document.getElementById('fn');
+    var _prenPt = prenomElPt ? prenomElPt.value.trim() : '';
+    var _nomPt  = nomElPt  ? nomElPt.value.trim()  : '';
+    var civ = _prenPt ? (_prenPt + (_nomPt ? ' ' + _nomPt : '')) : (isEN ? 'Sir/Madam' : 'Madame, Monsieur');
     var nl = '\n';
     var sep = '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500';
     var t = '';
@@ -1095,7 +1129,7 @@ function buildEmail(data, showTotal) {
       t += b.cap + (isEN ? ' desk' + (b.cap>1?'s':'') : ' poste' + (b.cap>1?'s':'')) + nl;
       t += '     ' + (b.dispo==='immediate'
         ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
-        : (isEN?'From ':'A partir du ') + dtLbl(b.date)) + nl;
+        : (isEN?'From ':'A partir du ') + dtLbl(b.date, isEN)) + nl;
       if (b.desc) t += nl + '     ' + (isEN&&b.descEN?b.descEN:cleanDesc(b.desc)) + nl;
       t += nl;
       paliers.forEach(function(p) {
@@ -1229,12 +1263,27 @@ function buildEmail(data, showTotal) {
       epLangSelEl.value = curLang;
       epLangSelEl.addEventListener('change', function() {
         EP_LANG = this.value;
-        /* Sync langToggle so isEN is correct when buildEmail runs */
+        var _newIsEN = (this.value === 'en');
+        /* Sync langToggle visual in modal */
         var lt = document.getElementById('langToggle');
-        if (lt) lt.checked = (this.value === 'en');
-        var newHtml = buildEmail(data, grouped);
+        if (lt) {
+          lt.checked = _newIsEN;
+          var ltt = document.getElementById('lttrack'), ltth = document.getElementById('ltthumb'), ll = document.getElementById('langLabel');
+          if (ltt)  ltt.style.background = _newIsEN ? 'var(--or2)' : 'var(--gc)';
+          if (ltth) ltth.style.transform  = _newIsEN ? 'translateX(16px)' : 'translateX(0)';
+          if (ll)   ll.textContent = _newIsEN ? 'EN' : 'FR';
+        }
+        /* Update Gmail subject */
+        var _sujetNew = _newIsEN
+          ? ('The Bureau \u2014 Office proposal'+(soc?' for '+soc:(prenom||nom?' for '+(prenom?prenom+' ':'')+nom:'')))
+          : ('The Bureau \u2014 Proposition de bureaux'+(soc?' pour '+soc:(prenom||nom?' pour '+(prenom?prenom+' ':'')+nom:'')));
+        gUrl = 'https://mail.google.com/mail/?view=cm&fs=1'
+          +'&to='+encodeURIComponent(email)
+          +'&cc='+encodeURIComponent('thomasb@thebureau.paris')
+          +'&su='+encodeURIComponent(_sujetNew);
+        /* buildEmail + buildCard now read EP_LANG directly — just rebuild */
         var ep = document.getElementById('epBody');
-        if (ep) ep.innerHTML = newHtml;
+        if (ep) ep.innerHTML = buildEmail(data, grouped);
       });
     }
     document.getElementById('epCopy').addEventListener('click', function() {
@@ -1328,11 +1377,28 @@ function buildEmail(data, showTotal) {
     liveOv.style.display = 'flex';
     document.getElementById('mov').classList.remove('on');
     document.body.style.overflow = 'hidden';
+    /* Init langSelOpt to current language */
+    liveOv.querySelector('#langSelOpt').value = EP_LANG;
     /* Wire buttons — always via liveOv to guarantee DOM presence */
     liveOv.querySelector('#langSelOpt').addEventListener('change', function() {
       var newLang = this.value;
       var newIsEN = newLang === 'en';
-      var newHtml = buildOptionsEmail(selData, newIsEN, civ, soc, customMsg, LOGO_B64, CHEV_B64);
+      EP_LANG = newLang;
+      /* Sync langToggle visual in modal */
+      var lt2 = document.getElementById('langToggle');
+      if (lt2) {
+        lt2.checked = newIsEN;
+        var ltt2 = document.getElementById('lttrack'), ltth2 = document.getElementById('ltthumb'), ll2 = document.getElementById('langLabel');
+        if (ltt2)  ltt2.style.background = newIsEN ? 'var(--or2)' : 'var(--gc)';
+        if (ltth2) ltth2.style.transform  = newIsEN ? 'translateX(16px)' : 'translateX(0)';
+        if (ll2)   ll2.textContent = newIsEN ? 'EN' : 'FR';
+      }
+      /* Recompute civ for new language */
+      var newCiv = prenom ? (prenom + (nom ? ' ' + nom : '')) : (newIsEN ? 'Sir/Madam' : 'Madame, Monsieur');
+      /* Re-fetch selData fresh (includes itin) */
+      var freshData = DATA.filter(function(b){ return !!SEL[b.ref]; });
+      if (SEL[ITIN_REF] && !freshData.find(function(b){ return b.ref===ITIN_REF; })) freshData.unshift(SEL[ITIN_REF]);
+      var newHtml = buildOptionsEmail(freshData, newIsEN, newCiv, soc, customMsg, LOGO_B64, CHEV_B64);
       liveOv.querySelector('#epBody2').innerHTML = newHtml;
     });
     liveOv.querySelector('#cb2').addEventListener('click', function() {
@@ -1396,6 +1462,26 @@ function resetSession() {
   /* Reset ITIN state */
   ITIN_SITE = null;
   ITIN_ADDONS = {domi:false, casier:false};
+  /* Reset OPT_MODE fully */
+  OPT_MODE = false;
+  OPTIONS = [];
+  OPT_COUNTER = 0;
+  var optBtn = document.getElementById('optModeBtn');
+  if (optBtn) { optBtn.textContent = '+ Mode options'; optBtn.style.background = 'var(--creme)'; optBtn.style.color = 'var(--gris)'; optBtn.style.border = '1px solid var(--cf)'; }
+  var optPanel = document.getElementById('optPanel');
+  if (optPanel) { optPanel.style.display = 'none'; }
+  var optList = document.getElementById('optList');
+  if (optList) { optList.innerHTML = ''; }
+  /* Reset lang to FR */
+  EP_LANG = 'fr';
+  var ltog = document.getElementById('langToggle');
+  if (ltog) {
+    ltog.checked = false;
+    var ltt = document.getElementById('lttrack'), ltth = document.getElementById('ltthumb'), ll = document.getElementById('langLabel');
+    if (ltt)  ltt.style.background = 'var(--gc)';
+    if (ltth) ltth.style.transform  = 'translateX(0)';
+    if (ll)   ll.textContent = 'FR';
+  }
   /* Close modal if open */
   closeModal();
   /* Close email overlay if open */
@@ -1654,7 +1740,7 @@ function buildOptionEmail(allData, opt, isEN, LOGO_B64, CHEV_B64) {
     var dispo_color = b.dispo==='immediate' ? '#4a7a55' : '#c07830';
     var dispo_label = b.dispo==='immediate'
       ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
-      : (isEN?'From ':'A partir du ') + dtLbl(b.date);
+      : (isEN?'From ':'A partir du ') + dtLbl(b.date, isEN);
     var _d = isEN?(b.descEN&&b.descEN.length>3?b.descEN:b.desc):b.desc;
     var desc = _d ? _d.replace(/^[A-Z]\d{3}[^:]*:\s*/,'').trim() : '';
 
@@ -1783,7 +1869,7 @@ function doReset() {
   document.querySelectorAll('#ef .sb').forEach(function(b,i){ b.classList.toggle('on',i===0); });
   document.querySelectorAll('#df .sb').forEach(function(b,i){ b.classList.toggle('on',i===0); });
   ['cmin','cmax','search'].forEach(function(id){ document.getElementById(id).value=''; }); ST.search='';
-  document.getElementById('etf').value='all'; document.getElementById('srt').value='nom';
+  document.getElementById('etf').value='all'; document.getElementById('srt').value='nom'; ST.sort='nom';
   render();
 }
 document.getElementById('rst').addEventListener('click', doReset);
