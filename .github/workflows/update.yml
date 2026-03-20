@@ -69,6 +69,10 @@ jobs:
               desc = re.sub(r'\s+',' ', desc_raw).strip()[:500]
               desc_en_raw = col(row,'description (en)')
               desc_en = re.sub(r'\s+',' ', desc_en_raw).strip()[:500] if desc_en_raw else ''
+              # Colonne TL : doit être cochée (TRUE/VRAI) pour apparaître dans Team Lounge
+              tl_raw = col(row,'(tl)') or col(row, 'tl')
+              tl = tl_raw.strip().upper() in ('TRUE','VRAI','1','OUI','YES')
+              if not tl: continue
               if is_available:
                   dispo_val = 'future' if date_norm else 'immediate'
               else:
