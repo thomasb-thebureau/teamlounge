@@ -1229,6 +1229,9 @@ function buildEmail(data, showTotal) {
       epLangSelEl.value = curLang;
       epLangSelEl.addEventListener('change', function() {
         EP_LANG = this.value;
+        /* Sync langToggle so isEN is correct when buildEmail runs */
+        var lt = document.getElementById('langToggle');
+        if (lt) lt.checked = (this.value === 'en');
         var newHtml = buildEmail(data, grouped);
         var ep = document.getElementById('epBody');
         if (ep) ep.innerHTML = newHtml;
@@ -1386,9 +1389,13 @@ function resetSession() {
   Object.keys(localStorage).forEach(function(k){
     if (k.startsWith('tb_seen_')) localStorage.removeItem(k);
   });
-  /* Clear custom message in modal if open */
-  var cm = document.getElementById('customMsg');
-  if (cm) cm.value = '';
+  /* Clear all modal form fields */
+  ['fp','fn','fs','fe','customMsg'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  /* Reset ITIN state */
+  ITIN_SITE = null;
+  ITIN_ADDONS = {domi:false, casier:false};
   /* Close modal if open */
   closeModal();
   /* Close email overlay if open */
@@ -1776,7 +1783,7 @@ function doReset() {
   document.querySelectorAll('#ef .sb').forEach(function(b,i){ b.classList.toggle('on',i===0); });
   document.querySelectorAll('#df .sb').forEach(function(b,i){ b.classList.toggle('on',i===0); });
   ['cmin','cmax','search'].forEach(function(id){ document.getElementById(id).value=''; }); ST.search='';
-  document.getElementById('etf').value='all'; document.getElementById('srt').value='pa';
+  document.getElementById('etf').value='all'; document.getElementById('srt').value='nom';
   render();
 }
 document.getElementById('rst').addEventListener('click', doReset);
