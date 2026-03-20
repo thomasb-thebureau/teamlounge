@@ -537,11 +537,6 @@ function makeCard(b) {
   div.className = 'card'+(b.plateau?' plateau':'')+(isSel?' sel':'')+(isOccupied?' occupied':'');
   div.dataset.ref = b.ref;
 
-  /* Occupied cards: not clickable, no checkbox */
-  if (!isOccupied) {
-    div.addEventListener('click', function(){ toggleSel(b.ref); });
-  }
-
   var chk = isOccupied ? '' : '<div class="chk"><svg viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1"/></svg></div>';
 
   var dbCls = isOccupied?'db occ':isImm?'db imm':'db fut';
