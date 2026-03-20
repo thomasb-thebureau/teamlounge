@@ -47,8 +47,8 @@ jobs:
           offices = []
           for row in rows[1:]:
               if len(row) < 8: continue
-              dispo = col(row,'dispo').upper()
-              if 'TRUE' not in dispo and 'VRAI' not in dispo: continue
+              dispo_raw = col(row,'dispo').upper()
+              is_available = 'TRUE' in dispo_raw or 'VRAI' in dispo_raw
               prix_raw = col(row,'prix')
               prix = int(re.sub(r'[^0-9]', '', prix_raw.replace('\u202f','').replace('\xa0',''))) if re.sub(r'[^0-9]', '', prix_raw) else 0
               if not prix or prix > 500000: continue
@@ -69,10 +69,14 @@ jobs:
               desc = re.sub(r'\s+',' ', desc_raw).strip()[:500]
               desc_en_raw = col(row,'description (en)')
               desc_en = re.sub(r'\s+',' ', desc_en_raw).strip()[:500] if desc_en_raw else ''
+              if is_available:
+                  dispo_val = 'future' if date_norm else 'immediate'
+              else:
+                  dispo_val = 'occupied'
               offices.append({
                   'site':site,'label':site_raw,'adresse':col(row,'adresse'),
                   'etage':etage,'ref':col(row,'bureau'),'surface':surface,
-                  'cap':cap,'prix':prix,'dispo':'future' if date_norm else 'immediate',
+                  'cap':cap,'prix':prix,'dispo':dispo_val,
                   'date':date_norm,'desc':desc,'descEN':desc_en,'plateau':False
               })
           with open('data.json','w') as f:
