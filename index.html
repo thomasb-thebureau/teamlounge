@@ -1322,12 +1322,18 @@ function buildEmail(data, showTotal) {
     h+='</td></tr>';
     /* Recap */
     h+=recap;
-    /* CTA — jade */
+    /* CTA — or (reserve) */
     h+='<tr><td style="background:#ffffff;padding:20px 36px;border-top:1px solid rgba(15,15,15,.09);text-align:center">';
-    h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#1E4035;color:#F5EFE5;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:50px">'+ctaLabel+'</a>';
+    h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:'+OR2+';color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:50px">'+ctaLabel+'</a>';
     h+='</td></tr>';
-    /* Conditions & inclusions — merged section */
-    var ccTitle = isEN ? 'CONDITIONS & INCLUSIONS' : 'CONDITIONS & INCLUSIONS';
+    /* Inclusions — fond ivoire, checkmarks */
+    var inclTitle = isEN ? 'ALL-INCLUSIVE' : 'TOUT INCLUS';
+    h+='<tr><td style="background:#F5EFE5;padding:20px 28px">';
+    h+='<p style="margin:0 0 10px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR2+';font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:600">'+inclTitle+'</p>';
+    h+='<p style="margin:0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText.replace(/<br>/g,'</p><p style="margin:3px 0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">').replace(/\u2022/g,'&#10003;')+'</p>';
+    h+='</td></tr>';
+    /* Conditions contractuelles — fond creme */
+    var ccTitle = isEN ? 'CONTRACTUAL CONDITIONS' : 'CONDITIONS CONTRACTUELLES';
     var ccItems = isEN
       ? ['3-month minimum commitment, then rolling monthly contract until notice.',
          'Security deposit: 2 months\u2019 subscription excl. VAT (specified in the contract).',
@@ -1337,11 +1343,10 @@ function buildEmail(data, showTotal) {
          'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
          'Frais d\u2019installation\u00a0: 100\u20ac H.T. par poste capacitaire.',
          'Pr\u00e9avis de d\u00e9part\u00a0: un mois plus le mois en cours.'];
-    var ccList = ccItems.map(function(i){ return '<li style="margin:0 0 3px;font-size:11px;color:rgba(245,239,229,0.6);font-family:Plus Jakarta Sans,Arial,sans-serif;line-height:1.5">'+i+'</li>'; }).join('');
-    h+='<tr><td style="background:#1E4035;padding:16px 28px">';
-    h+='<p style="margin:0 0 8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,239,229,0.5);font-family:Plus Jakarta Sans,Arial,sans-serif">'+ccTitle+'</p>';
-    h+='<ul style="margin:0 0 12px;padding-left:14px;">'+ccList+'</ul>';
-    h+='<p style="margin:0;font-size:10px;color:rgba(245,239,229,0.4);line-height:1.5;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText+'</p>';
+    var ccList = ccItems.map(function(i){ return '<tr><td style="padding:2px 0;font-size:11px;color:rgba(15,15,15,.5);font-family:Plus Jakarta Sans,Arial,sans-serif;line-height:1.5">'+i+'</td></tr>'; }).join('');
+    h+='<tr><td style="background:#FAFAFA;padding:16px 28px;border-top:1px solid rgba(15,15,15,.06)">';
+    h+='<p style="margin:0 0 8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(15,15,15,.35);font-family:Plus Jakarta Sans,Arial,sans-serif">'+ccTitle+'</p>';
+    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">'+ccList+'</table>';
     h+='</td></tr>';
     /* Footer — enriched with links */
     h+='<tr><td style="background:'+INK+';padding:0;border-radius:0 0 4px 4px">';
