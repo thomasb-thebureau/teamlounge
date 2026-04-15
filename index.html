@@ -30,8 +30,8 @@ body{background:var(--creme);color:var(--encre);font-family:'Plus Jakarta Sans',
 .hero{background:var(--encre);padding:30px 48px 26px;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-120px;right:-80px;width:380px;height:380px;border-radius:50%;border:1px solid rgba(176,148,56,.05);pointer-events:none}
 .eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--or);margin-bottom:9px}
-.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(26px,3.5vw,44px);font-weight:600;color:var(--creme);line-height:1.1;margin-bottom:6px}
-.hero h1 em{font-style:italic;color:var(--or)}
+.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(26px,3.5vw,44px);font-weight:300;color:var(--creme);line-height:1.1;margin-bottom:6px}
+.hero h1 em{font-style:normal;font-weight:700;color:var(--creme)}
 .hero-sub{font-size:12.5px;color:rgba(245,239,229,.6);letter-spacing:.04em}
 .fp{background:rgba(245,239,229,.88);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid rgba(15,15,15,.06);padding:13px 48px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:61px;z-index:190}
 .fl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gris);white-space:nowrap}
@@ -311,6 +311,28 @@ footer{background:var(--encre);position:relative;overflow:hidden}
 <div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button></div></div>
 <div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au client</h2></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mbody"><div class="msect">Coordonnées du client</div><div class="fgrid"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msect" style="margin-top:22px;display:flex;align-items:center;justify-content:space-between"><span>Bureaux sélectionnés</span><button id="optModeBtn" onclick="toggleOptMode()" style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:50px;border:1px solid var(--cf);background:var(--creme);color:var(--gris);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-left:8px">+ Mode options</button><div style="display:flex;gap:4px" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div></div><div class="moffs" id="moffs"></div><div id="optPanel" style="display:none;margin:14px 0 0;padding:12px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc)">Options</div><button onclick="addOption()" style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:50px;border:1px solid var(--or2);background:transparent;color:var(--or2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">+ Ajouter une option</button></div><div id="optList"></div></div><div style="margin:12px 0 0"><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc);margin-bottom:5px">Message d’introduction <span style="font-size:9px;font-weight:300;letter-spacing:0;text-transform:none;color:var(--gc)">(personnalisable)</span></div><textarea id="customMsg" style="width:100%;border:1px solid var(--cf);border-radius:3px;padding:9px 12px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);background:var(--creme);outline:none;resize:vertical;min-height:64px;line-height:1.5;transition:border .18s" onfocus="this.style.borderColor='var(--or)'" onblur="this.style.borderColor='var(--cf)'">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div style="display:flex;align-items:center;justify-content:space-between;margin:10px 0 0;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div><div style="font-size:11px;font-weight:500;color:var(--encre)">Remise commerciale</div><div style="font-size:10px;color:var(--gc)">Appliquée sur tous les paliers</div></div><div style="display:flex;align-items:center;gap:6px"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0" style="width:54px;border:1px solid var(--cf);border-radius:50px;padding:5px 8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;background:var(--creme);outline:none"><span style="font-size:13px;color:var(--gris)">%</span></div></div><div style="margin:10px 0 0;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div style="font-size:11px;font-weight:500;color:var(--encre);margin-bottom:8px">Paliers affich&eacute;s dans l'email</div><div style="display:flex;flex-wrap:wrap;gap:6px" id="tierChecks"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="0" checked style="accent-color:var(--vert)"> Mensuel</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="1" checked style="accent-color:var(--vert)"> 12 mois</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="2" checked style="accent-color:var(--vert)"> 24 mois</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="3" checked style="accent-color:var(--vert)"> 36 mois</label></div></div><div class="mtot" id="mtot" style="display:none"></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Voir &amp; envoyer</button></div></div></div></div>
+<!-- Text recap modal -->
+<div class="txt-overlay" id="txtOverlay" role="dialog" aria-modal="true" aria-label="Recap texte">
+<div class="txt-modal">
+<div class="txt-modal-hdr"><h3>Recap texte</h3><button class="mclose" id="txtClose" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+<div class="txt-modal-body"><textarea id="txtEditor" spellcheck="false"></textarea></div>
+<div class="txt-modal-ftr"><button class="bcnl" id="txtCancel">Fermer</button><button class="txt-copy-btn" id="txtCopy"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copier</button></div>
+</div>
+</div>
+<!-- Filter drawer mobile -->
+<div class="filter-drawer-overlay" id="filterDrawerOverlay" role="dialog" aria-modal="true" aria-label="Filtres">
+<div class="filter-drawer" id="filterDrawer">
+<div class="filter-drawer-handle"></div>
+<div class="filter-drawer-title">Filtres</div>
+<div class="filter-drawer-section"><div class="filter-drawer-label">Sites</div><div class="site-chips" id="fd-sites"><span class="sc sc-all on" data-site="all">Tous</span><span class="sc" data-site="I">TB I</span><span class="sc" data-site="II">TB II</span><span class="sc" data-site="III">TB III</span><span class="sc" data-site="IV">TB IV</span></div></div>
+<div class="filter-drawer-section"><div class="filter-drawer-label">Engagement</div><div class="sr eng" id="fd-eng"><button class="sb on" data-eng="mensuel">Mensuel</button><button class="sb" data-eng="12m">12 mois</button><button class="sb" data-eng="24m">24 mois</button><button class="sb" data-eng="36m">36 mois</button></div></div>
+<div class="filter-drawer-section"><div class="filter-drawer-label">Disponibilite</div><div class="sr" id="fd-dispo"><button class="sb on" data-dispo="all">Toutes</button><button class="sb" data-dispo="immediate">Immediate</button><button class="sb" data-dispo="future">A venir</button></div></div>
+<div class="filter-drawer-section"><div class="filter-drawer-label">Capacite (postes)</div><div style="display:flex;gap:8px;margin-top:4px"><input type="number" class="ri" id="fd-cmin" placeholder="min" min="1" max="100" style="flex:1;font-size:13px;padding:8px 12px;min-height:40px"><input type="number" class="ri" id="fd-cmax" placeholder="max" min="1" max="100" style="flex:1;font-size:13px;padding:8px 12px;min-height:40px"></div></div>
+<div class="filter-drawer-section"><div class="filter-drawer-label">Etage</div><div class="sr" id="fd-etage"><button class="sb on" data-etage="all">Tous</button><button class="sb" data-etage="0">RDC</button><button class="sb" data-etage="1">1er</button><button class="sb" data-etage="2">2e</button><button class="sb" data-etage="3">3e+</button></div></div>
+<div class="filter-drawer-section"><div class="filter-drawer-label">Reference</div><input type="text" class="ri" id="fd-search" placeholder="ex. B402" style="width:100%;font-size:13px;padding:8px 12px;min-height:40px;margin-top:4px"></div>
+<div class="filter-drawer-footer"><button class="filter-drawer-reset" id="fd-reset">Reinitialiser</button><button class="filter-drawer-apply" id="fd-apply">Appliquer</button></div>
+</div>
+</div>
 <footer role="contentinfo"><div class="fbody"><div><p class="fnote">Tous les prix sont indiqués H.T. et incluent les charges courantes.<br>Les remises d’engagement sont appliquees sur le tarif mensuel de reference.</p></div><div><div class="fcol-title">Nos espaces</div><a class="fcol-link" href="https://thebureau.paris/fr/28-cours-albert-1-er" target="_blank">The Bureau I — Cours Albert 1er</a><a class="fcol-link" href="https://thebureau.paris/fr/16-cours-albert-1-er" target="_blank">The Bureau II — Champs-Elysees</a><a class="fcol-link" href="https://thebureau.paris/fr/25-rue-iv-septembre" target="_blank">The Bureau III — Opera</a><a class="fcol-link" href="https://thebureau.paris/fr/42-rue-notre-dame-des-victoires" target="_blank">The Bureau IV — Bourse</a></div><div><div class="fcol-title">Contact</div><div class="fcname">Thomas Bougeard</div><div class="fcinfo">Directeur Commercial<br><a href="tel:+33659231592">+33 6 59 23 15 92</a><br><script>document.write('<a href="mai'+'lto:thomasb@thebur'+'eau.paris" class="fca">thomasb@thebur'+'eau.paris<\/a>')</script><noscript>thomasb [at] thebureau.paris</noscript><br><a href="https://www.thebureau.paris" target="_blank">thebureau.paris</a></div></div></div><div class="fbot"><img class="fbot-chevrons" src="./chevrons.svg" alt="The Bureau"/><div class="fbot-center"><a href="https://www.thebureau.paris" target="_blank">thebureau.paris</a><a href="https://www.instagram.com/thebureauparis/" target="_blank">Instagram</a><a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank">LinkedIn</a></div><span class="fbot-copy">&copy; 2026 The Bureau Paris</span></div></footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -1230,8 +1252,8 @@ function buildEmail(data, showTotal) {
     h+='<body style="margin:0;padding:0;background:#FAFAFA">';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAFAFA;padding:32px 0"><tr><td align="center">';
     h+='<table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">';
-    /* Header — jade accent */
-    h+='<tr><td style="background:#1E4035;padding:20px 36px 14px;border-radius:4px 4px 0 0">';
+    /* Header — ivoire */
+    h+='<tr><td style="background:#F5EFE5;padding:20px 36px 14px;border-radius:4px 4px 0 0">';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
     h+='<td><img src="data:image/png;base64,'+LOGO_B64+'" alt="The Bureau" height="30" style="display:block"/></td>';
     h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,239,229,0.6);font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+propLabel+'</td>';
@@ -1277,8 +1299,8 @@ function buildEmail(data, showTotal) {
     h+='<p style="margin:0 0 8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(15,15,15,.35);font-family:Plus Jakarta Sans,Arial,sans-serif">'+ccTitle+'</p>';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">'+ccList+'</table>';
     h+='</td></tr>';
-    /* Footer — enriched with links */
-    h+='<tr><td style="background:'+INK+';padding:0;border-radius:0 0 4px 4px">';
+    /* Footer — contact jade */
+    h+='<tr><td style="background:#1E4035;padding:0;border-radius:0 0 4px 4px">';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
     h+='<td width="96" style="padding:12px 0 12px 12px;vertical-align:middle;text-align:center">';
     h+='<img src="data:image/png;base64,'+CHEV_B64+'" alt="The Bureau" width="40" style="display:block;opacity:0.55;margin:auto"/>';
@@ -1293,7 +1315,7 @@ function buildEmail(data, showTotal) {
     h+='<a href="https://www.thebureau.paris" style="color:rgba(245,239,229,0.55);text-decoration:none">www.thebureau.paris</a>';
     h+='</p></td></tr></table></td></tr>';
     /* Social links bar */
-    h+='<tr><td style="background:'+INK+';padding:10px 36px;border-top:1px solid rgba(255,255,255,.06);border-radius:0 0 4px 4px;text-align:center">';
+    h+='<tr><td style="background:#1E4035;padding:10px 36px;border-top:1px solid rgba(255,255,255,.1);border-radius:0 0 4px 4px;text-align:center">';
     h+='<a href="https://www.thebureau.paris" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">thebureau.paris</a>';
     h+='<a href="https://www.instagram.com/thebureauparis/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">Instagram</a>';
     h+='<a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">LinkedIn</a>';
@@ -1836,15 +1858,15 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
 
   var h = '';
   h+='<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"/><link href="'+GFONTS+'" rel="stylesheet"/><style>@media only screen and (max-width:620px){.email-container{width:100%!important}.email-pad{padding:16px!important}}</style></head>';
-  h+='<body style="margin:0;padding:0;background:#F5EFE5">';
-  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5EFE5;padding:32px 0"><tr><td align="center">';
+  h+='<body style="margin:0;padding:0;background:#FAFAFA">';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAFAFA;padding:32px 0"><tr><td align="center">';
   h+='<table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">';
 
-  /* Header — identical to buildEmail */
-  h+='<tr><td style="background:'+INK+';padding:20px 36px 14px;border-bottom:3px solid '+OR+';border-radius:4px 4px 0 0">';
+  /* Header — ivoire */
+  h+='<tr><td style="background:#F5EFE5;padding:20px 36px 14px;border-radius:4px 4px 0 0">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
   h+='<td><img src="data:image/png;base64,'+LOGO_B64+'" alt="The Bureau" height="30" style="display:block"/></td>';
-  h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(176,148,56,0.85);font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+propLabel+'</td>';
+  h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(15,15,15,0.4);font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+propLabel+'</td>';
   h+='</tr></table></td></tr>';
 
   /* Intro — identical */
@@ -1871,23 +1893,24 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<tr><td style="background:#ffffff;height:16px"></td></tr>';
 
   /* CTA */
-  h+='<tr><td style="background:#ffffff;padding:14px 36px;border-top:1px solid rgba(15,15,15,.09);text-align:center">';
-  h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:'+OR2+';color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:9px 22px;border-radius:50px">'+ctaLabel+'</a>';
+  h+='<tr><td style="background:#ffffff;padding:20px 36px;border-top:1px solid rgba(15,15,15,.09);text-align:center">';
+  h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:'+OR2+';color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:50px">'+ctaLabel+'</a>';
+  h+='</td></tr>';
+  /* Inclusions — fond ivoire, checkmarks */
+  var inclTitle2 = isEN ? 'ALL-INCLUSIVE' : 'TOUT INCLUS';
+  h+='<tr><td style="background:#F5EFE5;padding:20px 28px">';
+  h+='<p style="margin:0 0 10px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR2+';font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:600">'+inclTitle2+'</p>';
+  h+='<p style="margin:0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText.replace(/<br>/g,'</p><p style="margin:3px 0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">').replace(/•/g,'✓')+'</p>';
+  h+='</td></tr>';
+  /* Conditions contractuelles — fond creme */
+  var ccList2 = ccItems.map(function(i){ return '<tr><td style="padding:2px 0;font-size:11px;color:rgba(15,15,15,.5);font-family:Plus Jakarta Sans,Arial,sans-serif;line-height:1.5">'+i+'</td></tr>'; }).join('');
+  h+='<tr><td style="background:#FAFAFA;padding:16px 28px;border-top:1px solid rgba(15,15,15,.06)">';
+  h+='<p style="margin:0 0 8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(15,15,15,.35);font-family:Plus Jakarta Sans,Arial,sans-serif">'+ccTitle+'</p>';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">'+ccList2+'</table>';
   h+='</td></tr>';
 
-  /* Legal */
-  h+='<tr><td style="background:#ffffff;padding:10px 36px 14px;border-top:1px solid rgba(15,15,15,.09)">';
-  h+='<p style="margin:0 0 10px;font-size:10.5px;color:rgba(15,15,15,.35);line-height:1.5;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText+'</p>';
-  h+='</td></tr>';
-
-  /* Contractual conditions */
-  h+='<tr><td style="background:#0F0F0F;padding:8px 28px;border-top:1px solid rgba(176,148,56,0.12)">';
-  h+='<p style="margin:0 0 5px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#B09438;font-family:Plus Jakarta Sans,Arial,sans-serif">'+ccTitle+'</p>';
-  h+='<ul style="margin:0;padding-left:14px;">'+ccList+'</ul>';
-  h+='</td></tr>';
-
-  /* Footer — identical to buildEmail */
-  h+='<tr><td style="background:'+INK+';padding:0;border-top:2px solid '+OR+';border-radius:0 0 4px 4px">';
+  /* Footer — contact jade + social links */
+  h+='<tr><td style="background:#1E4035;padding:0;border-radius:0 0 4px 4px">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
   h+='<td width="96" style="padding:12px 0 12px 12px;vertical-align:middle;text-align:center">';
   h+='<img src="data:image/png;base64,'+CHEV_B64+'" alt="The Bureau" width="40" style="display:block;opacity:0.55;margin:auto"/>';
@@ -1901,7 +1924,12 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<a id="femail" style="color:rgba(245,239,229,0.55);text-decoration:none">thomasb@thebureau.paris</a><br>';
   h+='<a href="https://www.thebureau.paris" style="color:rgba(245,239,229,0.55);text-decoration:none">www.thebureau.paris</a>';
   h+='</p></td></tr></table></td></tr>';
-
+  /* Social links bar */
+  h+='<tr><td style="background:#1E4035;padding:10px 36px;border-top:1px solid rgba(255,255,255,.1);border-radius:0 0 4px 4px;text-align:center">';
+  h+='<a href="https://www.thebureau.paris" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">thebureau.paris</a>';
+  h+='<a href="https://www.instagram.com/thebureauparis/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">Instagram</a>';
+  h+='<a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">LinkedIn</a>';
+  h+='</td></tr>';
   h+='</table></td></tr></table>\n</body></html>';
   return h;
 }
