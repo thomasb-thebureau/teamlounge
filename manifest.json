@@ -1,0 +1,15 @@
+{
+  "name": "The Bureau \u2014 Team Lounge",
+  "short_name": "Team Lounge",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#1E4035",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
