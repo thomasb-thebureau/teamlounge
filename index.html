@@ -88,7 +88,7 @@ body.dark .logo-div{background:rgba(255,255,255,.15)}
 .csite{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);margin-top:2px}
 .plat{display:inline-flex;align-items:center;gap:3px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;background:rgba(176,148,56,.12);color:var(--or2);border:1px solid rgba(176,148,56,.28);border-radius:50px;padding:2px 7px;margin-top:3px}
 .badge-large{display:inline-flex;align-items:center;gap:4px;background:var(--encre);color:var(--or);border:1px solid rgba(176,148,56,0.35);border-radius:50px;padding:3px 10px;font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
-.badge-new{display:inline-flex;align-items:center;gap:3px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:rgba(30,64,53,.12);color:var(--vert);border:1px solid rgba(30,64,53,.3);border-radius:50px;padding:2px 7px;margin-top:3px;animation:pulse 2s infinite}
+/* badge-new is defined in features CSS below */
 .db{display:flex;align-items:center;gap:4px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .db.imm{color:var(--vert)}
 .db.fut{color:var(--ambre)}
@@ -725,15 +725,15 @@ function makeCard(b) {
   var capChipCls = 'chip'+(b.plateau?' hl':'');
   var platHtml = b.plateau?'<div class="plat">\u25c6 Plateau privatif complet</div>':'';
   var largeBadge = b.cap>=15?'<span class="badge-large">★ Grand espace</span>':'';
-  var newBadge = isNew?'<div class="badge-new">★ Nouveau</div>':'';
+  /* newBadge now inline in .cref */
 
   div.innerHTML =
     chk+
     '<div class="ctop">'+
       '<div>'+
-        '<div class="cref">'+esc(b.ref)+'</div>'+
+        '<div class="cref">'+esc(b.ref)+(isNew?' <span class="badge-new">NOUVEAU</span>':'')+'</div>'+
         '<div class="csite">'+esc(b.adresse)+'</div>'+
-        platHtml+newBadge+
+        platHtml+
       '</div>'+
       '<div class="'+dbCls+'"><span class="ddot"></span>'+dbTxt+'</div>'+
     '</div>'+
@@ -754,10 +754,8 @@ function makeCard(b) {
       savHtml+
     '</div>');
 
-  /* F15: New badge — inject next to .cref title */
-  var _sk='tb_seen_'+b.ref,_sa=localStorage.getItem(_sk);
-  if(!_sa){localStorage.setItem(_sk,Date.now().toString())}
-  if(!_sa||(Date.now()-parseInt(_sa||'0'))<48*3600000){var _crefEl=div.querySelector('.cref');if(_crefEl){var _nb=document.createElement('span');_nb.className='badge-new';_nb.textContent='NOUVEAU';_crefEl.appendChild(_nb)}}
+  /* F15: newness tracking (badge already in .cref HTML above) */
+  var _sk='tb_seen_'+b.ref;if(!localStorage.getItem(_sk)){localStorage.setItem(_sk,Date.now().toString())}
   /* F3: Fav button */
   if(typeof FAVS!=='undefined'){var _fb=document.createElement('button');_fb.className='fav-btn'+(FAVS[b.ref]?' on':'');_fb.dataset.ref=b.ref;_fb.textContent=FAVS[b.ref]?'\u2605':'\u2606';_fb.addEventListener('click',function(e){e.stopPropagation();toggleFav(b.ref)});div.appendChild(_fb)}
   div.setAttribute('tabindex', '0');
