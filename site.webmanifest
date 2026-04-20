@@ -1,6 +1,6 @@
 {
-  "name": "Team Lounge",
-  "short_name": "Team Lounge",
+  "name": "The Bureau",
+  "short_name": "The Bureau",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#1E4035",
-  "background_color": "#1E4035",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "display": "standalone"
 }
