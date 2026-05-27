@@ -87,8 +87,7 @@ jobs:
               if is_available:
                   dispo_val = 'future' if date_norm else 'immediate'
               else:
-                  # Bureau non disponible (FALSE) - exclu du catalogue
-                  continue
+                  dispo_val = 'occupied'
               offices.append({
                   'site':site,'label':site_raw,'adresse':col(row,'adresse'),
                   'etage':etage,'ref':col(row,'bureau'),'surface':surface,
