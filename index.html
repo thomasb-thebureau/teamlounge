@@ -488,18 +488,25 @@ body.present .present-exit{display:flex;align-items:center;gap:6px}
 .site-group-hdr{grid-column:1/-1;background:var(--vert);color:#F5EFE5;padding:8px 26px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif}
 /* F9: Message templates */
 .tpl-select{border:1px solid var(--cf);border-radius:3px;padding:6px 10px;font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);background:var(--creme);cursor:pointer;outline:none;margin-bottom:6px;width:100%}
+
+.lang-toggle{display:flex;border:1px solid var(--cf);border-radius:50px;overflow:hidden}
+.lang-toggle button{background:none;border:none;padding:4px 10px;font-size:10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;letter-spacing:.06em;color:var(--gc);cursor:pointer;transition:all .25s}
+.lang-toggle button.on{background:var(--vert);color:#F5EFE5}
+body.dark .lang-toggle{border-color:rgba(255,255,255,.15)}
+body.dark .lang-toggle button{color:rgba(255,255,255,.45)}
+body.dark .lang-toggle button.on{background:var(--or);color:#1a1a1a}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-<div class="top-bar"><div class="logo-wrap"><a href="#" onclick="resetSession();return false;" title="Nouvelle session" style="display:flex;align-items:center;line-height:0"><img class="logo-main" src="./logo.svg"/><img class="logo-main-dark" src="./logo-white.svg" alt="The Bureau"/></a><div class="logo-div"></div><span class="logo-tag">TEAM LOUNGE</span></div><div class="top-right"><button class="view-toggle" id="pipBtn" title="Pipeline" style="font-size:10px;letter-spacing:.06em">▶ Pipeline</button><button class="dark-toggle" id="darkToggle" title="Mode sombre">🌙</button><div class="status"><div class="sdot" id="sdot"></div><span class="stxt" id="stxt">Chargement…</span></div><button class="refresh-btn" id="refreshBtn" onclick="fetchData()">↻ Actualiser</button><span class="dlabel" id="dlabel"></span></div></div>
+<div class="top-bar"><div class="logo-wrap"><a href="#" onclick="resetSession();return false;" title="Nouvelle session" style="display:flex;align-items:center;line-height:0"><img class="logo-main" src="./logo.svg"/><img class="logo-main-dark" src="./logo-white.svg" alt="The Bureau"/></a><div class="logo-div"></div><span class="logo-tag">TEAM LOUNGE</span></div><div class="top-right"><div class="lang-toggle" id="langToggleHeader"><button data-lang="fr" class="on">FR</button><button data-lang="en">EN</button></div><button class="view-toggle" id="pipBtn" title="Pipeline" style="font-size:10px;letter-spacing:.06em">▶ Pipeline</button><button class="dark-toggle" id="darkToggle" title="Mode sombre">🌙</button><div class="status"><div class="sdot" id="sdot"></div><span class="stxt" id="stxt">Chargement…</span></div><button class="refresh-btn" id="refreshBtn" onclick="fetchData()">↻ Actualiser</button><span class="dlabel" id="dlabel"></span></div></div>
 <div class="hero"><div class="eyebrow">Paris — 75002 &amp; 75008</div><h1>Bureaux <em>disponibles</em></h1><div class="hero-sub">4 adresses — bureaux privatifs — données en temps réel</div></div>
 <div class="fp"><div style="display:flex;align-items:center;gap:7px"><span class="fl">Sites</span><div class="site-chips" id="sf"><span class="sc sc-all on" data-site="all">Tous</span><span class="sc" data-site="I">TB I</span><span class="sc" data-site="II">TB II</span><span class="sc" data-site="III">TB III</span><span class="sc" data-site="IV">TB IV</span></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Engagement</span><div class="sr eng" id="ef"><button class="sb on" data-eng="mensuel">Mensuel <small style="opacity:.55;font-size:9px">3 mois min.</small></button><button class="sb" data-eng="12m">12 mois <small style="opacity:.55">-5%</small></button><button class="sb" data-eng="24m">24 mois <small style="opacity:.55">-10%</small></button><button class="sb" data-eng="36m">36 mois <small style="opacity:.55">-15%</small></button></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Postes</span><div class="rw"><input type="number" class="ri" id="cmin" placeholder="min" min="1" max="100"><span style="font-size:11px;color:var(--gc)">—</span><input type="number" class="ri" id="cmax" placeholder="max" min="1" max="100"></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Etage</span><select class="fsel" id="etf"><option value="all">Tous</option><option value="0">RDC</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option><option value="5">5e</option></select></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Dispo</span><div class="sr" id="df"><button class="sb on" data-dispo="all">Toutes</button><button class="sb" data-dispo="immediate">Immédiate</button><button class="sb" data-dispo="future">A venir</button></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Tri</span><select class="fsel" id="srt"><option value="nom" selected>Référence</option><option value="pa">Prix croissant</option><option value="pd">Prix décroissant</option><option value="ca">Capacité croissante</option><option value="cd">Capacité décroissante</option><option value="dispo">Disponibilité</option></select></div><button class="reset" id="rst">Effacer</button><button class="occ-toggle" id="occBtn" title="Afficher les bureaux occupés"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21" class="occ-slash"/></svg> Occupés</button><button class="view-toggle" id="viewToggle" title="Vue liste">☰</button><button class="view-toggle" id="presentToggle" title="Mode présentation">▣</button><span class="sc" id="favFilter" style="background:transparent;border:1px solid var(--or);color:var(--or);cursor:pointer">★ Favoris</span><div class="fd"></div><div class="budget-wrap"><span class="fl">Budget</span><input type="number" class="budget-input" id="budgetMax" placeholder="max €" min="0" step="100"></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Ref</span><input type="text" class="ri" id="search" placeholder="ex. B402" style="width:80px;letter-spacing:.06em;"></div></div>
 <div class="tb"><div class="rc"><strong id="cnt">-</strong> bureau<span id="ps"></span> disponible<span id="ps2"></span></div><span class="hint">Cliquer sur une carte pour la sélectionner</span><button class="filter-fab" id="filterFab" onclick="openFilterDrawer()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<div class="filter-fab-dot" id="filterFabDot"></div></button></div>
 <div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
-<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au client</h2></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mbody"><div class="msect">Coordonnées du client</div><div class="fgrid"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msect" style="margin-top:22px;display:flex;align-items:center;justify-content:space-between"><span>Bureaux sélectionnés</span><button id="optModeBtn" onclick="toggleOptMode()" style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:50px;border:1px solid var(--cf);background:var(--creme);color:var(--gris);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-left:8px">+ Mode options</button><div style="display:flex;gap:4px" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div></div><div class="moffs" id="moffs"></div><div id="optPanel" style="display:none;margin:14px 0 0;padding:12px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc)">Options</div><button onclick="addOption()" style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:50px;border:1px solid var(--or2);background:transparent;color:var(--or2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">+ Ajouter une option</button></div><div id="optList"></div></div><div style="margin:12px 0 0"><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc);margin-bottom:5px">Message d’introduction <span style="font-size:9px;font-weight:300;letter-spacing:0;text-transform:none;color:var(--gc)">(personnalisable)</span></div><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc);margin-bottom:5px">Expediteur</div><select class="tpl-select" id="senderSelect" style="margin-bottom:10px"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc);margin-bottom:5px">Modele de message</div><select class="tpl-select" id="tplSelect"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select><textarea id="customMsg" style="width:100%;border:1px solid var(--cf);border-radius:3px;padding:9px 12px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);background:var(--creme);outline:none;resize:vertical;min-height:64px;line-height:1.5;transition:border .18s" onfocus="this.style.borderColor='var(--or)'" onblur="this.style.borderColor='var(--cf)'">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div style="display:flex;align-items:center;justify-content:space-between;margin:10px 0 0;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div><div style="font-size:11px;font-weight:500;color:var(--encre)">Remise commerciale</div><div style="font-size:10px;color:var(--gc)">Appliquée sur tous les paliers</div></div><div style="display:flex;align-items:center;gap:6px"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0" style="width:54px;border:1px solid var(--cf);border-radius:50px;padding:5px 8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;background:var(--creme);outline:none"><span style="font-size:13px;color:var(--gris)">%</span></div></div><div style="margin:10px 0 0;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div style="font-size:11px;font-weight:500;color:var(--encre);margin-bottom:8px">Paliers affich&eacute;s dans l'email</div><div style="display:flex;flex-wrap:wrap;gap:6px" id="tierChecks"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="0" checked style="accent-color:var(--vert)"> Mensuel</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="1" checked style="accent-color:var(--vert)"> 12 mois</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="2" checked style="accent-color:var(--vert)"> 24 mois</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="3" checked style="accent-color:var(--vert)"> 36 mois</label></div></div><div class="mtot" id="mtot" style="display:none"></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div></div>
+<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au client</h2></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mbody"><div class="msect">Coordonnées du client</div><div class="fgrid"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msect" style="margin-top:22px;display:flex;align-items:center;justify-content:space-between"><span>Bureaux sélectionnés</span><button id="optModeBtn" onclick="toggleOptMode()" style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:50px;border:1px solid var(--cf);background:var(--creme);color:var(--gris);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-left:8px">+ Mode options</button><div style="display:flex;gap:4px" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div></div><div class="moffs" id="moffs"></div><div id="optPanel" style="display:none;margin:14px 0 0;padding:12px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc)">Options</div><button onclick="addOption()" style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:50px;border:1px solid var(--or2);background:transparent;color:var(--or2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">+ Ajouter une option</button></div><div id="optList"></div></div><div style="margin:12px 0 0"><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc);margin-bottom:5px">Message d’introduction <span style="font-size:9px;font-weight:300;letter-spacing:0;text-transform:none;color:var(--gc)">(personnalisable)</span></div><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc);margin-bottom:5px">Expediteur</div><select class="tpl-select" id="senderSelect" style="margin-bottom:10px"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gc);margin-bottom:5px">Modele de message</div><select class="tpl-select" id="tplSelect"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select><textarea id="customMsg" style="width:100%;border:1px solid var(--cf);border-radius:3px;padding:9px 12px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);background:var(--creme);outline:none;resize:vertical;min-height:64px;line-height:1.5;transition:border .18s" onfocus="this.style.borderColor='var(--or)'" onblur="this.style.borderColor='var(--cf)'">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div style="display:flex;align-items:center;justify-content:space-between;margin:10px 0 0;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div><div style="font-size:11px;font-weight:500;color:var(--encre)">Remise commerciale</div><div style="font-size:10px;color:var(--gc)">Appliquée sur tous les paliers</div></div><div style="display:flex;align-items:center;gap:6px"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0" style="width:54px;border:1px solid var(--cf);border-radius:50px;padding:5px 8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;background:var(--creme);outline:none"><span style="font-size:13px;color:var(--gris)">%</span></div></div><div style="margin:10px 0 0;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><div style="font-size:11px;font-weight:500;color:var(--encre);margin-bottom:8px">Paliers affich&eacute;s dans l'email</div><div style="display:flex;flex-wrap:wrap;gap:6px" id="tierChecks"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="0" checked style="accent-color:var(--vert)"> Mensuel</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="1" checked style="accent-color:var(--vert)"> 12 mois</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="2" checked style="accent-color:var(--vert)"> 24 mois</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:50px;border:1px solid var(--cf);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);user-select:none;transition:all .25s"><input type="checkbox" value="3" checked style="accent-color:var(--vert)"> 36 mois</label></div></div><div class="mtot" id="mtot" style="display:none"></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div></div>
 <div class="pipeline-overlay" id="pipelineOverlay"><div class="pipeline-modal"><div class="pipeline-hdr"><h3>Pipeline propositions</h3><button class="mclose" id="pipClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="pipBody"></div><div style="padding:12px 20px;border-top:1px solid var(--cf);text-align:right"><button class="pip-btn" id="pipClear" style="color:#c0392b;border-color:#c0392b">Tout effacer</button></div></div></div>
 <button class="present-exit" id="presentExit">&#10005; Quitter</button>
 <div class="cmp-overlay" id="cmpOverlay"><div class="cmp-modal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="font-size:15px;font-weight:600">Comparaison</h3><button class="mclose" id="cmpClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="cmpBody"></div></div></div>
@@ -2670,6 +2677,24 @@ document.addEventListener('DOMContentLoaded', function() {
    PDF EXPORT — A4 landscape (replicated from BrokerLounge)
 ============================================================ */
 function exportPDF(){
+  var isEN = (typeof EP_LANG!=='undefined' && EP_LANG==='en');
+  var T = isEN ? {
+    docTitle:'Selection — The Bureau Team Lounge', monthly:'Monthly (3 months min.)',
+    eyebrow:'Team Lounge — Proposal', selTitle:'Office <em>selection</em>',
+    office:'office', offices:'offices', immediate:'Immediate', from:'From ',
+    refH:'Ref.', siteH:'Site', floorH:'Floor', surfH:'sqm', deskH:'Desks', dispoH:'Avail.', descH:'Description',
+    totalMonthly:'Total monthly excl. VAT', totalOpt:'Total ', exclVat:' excl. VAT',
+    inclTitle:'All-inclusive — excl. VAT rates', condTitle:'Contractual conditions',
+    printBtn:'Print / PDF', floorGround:'GF', floor1:'1st', brand:'The Bureau Paris'
+  } : {
+    docTitle:'Sélection — The Bureau Team Lounge', monthly:'Mensuel (3 mois min.)',
+    eyebrow:'Team Lounge — Proposition', selTitle:'Sélection <em>bureaux</em>',
+    office:'bureau', offices:'bureaux', immediate:'Immédiate', from:'A partir du ',
+    refH:'Réf.', siteH:'Site', floorH:'Étage', surfH:'m²', deskH:'Postes', dispoH:'Dispo.', descH:'Description',
+    totalMonthly:'Total mensuel H.T.', totalOpt:'Total ', exclVat:' H.T.',
+    inclTitle:'Tout inclus — tarifs H.T.', condTitle:'Conditions contractuelles',
+    printBtn:'Imprimer / PDF', floorGround:'RDC', floor1:'1er', brand:'The Bureau Paris'
+  };
   var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
   if(SEL[ITIN_REF]){var it=SEL[ITIN_REF];if(!selData.find(function(b){return b.ref===ITIN_REF}))selData.unshift(it)}
   if(selData.length===0){showToast('Selectionnez des bureaux');return}
@@ -2678,10 +2703,10 @@ function exportPDF(){
   var remEl=document.getElementById('remiseInput');
   var remise=remEl?Math.min(25,Math.max(0,parseFloat(remEl.value)||0))/100:0;
   var allTiers=[
-    {key:'mensuel',label:'Mensuel (3 mois min.)',d:remise},
-    {key:'12m',label:'12 mois',d:1-(1-0.05)*(1-remise)},
-    {key:'24m',label:'24 mois',d:1-(1-0.10)*(1-remise)},
-    {key:'36m',label:'36 mois',d:1-(1-0.15)*(1-remise)}
+    {key:'mensuel',label:T.monthly,d:remise},
+    {key:'12m',label:isEN?'12 months':'12 mois',d:1-(1-0.05)*(1-remise)},
+    {key:'24m',label:isEN?'24 months':'24 mois',d:1-(1-0.10)*(1-remise)},
+    {key:'36m',label:isEN?'36 months':'36 mois',d:1-(1-0.15)*(1-remise)}
   ];
   var activeTiers = allTiers.filter(function(_,i){ return _selTiers.indexOf(i)>-1; });
   if(activeTiers.length===0) activeTiers=[allTiers[0]];
@@ -2691,12 +2716,24 @@ function exportPDF(){
   var today=new Date();
   var dateFr=today.getDate().toString().padStart(2,'0')+'/'+(today.getMonth()+1).toString().padStart(2,'0')+'/'+today.getFullYear();
   var fmtEur=function(n){return fmt(n)+'\u00a0\u20ac'};
-  var etStr=function(e){return e===0?'RDC':e===1?'1er':e+'e'};
-  var dispoStr=function(b){return b.dispo==='immediate'?'Imm\u00e9diate':('A partir du '+dtLbl(b.date))};
+  var etStr=function(e){return e===0?T.floorGround:e===1?T.floor1:(isEN?e+'th':e+'e')};
+  var dispoStr=function(b){return b.dispo==='immediate'?T.immediate:(T.from+dtLbl(b.date,isEN))};
   var logoUrl=window.location.origin+'/logo.svg';
   var chevronsUrl=window.location.origin+'/chevrons.svg';
 
-  var services=[
+  var services = isEN ? [
+    '24/7 access in your arrondissement, plus weekday access (8am\u20137pm) to all The Bureau locations.',
+    'All shared spaces: coworking, dining area, patio, showers, gym and phone booths.',
+    'Business address registration and drawer storage included.',
+    'Fixed-line phone with unlimited calls to France and worldwide.',
+    'Print allowance: 200 B&W and 25 colour copies per person/month.',
+    'Unlimited break areas: coffee, tea, filtered water and fresh fruit.',
+    'Events programme: evenings, openings, partnerships and Thursday aperitivo.',
+    'Furniture: desk, chair and pedestal.',
+    'Concierge: guest reception, mail, taxis and meeting room bookings.',
+    'Global Collective: 2 days/month at partner spaces (globalcollective.co).',
+    'All-inclusive: electricity, cleaning, utilities, AC and heating.'
+  ] : [
     'Acc\u00e8s 24h/24 et 7j/7 dans l\u2019arrondissement choisi, et du lundi au vendredi de 8h \u00e0 19h aux autres espaces The Bureau.',
     'Acc\u00e8s \u00e0 l\u2019ensemble des espaces communs\u00a0: coworking, espace restauration, patio, douches, salle de sport, cabines t\u00e9l\u00e9phoniques.',
     'Domiciliation et rangement tiroir inclus.',
@@ -2709,7 +2746,12 @@ function exportPDF(){
     'Global Collective\u00a0: 2 jours/mois dans les espaces partenaires (globalcollective.co).',
     'All-inclus\u00a0: \u00e9lectricit\u00e9, m\u00e9nage, charges, climatisation, chauffage.'
   ];
-  var conditions=[
+  var conditions = isEN ? [
+    '3-month minimum commitment, then rolling monthly until notice.',
+    'Security deposit: 2 months\u2019 subscription excl. VAT (specified in the contract).',
+    'Installation fee: 100\u00a0\u20ac excl. VAT per workstation capacity.',
+    'Notice period: one month plus the current month.'
+  ] : [
     '3 mois d\u2019engagement minimum puis contrat renouvel\u00e9 au mois le mois jusqu\u2019au pr\u00e9avis.',
     'D\u00e9p\u00f4t de garantie : 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
     'Frais d\u2019installation : 100\u00a0\u20ac H.T. par poste capacitaire.',
@@ -2719,7 +2761,7 @@ function exportPDF(){
   var totals={};
   activeTiers.forEach(function(t){totals[t.key]=selData.reduce(function(s,b){return s+Math.round(b.prix*(1-t.d))},0)});
 
-  var h='<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>S\u00e9lection \u2014 The Bureau Team Lounge</title>';
+  var h='<!DOCTYPE html><html lang="'+(isEN?'en':'fr')+'"><head><meta charset="UTF-8"><title>'+T.docTitle+'</title>';
   h+='<meta name="viewport" content="width=1200,initial-scale=1"/>';
   h+='<link href="'+GFONTS+'" rel="stylesheet"/>';
   h+='<style>';
@@ -2765,14 +2807,14 @@ function exportPDF(){
   h+='footer.ft .ft-r{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,239,229,.75);text-align:right;line-height:1.6}';
   h+='footer.ft .ft-r strong{color:'+OR+';font-weight:600}';
   h+='</style></head><body>';
-  h+='<button class="btn-print no-print" onclick="window.print()">Imprimer / PDF</button>';
+  h+='<button class="btn-print no-print" onclick="window.print()">'+T.printBtn+'</button>';
   h+='<div class="page">';
 
   /* HEADER */
   h+='<header class="hd">';
   h+='<img class="hd-logo" src="'+logoUrl+'" alt="The Bureau"/>';
-  h+='<div class="hd-mid"><div class="eyebrow">Team Lounge \u2014 Proposition</div><h1>S\u00e9lection <em>bureaux</em></h1></div>';
-  h+='<div class="hd-r"><strong>'+dateFr+'</strong><br>'+selData.length+' bureau'+(selData.length>1?'x':'')+'<div class="tiers-inline">'+activeTiers.map(function(t){return t.label+(t.d>0?' -'+Math.round(t.d*1000)/10+'%':'')}).join(' \u00b7 ')+'</div></div>';
+  h+='<div class="hd-mid"><div class="eyebrow">'+T.eyebrow+'</div><h1>'+T.selTitle+'</h1></div>';
+  h+='<div class="hd-r"><strong>'+dateFr+'</strong><br>'+selData.length+' '+(selData.length>1?T.offices:T.office)+'<div class="tiers-inline">'+activeTiers.map(function(t){return t.label+(t.d>0?' -'+Math.round(t.d*1000)/10+'%':'')}).join(' \u00b7 ')+'</div></div>';
   h+='</header>';
   h+='<main class="body">';
 
@@ -2794,7 +2836,7 @@ function exportPDF(){
   }
   function tableHeader(){
     var th='<thead><tr>';
-    th+='<th class="ctr" style="width:54px">R\u00e9f.</th><th style="width:140px">Site</th><th class="ctr" style="width:44px">\u00c9tage</th><th class="num" style="width:40px">m\u00b2</th><th class="ctr" style="width:44px">Postes</th><th style="width:96px">Dispo.</th><th>Description</th>';
+    th+='<th class="ctr" style="width:54px">'+T.refH+'</th><th style="width:140px">'+T.siteH+'</th><th class="ctr" style="width:44px">'+T.floorH+'</th><th class="num" style="width:40px">'+T.surfH+'</th><th class="ctr" style="width:44px">'+T.deskH+'</th><th style="width:96px">'+T.dispoH+'</th><th>'+T.descH+'</th>';
     activeTiers.forEach(function(t){th+='<th class="num">'+t.label+(t.d>0?' <span style="color:'+OR+';font-weight:500">-'+Math.round(t.d*1000)/10+'%</span>':'')+'</th>'});
     th+='</tr></thead>';
     return th;
@@ -2806,11 +2848,11 @@ function exportPDF(){
       var optB=selData.filter(function(b){return opt.refs.indexOf(b.ref)>=0});
       if(optB.length===0)return;
       var optT={};activeTiers.forEach(function(t){optT[t.key]=optB.reduce(function(s,b){return s+Math.round(b.prix*(1-t.d))},0)});
-      h+='<div style="background:'+OR2+';color:#fff;padding:8px 14px;border-radius:4px 4px 0 0;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:8px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)">'+esc(opt.label)+' \u2014 '+optB.length+' bureau'+(optB.length>1?'x':'')+'</div>';
+      h+='<div style="background:'+OR2+';color:#fff;padding:8px 14px;border-radius:4px 4px 0 0;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:8px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)">'+esc(opt.label)+' \u2014 '+optB.length+' '+(optB.length>1?T.offices:T.office)+'</div>';
       h+='<table class="grid" style="margin-top:0;border-radius:0 0 4px 4px">';
       h+=tableHeader();
       h+='<tbody>'+tableRows(optB);
-      h+='<tr class="totrow"><td colspan="7" style="text-align:right;text-transform:uppercase;font-size:9px;letter-spacing:.12em;color:'+GR+'">Total '+esc(opt.label)+' H.T.</td>';
+      h+='<tr class="totrow"><td colspan="7" style="text-align:right;text-transform:uppercase;font-size:9px;letter-spacing:.12em;color:'+GR+'">'+T.totalOpt+esc(opt.label)+T.exclVat+'</td>';
       activeTiers.forEach(function(t){h+='<td class="num">'+fmtEur(optT[t.key])+'</td>'});
       h+='</tr></tbody></table>';
     });
@@ -2818,17 +2860,17 @@ function exportPDF(){
     h+='<table class="grid">';
     h+=tableHeader();
     h+='<tbody>'+tableRows(selData);
-    h+='<tr class="totrow"><td colspan="7" style="text-align:right;text-transform:uppercase;font-size:9px;letter-spacing:.12em;color:'+GR+'">Total mensuel H.T.</td>';
+    h+='<tr class="totrow"><td colspan="7" style="text-align:right;text-transform:uppercase;font-size:9px;letter-spacing:.12em;color:'+GR+'">'+T.totalMonthly+'</td>';
     activeTiers.forEach(function(t){h+='<td class="num">'+fmtEur(totals[t.key])+'</td>'});
     h+='</tr></tbody></table>';
   }
 
   /* BOTTOM: services + conditions */
   h+='<div class="bottom">';
-  h+='<div class="box"><h3>Tout inclus \u2014 tarifs H.T.</h3><ul>';
+  h+='<div class="box"><h3>'+T.inclTitle+'</h3><ul>';
   services.forEach(function(s){h+='<li>'+s+'</li>'});
   h+='</ul></div>';
-  h+='<div class="box cond"><h3>Conditions contractuelles</h3><ul>';
+  h+='<div class="box cond"><h3>'+T.condTitle+'</h3><ul>';
   conditions.forEach(function(s){h+='<li>'+s+'</li>'});
   h+='</ul></div>';
   h+='</div>';
@@ -2852,6 +2894,36 @@ h+='<div><strong>'+_sndPDF.name+'</strong> \u00b7 '+_sndPDF.title+'<br>'+_sndPDF
   setTimeout(function(){URL.revokeObjectURL(url)},60000);
 }
 
+
+
+/* ============================================================
+   PAGE LANGUAGE (FR/EN) — global selector
+============================================================ */
+var PAGE_LANG = localStorage.getItem('tb_page_lang') || 'fr';
+(function(){
+  var lt=document.getElementById('langToggleHeader');
+  if(!lt) return;
+  /* Restore saved state */
+  lt.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.lang===PAGE_LANG)});
+  lt.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click',function(){
+      PAGE_LANG=this.dataset.lang;
+      localStorage.setItem('tb_page_lang',PAGE_LANG);
+      lt.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.lang===PAGE_LANG)});
+      /* Sync EP_LANG used by emails/PDF */
+      EP_LANG=PAGE_LANG;
+      showToast(PAGE_LANG==='en'?'Language: English':'Langue : Francais');
+    });
+  });
+  /* Init EP_LANG from page lang */
+  EP_LANG=PAGE_LANG;
+})();
+
+/* PDF button in modal */
+(function(){
+  var bp=document.getElementById('btnPdfModal');
+  if(bp)bp.addEventListener('click',function(){exportPDF()});
+})();
 
 /* ============================================================
    PHASE 1 FEATURES: Budget, ListView, Templates, Shift-click,
