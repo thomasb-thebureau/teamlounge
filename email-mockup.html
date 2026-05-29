@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Team Lounge — Email client (maquette · mode normal)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--jade:#1E4035;--or:#B09438;--orD:#7A6015;--ink:#0F0F0F;--gris:#5a5248;--ivory:#F5EFE5;--cream:#faf8f4;--line:#e9e1d2}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#dfe3e0;padding:26px 16px 60px;color:var(--ink);display:flex;justify-content:center}
+.wrap{width:100%;max-width:640px}
+
+/* ===== Cadre messagerie ===== */
+.inbox{background:#fff;border-radius:14px 14px 0 0;box-shadow:0 30px 80px rgba(0,0,0,.18);overflow:hidden}
+.inbox-hd{padding:16px 22px;border-bottom:1px solid #eee}
+.inbox-subj{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.inbox-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gris)}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--jade);color:var(--ivory);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.inbox-meta b{color:var(--ink);font-weight:600}
+.to{margin-left:auto;color:var(--gris)}
+/* pièce jointe */
+.attach{display:flex;align-items:center;gap:12px;margin:14px 22px 18px;border:1px solid var(--line);border-radius:10px;padding:11px 14px;background:var(--cream);max-width:320px}
+.attach .pic{width:38px;height:46px;border-radius:5px;background:var(--jade);position:relative;flex-shrink:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
+.attach .pic::before{content:'';position:absolute;top:0;right:0;border-width:0 0 11px 11px;border-style:solid;border-color:transparent transparent transparent #fff;opacity:.25}
+.attach .pic span{font-size:7.5px;font-weight:800;letter-spacing:.06em;color:var(--or)}
+.attach .info{min-width:0}
+.attach .nm{font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attach .sz{font-size:10.5px;color:var(--gris);margin-top:2px}
+.attach .dl{margin-left:auto;color:var(--jade)}
+
+/* ===== Corps email ===== */
+.email{background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.18);border-radius:0 0 14px 14px;overflow:hidden}
+.eh{background:var(--jade);padding:22px 32px;display:flex;align-items:center;justify-content:space-between}
+.eh .logo{height:30px}
+.eh .eyebrow{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);font-weight:700}
+.greet{padding:28px 32px 6px}
+.greet h1{font-size:21px;font-weight:300;color:var(--ink);letter-spacing:.2px}
+.greet h1 b{font-weight:700}
+.greet .soc{font-size:13px;color:var(--gris);font-weight:500;margin-left:4px}
+.intro{padding:8px 32px 22px;font-size:13.5px;line-height:1.7;color:var(--gris)}
+
+.sec{padding:0 32px;margin:6px 0 12px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;display:flex;align-items:center;gap:8px}
+.sec::before{content:'';width:16px;height:1.5px;background:var(--or)}
+
+.offs{padding:0 32px}
+.off{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.off .rb{background:var(--jade);color:var(--ivory);border-radius:50px;padding:5px 10px;font-weight:700;font-size:12px;flex-shrink:0;min-width:58px;text-align:center;box-sizing:border-box}
+.off .mid{flex:1;min-width:0}
+.off .nm{font-weight:700;font-size:13.5px}
+.off .mt{font-size:11px;color:var(--gris);margin-top:2px}
+.off .dispo{font-size:10px;color:var(--jade);font-weight:600;margin-top:3px}
+.off .pr{text-align:right;white-space:nowrap}
+.off .pr .v{font-size:16px;font-weight:600}
+.off .pr .v sup{color:var(--or);font-size:10px}
+.off .pr .l{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+
+/* recap tarif */
+.recap{margin:18px 32px 0}
+.recap .rt{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.recap .rt::before{content:'';width:16px;height:1.5px;background:var(--or);flex-shrink:0}
+.rtable{width:100%;border-collapse:collapse;border:1px solid #d3e6da;border-radius:10px;overflow:hidden}
+.rtable th{background:#dceae2;padding:8px 8px;text-align:center;font-size:10px;font-weight:600;color:var(--jade);border-left:1px solid #cfe2d6;line-height:1.3}
+.rtable th:first-child{border-left:none}
+.rtable th .pct{display:block;font-size:8.5px;color:var(--orD);font-weight:600;margin-top:2px}
+.rtable th .pct.mono{color:var(--gris);font-weight:400}
+.rtable td{background:#eef5f1;padding:9px 8px;text-align:center;font-size:15px;font-weight:700;color:var(--jade);border-left:1px solid #cfe2d6;border-top:1px solid #d3e6da}
+.rtable td:first-child{border-left:none}
+.rtable td sup{color:var(--or);font-size:9px}
+.rtable tr.sv td{font-size:9px;font-weight:600;color:var(--orD);padding:0 8px 8px;border-top:none}
+.rtable .hl{background:#d6e8dd}
+
+/* CTA */
+.cta{padding:24px 32px;text-align:center}
+.cta a{display:inline-block;background:var(--or);color:#fff;text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 34px;border-radius:50px;box-shadow:0 8px 22px rgba(176,148,56,.35)}
+.cta .sub{margin-top:10px;font-size:11px;color:var(--gris)}
+
+/* PDF dans le corps */
+.pdfcard{margin:0 32px 24px;display:flex;align-items:center;gap:14px;border:1.5px solid var(--or);border-radius:12px;padding:14px 16px;background:var(--cream)}
+.pdfcard .pic{width:34px;height:42px;border-radius:5px;background:var(--jade);flex-shrink:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px}
+.pdfcard .pic span{font-size:7px;font-weight:800;color:var(--or)}
+.pdfcard .t{flex:1}
+.pdfcard .t .a{font-size:13px;font-weight:700;color:var(--ink)}
+.pdfcard .t .b{font-size:11px;color:var(--gris);margin-top:2px}
+.pdfcard .btn{background:var(--jade);color:#fff;border-radius:50px;padding:8px 16px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+
+/* inclus */
+.incl{background:var(--cream);padding:22px 32px;border-top:1px solid var(--line)}
+.incl h3{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.incl h3::before{content:'';width:16px;height:1.5px;background:var(--or);flex-shrink:0}
+.incl ul{list-style:none;column-count:2;column-gap:20px}
+.incl li{position:relative;padding-left:18px;margin-bottom:7px;font-size:11px;color:var(--gris);line-height:1.4;break-inside:avoid}
+.incl li::before{content:'\2713';position:absolute;left:0;color:var(--jade);font-weight:700}
+
+/* signature */
+.sign{padding:22px 32px;display:flex;align-items:center;gap:14px;border-top:1px solid var(--line)}
+.sign .av{width:46px;height:46px;border-radius:50%;background:var(--jade);color:var(--ivory);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0}
+.sign .nm{font-size:14px;font-weight:700}
+.sign .ti{font-size:11px;color:var(--orD);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin:1px 0 4px}
+.sign .ct{font-size:11.5px;color:var(--gris);line-height:1.5}
+.sign .ct a{color:var(--jade);text-decoration:none}
+
+.foot{background:var(--jade);color:rgba(245,239,229,.8);padding:18px 32px;text-align:center;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.foot b{color:var(--or)}
+.foot .links{margin-top:8px;font-size:10px}
+.foot .links a{color:rgba(245,239,229,.7);text-decoration:none;margin:0 8px}
+
+.cap{text-align:center;color:#6a726d;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- CADRE MESSAGERIE -->
+  <div class="inbox">
+    <div class="inbox-hd">
+      <div class="inbox-subj">Votre sélection de bureaux — The Bureau</div>
+      <div class="inbox-meta">
+        <div class="avatar">TB</div>
+        <div><b>Thomas Bougeard</b> &lt;thomasb@thebureau.paris&gt;<div class="to">à marie@acme.studio</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORPS EMAIL -->
+  <div class="email">
+    <div class="eh">
+      <img class="logo" src="./logo-white.svg" alt="The Bureau"/>
+      <div class="eyebrow">Proposition personnalisée</div>
+    </div>
+
+    <div class="greet"><h1>Bonjour <b>Marie</b><span class="soc">· Acme Studio</span></h1></div>
+    <div class="intro">Suite à nos échanges, voici une sélection de bureaux disponibles au sein de The Bureau, correspondant à vos critères.</div>
+
+    <div class="sec">Votre sélection · 3 bureaux</div>
+    <div class="offs">
+      <div class="off"><span class="rb">A304</span><div class="mid"><div class="nm">The Bureau I</div><div class="mt">3e étage · 26,5 m² · 10 postes</div><div class="dispo">Disponible immédiatement</div></div><div class="pr"><div class="v">7 643<sup> €</sup></div><div class="l">H.T./mois</div></div></div>
+      <div class="off"><span class="rb">A211</span><div class="mid"><div class="nm">The Bureau I</div><div class="mt">2e étage · 12,1 m² · 4 postes</div><div class="dispo" style="color:var(--gris)">Dès le 30 sept. 2026</div></div><div class="pr"><div class="v">3 596<sup> €</sup></div><div class="l">H.T./mois</div></div></div>
+      <div class="off"><span class="rb">A000</span><div class="mid"><div class="nm">The Bureau I</div><div class="mt">RDC · 90 m² · 28 postes</div><div class="dispo">Disponible immédiatement</div></div><div class="pr"><div class="v">17 750<sup> €</sup></div><div class="l">H.T./mois</div></div></div>
+    </div>
+
+    <div class="recap">
+      <div class="rt">Total mensuel H.T. selon l'engagement</div>
+      <table class="rtable">
+        <tr><th>Mensuel<span class="pct mono">3 mois min.</span></th><th>12 mois<span class="pct">−5%</span></th><th class="hl">24 mois<span class="pct">−10%</span></th><th>36 mois<span class="pct">−15%</span></th></tr>
+        <tr><td>28 989<sup> €</sup></td><td>27 540<sup> €</sup></td><td class="hl">26 090<sup> €</sup></td><td>24 641<sup> €</sup></td></tr>
+        <tr class="sv"><td>—</td><td>−17 393 €/an</td><td class="hl">−34 787 €/an</td><td>−52 180 €/an</td></tr>
+      </table>
+    </div>
+
+    <div class="cta">
+      <a href="#">Réserver une visite</a>
+      <div class="sub">ou répondez simplement à cet email</div>
+    </div>
+
+
+    <div class="incl">
+      <h3>Tout inclus — tarifs H.T.</h3>
+      <ul>
+        <li>Accès 24h/24 et 7j/7 dans l'arrondissement choisi.</li>
+        <li>Espaces communs : coworking, restauration, patio, sport.</li>
+        <li>Domiciliation et rangement tiroir (sauf Itinérant).</li>
+        <li>Téléphone fixe, communications France et monde incluses.</li>
+        <li>Forfait impression : 200 N&B et 25 couleurs / mois.</li>
+        <li>Tisaneries illimitées : café, thé, fruits frais.</li>
+        <li>Conciergerie : courrier, taxis, réservations de salles.</li>
+        <li>All-inclus : électricité, ménage, charges, climatisation.</li>
+      </ul>
+    </div>
+
+    <div class="sign">
+      <img src="./chevrons-gold.svg" alt="The Bureau" style="height:42px;width:auto;flex-shrink:0"/>
+      <div><div class="nm">Thomas Bougeard</div><div class="ti">Directeur Commercial</div><div class="ct">+33 6 59 23 15 92 · <a href="#">thomasb@thebureau.paris</a> · <a href="#">thebureau.paris</a></div></div>
+    </div>
+
+    <div class="foot">The Bureau Paris · <b>75002 · 75008</b><div class="links"><a href="#">Instagram</a>·<a href="#">LinkedIn</a>·<a href="#">thebureau.paris</a></div></div>
+  </div>
+
+  <div class="cap">Maquette email — mode normal · Team Lounge</div>
+</div>
+</body>
+</html>
