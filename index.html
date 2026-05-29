@@ -3037,7 +3037,7 @@ function exportPDF(){
       h+='<div class="optband"><span class="optnum">Option '+(_oi+1)+'</span>'+esc(opt.label)+' · '+optB.length+' '+(optB.length>1?T.offices:T.office)+'</div>';
       h+='<table class="tbl" style="margin-top:0">'+tableHeader()+'<tbody>'+tableRows(optB);
       if(opt.tw&&opt.tw>0) h+=twRow(opt.tw);
-      h+=totRow(T.totalOpt+esc(opt.label)+T.exclVat, optT);
+      h+=totRow(T.totalOpt+'Option '+(_oi+1)+T.exclVat, optT);
       h+='</tbody></table>';
     });
   } else {
