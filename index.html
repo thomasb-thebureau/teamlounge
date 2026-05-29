@@ -2927,11 +2927,11 @@ function exportPDF(){
       h+=tableHeader();
       h+='<tbody>'+tableRows(optB);
       if(opt.tw && opt.tw>0){
-        h+='<tr><td class="ctr"><span class="ref-badge" style="background:'+OR+'">TW</span></td>';
+        h+='<tr><td class="ctr"><span class="ref-badge" style="background:'+OR+'">T</span></td>';
         h+='<td><strong>'+(isEN?"Telework offer":"Offre Télétravail")+'</strong><br><span style="color:'+GR+';font-size:8.5px">'+opt.tw+(isEN?(opt.tw>1?" subscriptions":" subscription"):(opt.tw>1?" abonnements":" abonnement"))+'</span></td>';
         h+='<td class="ctr">—</td><td class="num">—</td><td class="ctr">'+opt.tw+'</td>';
         h+='<td>'+(isEN?"Immediate":"Immédiate")+'</td>';
-        h+='<td style="font-size:8.5px;color:'+GR+';line-height:1.45">'+(isEN?"Additional access for member company.":"Accès supplémentaire au desk de l’entreprise membre.")+'</td>';
+        h+='<td style="font-size:8.5px;color:'+GR+';line-height:1.45">'+(isEN?"Additional access. Two users/members for the same workstation. Alternating presence of only one collaborator at a time in the building.":"Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.")+'</td>';
         activeTiers.forEach(function(t){h+='<td class="num price">'+fmtEur(_twOptP)+'</td>'});
         h+='</tr>';
       }
@@ -2945,7 +2945,7 @@ function exportPDF(){
     h+='<tbody>'+tableRows(selData);
     var _twQ=getTwQty(),_twT=getTwTotal();
     if(_twQ>0){
-      h+='<tr><td class="ctr"><span class="ref-badge" style="background:'+OR+'">TW</span></td>';
+      h+='<tr><td class="ctr"><span class="ref-badge" style="background:'+OR+'">T</span></td>';
       h+='<td><strong>'+(isEN?'Telework offer':'Offre Télétravail')+'</strong><br><span style="color:'+GR+';font-size:8.5px">'+_twQ+(isEN?' subscription'+(_twQ>1?'s':''):' abonnement'+(_twQ>1?'s':''))+'</span></td>';
       h+='<td class="ctr">—</td><td class="num">—</td><td class="ctr">'+_twQ+'</td>';
       h+='<td>'+(isEN?'Immediate':'Immédiate')+'</td>';
