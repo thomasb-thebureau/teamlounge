@@ -2990,7 +2990,7 @@ function updateTwUI(){
   var price=document.getElementById('twPrice');if(price)price.textContent=fmt(total)+' €';
   var sect=document.getElementById('twSection');if(sect)sect.classList.toggle('on',qty>0);
   var ttl=document.getElementById('twDescTitle');
-  if(ttl){var isEN=(typeof EP_LANG!=='undefined'&&EP_LANG==='en');ttl.textContent='Offre Télétravail · '+qty+(isEN?(qty>1?' Users':' User'):(qty>1?' Utilisateurs':' Utilisateur'))}
+  if(ttl){ttl.textContent='Offre Télétravail · '+qty+(qty>1?' Utilisateurs':' Utilisateur')}
   if(typeof updateModalTotal==='function')updateModalTotal();
 }
 (function(){
