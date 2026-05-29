@@ -497,8 +497,8 @@ body.dark .lang-toggle button{color:rgba(255,255,255,.45)}
 body.dark .lang-toggle button.on{background:var(--or);color:#1a1a1a}
 
 .tw-section{margin:10px 0 0;transition:all .25s}
-.tw-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--creme);border:1px solid var(--cf);border-radius:50px}
-.tw-section.on .tw-row{border-radius:50px 50px 3px 3px;border-color:var(--vert);border-bottom-color:transparent}
+.tw-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--creme);border:1px solid var(--cf);border-radius:3px}
+.tw-section.on .tw-row{border-radius:3px 3px 0 0;border-color:var(--vert);border-bottom-color:transparent}
 .tw-badge{display:inline-flex;align-items:center;background:var(--vert);color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.12em;padding:4px 10px;border-radius:50px;text-transform:uppercase;flex-shrink:0}
 .tw-sub{font-size:11px;color:var(--gris);flex:1}
 .tw-qty{display:flex;align-items:center;gap:2px;background:#fff;border:1px solid var(--cf);border-radius:50px;padding:2px;flex-shrink:0}
@@ -1466,11 +1466,12 @@ function buildEmail(data, showTotal) {
     var recap = '';
     if (showTotal) {
       var trows = '';
-      var baseTotal = data.reduce(function(s2,b2){ return s2+Math.round(b2.prix*(1-paliers[0].d)); }, 0);
+      var _twAdd = (typeof getTwTotal==='function'?getTwTotal():0);
+      var baseTotal = data.reduce(function(s2,b2){ return s2+Math.round(b2.prix*(1-paliers[0].d)); }, 0) + _twAdd;
       var _selTiersR = getSelectedTiers();
       paliers.forEach(function(p, pi){
         if (_selTiersR.indexOf(pi) === -1) return;
-        var tot=data.reduce(function(s,b){return s+Math.round(b.prix*(1-p.d));},0);
+        var tot=data.reduce(function(s,b){return s+Math.round(b.prix*(1-p.d));},0) + _twAdd;
         var saving = baseTotal - tot;
         var annualSaving = Math.round(saving * 12);
         var bg=p.d>0?'rgba(176,148,56,0.12)':'rgba(255,255,255,0.05)'; var fw=p.d>0?'500':'300';
@@ -2341,6 +2342,8 @@ function buildOptionEmail(allData, opt, isEN, LOGO_B64, CHEV_B64) {
     }
     return s + Math.round(b.prix*(1-remise));
   }, 0);
+  var _twOptAdd = (opt.tw || 0) * 170;
+  baseTotal += _twOptAdd;
   var _selTiersO = getSelectedTiers();
   paliers.forEach(function(p, pi) {
     if (_selTiersO.indexOf(pi) === -1) return;
@@ -2351,7 +2354,7 @@ function buildOptionEmail(allData, opt, isEN, LOGO_B64, CHEV_B64) {
         return s2 + Math.round(ITIN_PRIX*(1-p.d))*q2 + add2;
       }
       return s2 + Math.round(b2.prix*(1-p.d));
-    }, 0);
+    }, 0) + _twOptAdd;
     var saving = baseTotal - tot;
     var annualSaving = Math.round(saving * 12);
     var bg = pi>0 ? 'rgba(30,64,53,.08)' : '#FAFAFA';
