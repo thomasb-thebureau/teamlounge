@@ -2094,7 +2094,7 @@ function renderOptPanel() {
       html += '</div>';
     } else {
       html += '<div style="padding:6px 10px;border-top:1px solid var(--cf);text-align:right">';
-      html += '<button onclick="setOptTw('+opt.id+',1)" style="background:none;border:1px dashed var(--vert);color:var(--vert);font-size:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;padding:5px 12px;border-radius:50px;font-weight:600">+ Ajouter Offre Télétravail</button>';
+      html += '<button onclick="setOptTw('+opt.id+',1)" style="background:none;border:1px dashed var(--vert);color:var(--vert);font-size:10px;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;letter-spacing:.04em;padding:5px 12px;border-radius:50px;font-weight:600">+ Ajouter Offre Télétravail</button>';
       html += '</div>';
     }
     html += '</div>';
@@ -2192,7 +2192,13 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
     h+=buildOptionEmail(allData, opt, isEN, LOGO_B64, CHEV_B64);
     if(opt.tw && opt.tw>0){
       var _twP=opt.tw*170;
-      h+='<tr><td colspan="2" style="padding:12px 16px;background:#F5EFE5;border-top:1px solid rgba(15,15,15,.06);font-family:Plus Jakarta Sans,Arial,sans-serif"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#1E4035">'+(isEN?'Telework':'Offre Télétravail')+'</div><div style="font-size:10.5px;color:#0F0F0F;margin-top:2px">'+opt.tw+(isEN?' subscription'+(opt.tw>1?'s':''):' abonnement'+(opt.tw>1?'s':''))+' × 170 € '+(isEN?'excl. VAT/month':'H.T./mois')+'</div></div><div style="font-size:14px;font-weight:700;color:#1E4035">+ '+fmt(_twP)+' €</div></div></td></tr>';
+      h+='<tr><td style="padding:14px 16px;background:#F5EFE5;border-top:2px solid #1E4035;font-family:Plus Jakarta Sans,Arial,sans-serif">';
+      h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+      h+='<td style="vertical-align:middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:50px;margin-right:10px">'+(isEN?'Telework':'Télétravail')+'</span><span style="font-size:11px;color:#0F0F0F">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</span></td>';
+      h+='<td align="right" style="vertical-align:middle;font-size:15px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twP)+' €</td>';
+      h+='</tr></table>';
+      h+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(30,64,53,.15);font-size:10.5px;color:rgba(15,15,15,.6);line-height:1.5"><strong style="display:block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#0F0F0F;margin-bottom:4px">'+(isEN?'Telework Option · ':'Offre Télétravail · ')+opt.tw+(isEN?(opt.tw>1?' Users':' User'):(opt.tw>1?' Utilisateurs':' Utilisateur'))+'</strong>'+(isEN?'Additional access. Two users/members for the same workstation. Alternating presence of only one collaborator at a time in the building.':'Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.')+'</div>';
+      h+='</td></tr>';
     }
     h+='</table></td></tr>';
   });
