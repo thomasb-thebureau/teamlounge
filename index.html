@@ -1582,6 +1582,8 @@ function buildEmail(data, showTotal) {
     h+='</table></td></tr></table>\n</body></html>';
     return h;
   }
+  /* Expose buildEmail so buildOptionsEmail (top-level scope) can reach it when in option mode */
+  window.__buildEmail = buildEmail;
 
   function isMobile() {
     return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -2121,7 +2123,14 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
     });
     return { id:opt.id, label:opt.label, itinQty:opt.itinQty||1, bureaux:bureaux };
   }).filter(function(o){ return o.bureaux.length > 0; });
-  if (!enrichedOpts.length) return buildEmail(allData, false);
+  if (!enrichedOpts.length) {
+    /* No option contains any bureau — fall back to non-options email if available, else show a message.
+       buildEmail is scoped inside the bsnd handler; we expose it as window.__buildEmail there. */
+    if (typeof window.__buildEmail === 'function') return window.__buildEmail(allData, false);
+    return '<html><body style="margin:0;padding:40px;background:#FAFAFA;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F;text-align:center">'
+      +'<p style="font-size:14px;color:rgba(15,15,15,.6)">'+(isEN?'No office assigned to your options yet. Add bureaux to at least one option to generate the preview.':'Aucun bureau n’est rattaché à vos options. Ajoutez des bureaux à au moins une option pour générer l’aperçu.')+'</p>'
+      +'</body></html>';
+  }
 
   var nbLabel = isEN
     ? (enrichedOpts.length + ' option' + (enrichedOpts.length>1?'s':'') + ' — ' + allData.length + ' office' + (allData.length>1?'s':''))
