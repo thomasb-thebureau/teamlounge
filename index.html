@@ -1464,7 +1464,8 @@ function buildEmail(data, showTotal) {
     var moisLabel = isEN?'/ month':'/ mois';
 
     var recap = '';
-    if (showTotal) {
+    var _twForRecap = (typeof getTwTotal==="function"?getTwTotal():0) > 0;
+    if (showTotal || _twForRecap) {
       var trows = '';
       var _twAdd = (typeof getTwTotal==='function'?getTwTotal():0);
       var baseTotal = data.reduce(function(s2,b2){ return s2+Math.round(b2.prix*(1-paliers[0].d)); }, 0) + _twAdd;
