@@ -1481,11 +1481,9 @@ function buildEmail(data, showTotal) {
           +fmt(tot)+'&nbsp;&euro;<span style="font-size:10px;color:rgba(176,148,56,0.6);font-weight:300"> '+moisLabel+'</span></td>'
           +'</tr>';
       });
-      var _twQE=getTwQty(),_twTE=getTwTotal();
-      var twBlock = _twQE>0 ? '<tr><td colspan="2" style="padding:8px 16px;color:#F5EFE5;font-family:Plus Jakarta Sans,Arial,sans-serif;border-top:1px solid rgba(255,255,255,.15)"><span style="font-size:11px;font-weight:600">'+(isEN?'Telework option':'Offre Télétravail')+' × '+_twQE+'</span> <span style="font-size:10px;color:rgba(245,239,229,.7);margin-left:8px">+ '+fmt(_twTE)+' € '+(isEN?'excl. VAT/month':'H.T./mois')+'</span></td></tr>' : '';
       recap='<tr><td style="background:#1E4035;padding:20px 36px">'
         +'<p style="margin:0 0 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#F5EFE5;font-family:Plus Jakarta Sans,Arial,sans-serif">'+recapTitle+'</p>'
-        +'<table width="100%" cellpadding="0" cellspacing="0" border="0">'+trows+twBlock+'</table>'
+        +'<table width="100%" cellpadding="0" cellspacing="0" border="0">'+trows+'</table>'
         +'</td></tr>';
     }
 
@@ -1513,6 +1511,18 @@ function buildEmail(data, showTotal) {
     h+='<tr><td style="background:#ffffff;padding:22px 36px">';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">'+cards+'</table>';
     h+='</td></tr>';
+    /* TW standalone block (always visible if qty > 0) */
+    var _twQS=getTwQty();
+    if(_twQS>0){
+      var _twTS=getTwTotal();
+      h+='<tr><td style="background:#F5EFE5;padding:18px 36px;border-top:1px solid rgba(15,15,15,.06);border-bottom:1px solid rgba(15,15,15,.06)">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-family:Plus Jakarta Sans,Arial,sans-serif">';
+      h+='<div><div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#1E4035;margin-bottom:4px">'+(isEN?'Telework Option':'Offre Télétravail')+'</div>';
+      h+='<div style="font-size:11px;color:#0F0F0F;line-height:1.5">'+_twQS+(isEN?' subscription'+(_twQS>1?'s':''):' abonnement'+(_twQS>1?'s':''))+' × 170 € '+(isEN?'excl. VAT/month':'H.T./mois')+'</div>';
+      h+='<div style="font-size:9.5px;color:rgba(15,15,15,.55);line-height:1.5;margin-top:6px;max-width:380px">'+(isEN?'Additional desk access for member company. Two users/members for the same desk in the co-resident space. Only one collaborator present at a time in the building.':'Accès supplémentaire au desk de l’entreprise membre. Deux utilisateurs/membres pour un même desk dans l’espace co-résident. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.')+'</div></div>';
+      h+='<div style="font-size:18px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twTS)+' €</div>';
+      h+='</div></td></tr>';
+    }
     /* Recap */
     h+=recap;
     /* CTA — or (reserve) */
@@ -1997,7 +2007,7 @@ function toggleOptMode() {
 
 function addOption() {
   OPT_COUNTER++;
-  OPTIONS.push({ id: OPT_COUNTER, label: 'Option ' + OPT_COUNTER, refs: [] });
+  OPTIONS.push({ id: OPT_COUNTER, label: 'Option ' + OPT_COUNTER, refs: [], tw: getTwQty() });
   renderOptPanel();
 }
 
@@ -2061,9 +2071,24 @@ function renderOptPanel() {
                 + ' onclick="event.stopPropagation()" onchange="event.stopPropagation();setItinQty('+opt.id+',parseInt(this.value)||1)"> abo.</span>'
               : '') + '</label>';
     });
+    /* TW qty for this option */
+    var _twOpt = opt.tw || 0;
+    html += '<div style="padding:8px 10px;border-top:1px solid var(--cf);background:rgba(30,64,53,.06);display:flex;align-items:center;justify-content:space-between;gap:8px">';
+    html += '<div><span style="font-size:11px;font-weight:600;color:var(--vert)">Offre Télétravail</span><span style="font-size:10px;color:var(--gc);margin-left:6px">170 €/abo.</span></div>';
+    html += '<div style="display:flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--cf);border-radius:50px;padding:2px 4px">';
+    html += '<button onclick="setOptTw('+opt.id+',(OPTIONS.find(function(o){return o.id==='+opt.id+'}).tw||0)-1)" style="background:none;border:none;width:20px;height:20px;cursor:pointer;color:var(--vert);font-size:13px">−</button>';
+    html += '<input type="number" min="0" max="20" value="'+_twOpt+'" style="width:32px;border:none;text-align:center;font-size:12px;font-weight:600;color:var(--encre);background:none;outline:none" onchange="setOptTw('+opt.id+',parseInt(this.value)||0)">';
+    html += '<button onclick="setOptTw('+opt.id+',(OPTIONS.find(function(o){return o.id==='+opt.id+'}).tw||0)+1)" style="background:none;border:none;width:20px;height:20px;cursor:pointer;color:var(--vert);font-size:13px">+</button>';
+    html += '</div></div>';
     html += '</div></div>';
   });
   el.innerHTML = html;
+}
+function setOptTw(optId, qty){
+  var opt=OPTIONS.find(function(o){return o.id===optId});
+  if(!opt)return;
+  opt.tw=Math.max(0,Math.min(20,qty||0));
+  renderOptPanel();
 }
 
 
@@ -2148,6 +2173,10 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
     h+='<tr><td style="padding:0 0 '+(oi<enrichedOpts.length-1?'24':'0')+'px">';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:2px solid #B09438;border-radius:4px;overflow:hidden">';
     h+=buildOptionEmail(allData, opt, isEN, LOGO_B64, CHEV_B64);
+    if(opt.tw && opt.tw>0){
+      var _twP=opt.tw*170;
+      h+='<tr><td colspan="2" style="padding:12px 16px;background:#F5EFE5;border-top:1px solid rgba(15,15,15,.06);font-family:Plus Jakarta Sans,Arial,sans-serif"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#1E4035">'+(isEN?'Telework':'Offre Télétravail')+'</div><div style="font-size:10.5px;color:#0F0F0F;margin-top:2px">'+opt.tw+(isEN?' subscription'+(opt.tw>1?'s':''):' abonnement'+(opt.tw>1?'s':''))+' × 170 € '+(isEN?'excl. VAT/month':'H.T./mois')+'</div></div><div style="font-size:14px;font-weight:700;color:#1E4035">+ '+fmt(_twP)+' €</div></div></td></tr>';
+    }
     h+='</table></td></tr>';
   });
   h+='</table></td></tr>';
