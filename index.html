@@ -2930,7 +2930,7 @@ function exportPDF(){
 
   var totals={};
   var _twTot=getTwTotal();
-  activeTiers.forEach(function(t){totals[t.key]=selData.reduce(function(s,b){return s+Math.round(b.prix*(1-t.d))},0)+_twTot});
+  activeTiers.forEach(function(t){totals[t.key]=selData.reduce(function(s,b){var q=b.isItin?(b.itinQty||1):1;return s+Math.round(b.prix*(1-t.d))*q},0)+_twTot});
 
   var soc=''; try{ soc=((document.getElementById('fs')||{}).value||'').trim(); }catch(e){}
   var subLine=selData.length+' '+(selData.length>1?T.offices:T.office)+(soc?(isEN?' · for ':' · pour ')+esc(soc):'');
@@ -2942,18 +2942,21 @@ function exportPDF(){
     th+='</tr></thead>';
     return th;
   }
-  function tableRows(list){
+  function tableRows(list, optItinQty){
     var out='';
     list.forEach(function(b){
+      var q = b.isItin ? (optItinQty || b.itinQty || 1) : 1;
       out+='<tr>';
-      out+='<td class="ctr"><span class="refb">'+esc(b.ref)+'</span></td>';
-      out+='<td><div class="site">'+esc(b.label||'')+'</div><div class="addr">'+esc(b.adresse||'')+'</div></td>';
-      out+='<td class="ctr meta">'+etStr(b.etage)+'</td>';
-      out+='<td class="num meta">'+(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—')+'</td>';
-      out+='<td class="ctr meta">'+b.cap+'</td>';
+      out+='<td class="ctr"><span class="refb">'+(b.isItin?(isEN?'Nomad':'Itin.'):esc(b.ref))+'</span></td>';
+      out+= b.isItin
+        ? '<td><div class="site">'+(isEN?'Nomad office':'Itinérant')+'</div><div class="addr">'+esc(b.label||'')+'</div></td>'
+        : '<td><div class="site">'+esc(b.label||'')+'</div><div class="addr">'+esc(b.adresse||'')+'</div></td>';
+      out+='<td class="ctr meta">'+(b.isItin?'—':etStr(b.etage))+'</td>';
+      out+='<td class="num meta">'+(b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—'))+'</td>';
+      out+='<td class="ctr meta">'+(b.isItin?(q+(isEN?(q>1?' subs':' sub'):' abo.')):b.cap)+'</td>';
       out+='<td class="'+(b.dispo==='immediate'?'dispo-now':'muted')+'">'+dispoStr(b)+'</td>';
       out+='<td class="desc">'+esc(cleanDesc(b.desc||''))+'</td>';
-      activeTiers.forEach(function(t){ out+=priceCell(b.prix*(1-t.d)); });
+      activeTiers.forEach(function(t){ out+=priceCell(Math.round(b.prix*(1-t.d))*q); });
       out+='</tr>';
     });
     return out;
@@ -3033,9 +3036,9 @@ function exportPDF(){
       var optB=selData.filter(function(b){return opt.refs.indexOf(b.ref)>=0});
       if(optB.length===0)return;
       var _twOptP=(opt.tw||0)*170;
-      var optT={};activeTiers.forEach(function(t){optT[t.key]=optB.reduce(function(s,b){return s+Math.round(b.prix*(1-t.d))},0)+_twOptP});
+      var optT={};activeTiers.forEach(function(t){optT[t.key]=optB.reduce(function(s,b){var q=b.isItin?(opt.itinQty||1):1;return s+Math.round(b.prix*(1-t.d))*q},0)+_twOptP});
       var _custom=(opt.label&&opt.label!=='Texte personnalisé'&&opt.label!=='Custom text')?esc(opt.label)+' · ':'';h+='<div class="optblock"><div class="optband"><span class="optnum">Option '+(_oi+1)+'</span>'+_custom+optB.length+' '+(optB.length>1?T.offices:T.office)+'</div>';
-      h+='<table class="tbl" style="margin-top:0">'+tableHeader()+'<tbody>'+tableRows(optB);
+      h+='<table class="tbl" style="margin-top:0">'+tableHeader()+'<tbody>'+tableRows(optB, opt.itinQty);
       if(opt.tw&&opt.tw>0) h+=twRow(opt.tw);
       h+=totRow(T.totalOpt+'Option '+(_oi+1)+T.exclVat, optT);
       h+='</tbody></table></div>';
