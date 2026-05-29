@@ -12,8 +12,10 @@
 <title>Team Lounge - The Bureau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/theme.css?v=1"/>
+<script src="/core.js?v=1"></script>
 <style>
-:root{--encre:#0F0F0F;--creme:#FAFAFA;--cf:rgba(15,15,15,.09);--or:#B09438;--or2:#B09438;--orAA:#7A6015;--op:rgba(176,148,56,.08);--gris:rgba(15,15,15,.60);--gc:rgba(15,15,15,.45);--blanc:#FAFAFA;--vert:#1E4035;--vp:rgba(30,64,53,.08);--ambre:#c07830}
+/* Palette (tokens) -> /theme.css (socle commun) */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 *:focus-visible{outline:2px solid var(--or);outline-offset:2px;border-radius:2px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -346,7 +348,7 @@ footer{background:var(--encre);position:relative;overflow:hidden}
 .dark-toggle:hover{border-color:var(--or)}
 body.dark .dark-toggle{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
 body.dark .dark-toggle:hover{border-color:var(--or)}
-body.dark{--creme:#1a1a1a;--blanc:#222;--encre:#F5EFE5;--cf:rgba(255,255,255,.09);--gris:rgba(255,255,255,.60);--gc:rgba(255,255,255,.45);--or:#D4B870;--or2:#D4B870;--orAA:#D4B870;--op:rgba(212,184,112,.12);--vert:#4a9a7a;--vp:rgba(74,154,122,.12)}
+/* dark tokens -> /theme.css (socle commun) */
 body.dark .top-bar{background:rgba(26,26,26,.92)}
 body.dark .logo-tag{color:var(--or)}
 body.dark .stxt{color:rgba(255,255,255,.5)}
@@ -426,7 +428,6 @@ body.dark .occ-toggle.on{background:var(--or);color:#1a1a1a}
 /* F8: List view */
 .view-toggle{background:none;border:1px solid var(--cf);border-radius:50px;padding:4px 8px;font-size:12px;cursor:pointer;color:var(--gc);transition:all .25s;line-height:1}
 .view-toggle:hover{border-color:var(--gris);color:var(--encre)}
-@media (prefers-reduced-motion: no-preference){::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}}
 .grid.list-view{grid-template-columns:1fr!important}
 .grid.list-view .card{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto;gap:0 16px;padding:12px 20px;align-items:center}
 .grid.list-view .card .ctop{grid-column:1;margin-bottom:0;padding-left:24px}
@@ -3081,7 +3082,7 @@ var PAGE_LANG = localStorage.getItem('tb_page_lang') || 'fr';
   ST.budgetMax=0;
 })();
 
-function withVT(fn){ if(document.startViewTransition){ try{ document.startViewTransition(fn); }catch(e){ fn(); } } else { fn(); } }
+/* withVT() -> /core.js (socle commun) */
 /* F8: List/Grid view toggle */
 (function(){
   var vt=document.getElementById('viewToggle');
