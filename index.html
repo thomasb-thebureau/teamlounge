@@ -2128,7 +2128,7 @@ function toggleOptMode() {
 
 function addOption() {
   OPT_COUNTER++;
-  OPTIONS.push({ id: OPT_COUNTER, label: 'Option ' + OPT_COUNTER, refs: [], tw: getTwQty() });
+  OPTIONS.push({ id: OPT_COUNTER, label: 'Texte personnalisé', refs: [], tw: getTwQty() });
   renderOptPanel();
 }
 
@@ -3008,7 +3008,7 @@ function exportPDF(){
   h+='.tbl tr.tot td:first-child{border-radius:0 0 0 6px}.tbl tr.tot td:last-child{border-radius:0 0 6px 0}';
   h+='.tbl tr.tot .lbl{text-align:right;text-transform:uppercase;font-size:9.5px;letter-spacing:.14em;color:rgba(245,239,229,.8);font-weight:600}';
   h+='.tbl tr.tot .num{font-size:15px;font-weight:700;color:#fff}.tbl tr.tot .num .cur{color:var(--or);font-size:10px}';
-  h+='.optband{background:#eef2f0;color:var(--jade);padding:10px 16px;border:1px solid var(--line);border-left:4px solid var(--or);border-radius:8px 8px 0 0;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-top:14px}';
+  h+='.optband{background:#eef2f0;color:var(--jade);padding:10px 16px;border:1px solid var(--line);border-left:4px solid var(--or);border-radius:8px 8px 0 0;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-top:14px;display:flex;align-items:center;gap:4px}';h+='.optnum{background:var(--or);color:#fff;border-radius:50px;padding:3px 11px;font-size:9px;font-weight:700;letter-spacing:.06em;margin-right:8px}';
   h+='.bottom{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-top:18px}';
   h+='.box{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:14px 16px}';
   h+='.box h3{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}';
@@ -3029,12 +3029,12 @@ function exportPDF(){
   h+='<main class="body">';
   var hasOpts=typeof OPT_MODE!=='undefined'&&OPT_MODE&&typeof OPTIONS!=='undefined'&&OPTIONS.some(function(o){return o.refs.length>0});
   if(hasOpts){
-    OPTIONS.forEach(function(opt){
+    OPTIONS.forEach(function(opt,_oi){
       var optB=selData.filter(function(b){return opt.refs.indexOf(b.ref)>=0});
       if(optB.length===0)return;
       var _twOptP=(opt.tw||0)*170;
       var optT={};activeTiers.forEach(function(t){optT[t.key]=optB.reduce(function(s,b){return s+Math.round(b.prix*(1-t.d))},0)+_twOptP});
-      h+='<div class="optband">'+esc(opt.label)+' — '+optB.length+' '+(optB.length>1?T.offices:T.office)+'</div>';
+      h+='<div class="optband"><span class="optnum">Option '+(_oi+1)+'</span>'+esc(opt.label)+' · '+optB.length+' '+(optB.length>1?T.offices:T.office)+'</div>';
       h+='<table class="tbl" style="margin-top:0">'+tableHeader()+'<tbody>'+tableRows(optB);
       if(opt.tw&&opt.tw>0) h+=twRow(opt.tw);
       h+=totRow(T.totalOpt+esc(opt.label)+T.exclVat, optT);
