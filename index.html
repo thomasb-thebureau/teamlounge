@@ -209,7 +209,7 @@ body.dark .badge-large{background:rgba(74,154,122,.12);color:#5cb88a;border-colo
 /* Mode options — cartes */
 .opt-card{border:1px solid var(--cf);border-radius:12px;overflow:hidden;margin-bottom:12px;background:var(--blanc)}
 .opt-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--vp);border-bottom:1px solid var(--cf)}
-.opt-badge{width:26px;height:26px;border-radius:50%;background:var(--vert);color:#F5EFE5;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.opt-badge{width:26px;height:26px;border-radius:50%;background:var(--or);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
 .opt-name{font-weight:700;font-size:12px;letter-spacing:.04em;border:none;border-bottom:1px dashed rgba(15,15,15,.28);background:none;color:var(--encre);outline:none;width:130px;font-family:'Plus Jakarta Sans',sans-serif;padding:2px 2px 3px}
 .opt-name:hover{border-bottom-color:var(--or)}
 .opt-name:focus{border-bottom-color:var(--or);color:var(--orAA)}
@@ -2154,7 +2154,7 @@ function renderOptPanel() {
   if (SEL[ITIN_REF] && !selData.find(function(b){ return b.ref===ITIN_REF; })) selData.unshift(SEL[ITIN_REF]);
   var html = '';
   OPTIONS.forEach(function(opt, idx) {
-    var letter = String.fromCharCode(65 + idx);
+    var letter = (idx+1);
     var optBureaux = selData.filter(function(b){ return opt.refs.indexOf(b.ref) > -1; });
     var total = optBureaux.reduce(function(s,b){ var q = b.isItin && opt.itinQty ? opt.itinQty : 1; return s + b.prix * q; }, 0);
     total += (opt.tw || 0) * 170;
