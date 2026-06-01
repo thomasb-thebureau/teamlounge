@@ -1556,7 +1556,7 @@ function buildEmail(data, showTotal) {
       ? [{label:'Monthly (3 months minimum)'+_remLabel,d:_remise},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-_remise)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-_remise)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-_remise)}]
       : [{label:'Mensuel (3 mois minimum)'+_remLabel,d:_remise},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-_remise)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-_remise)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-_remise)}];
     var cards = ''; data.forEach(function(b){ cards += buildCard(b); });
-    var nbLabel   = isEN?(data.length+' office'+(data.length>1?'s':'')+' selected'):(data.length+' bureau'+(data.length>1?'x':'')+' s\u00e9lectionn\u00e9'+(data.length>1?'s':''));
+    var nbLabel   = isEN?('Your selection \u00b7 '+data.length+' office'+(data.length>1?'s':'')):('Votre s\u00e9lection \u00b7 '+data.length+' bureau'+(data.length>1?'x':''));
     var introText = isEN?'Following our discussions, please find below our selection of available offices at The Bureau.':'Suite \u00e0 nos \u00e9changes, veuillez trouver ci-dessous notre s\u00e9lection de bureaux disponibles au sein de The Bureau.';
     /* Override introText with customMsg if filled */
     var _customMsgEl = document.getElementById('customMsg');
@@ -1565,38 +1565,41 @@ function buildEmail(data, showTotal) {
     var legalText = isEN?'<u><strong>All prices are quoted excl. VAT and include :</strong></u><br>• 24/7 access in your arrondissement, plus weekday access (8am–7pm) to all The Bureau locations on badge presentation.<br>• All shared spaces : coworking, dining area, patio, showers, gym and phone booths.<br>• Business address registration and drawer storage (except Nomad).<br>• Fixed-line phone with unlimited calls to France and worldwide.<br>• Print allowance : 200 B&W and 25 colour copies per person/month.<br>• Unlimited break areas : coffee, tea, filtered water and fresh fruit on every floor.<br>• Events programme : evenings, openings, partnerships and Thursday aperitivo.<br>• Furniture : desk, chair and pedestal.<br>• Concierge : guest reception, mail, taxis and meeting room bookings.<br>• Global Collective : 2 days/month at partner spaces (globalcollective.co).<br>• All-inclusive : electricity, cleaning, utilities, AC and heating.':'<u><strong>Tous les tarifs sont indiqués H.T. et incluent :</strong></u><br>• Accès 24h/24 et 7j/7 dans l’arrondissement choisi, et du lundi au vendredi de 8h00 à 19h00 aux autres espaces The Bureau sur présentation de son badge à la conciergerie.<br>• Accès à l’ensemble des espaces communs : coworking, espace restauration, patio, douches, salle de sport et cabines téléphoniques.<br>• Domiciliation et rangement tiroir inclus (sauf Itinérant).<br>• Téléphone fixe, communications France et monde incluses (fixe et portable).<br>• Forfait impression : 200 copies N&B et 25 couleurs par mois et par personne.<br>• Accès illimité aux tisaneries : café, thé, eau filtrée et fruits frais à discrétion.<br>• Programmation événementielle : soirées, vernissages, partenariats et apéritivo du jeudi.<br>• Mobilier : bureau, chaise et caisson.<br>• Conciergerie : accueil clients, courrier, taxis, réservations de salles.<br>• Global Collective : 2 jours/mois dans les espaces partenaires (globalcollective.co).<br>• All-inclus : électricité, ménage, charges, climatisation, chauffage.';
     var ctaLabel  = isEN?'Book a visit':'R\u00e9server une visite';
     var yourRef   = isEN?'Your contact':'Votre interlocuteur';
-    var propLabel = isEN?'Commercial proposal':'Proposition commerciale';
+    var propLabel = isEN?'Personalised proposal':'Proposition personnalisée';
     var recapTitle= isEN?'Summary - Total monthly excl. VAT':'R\u00e9capitulatif - Total mensuel H.T.';
     var moisLabel = isEN?'/ month':'/ mois';
 
     var recap = '';
     var _twForRecap = (typeof getTwTotal==="function"?getTwTotal():0) > 0;
     if (showTotal || _twForRecap) {
-      var trows = '';
       var _twAdd = (typeof getTwTotal==='function'?getTwTotal():0);
       var baseTotal = data.reduce(function(s2,b2){ return s2+Math.round(b2.prix*(1-paliers[0].d)); }, 0) + _twAdd;
       var _selTiersR = getSelectedTiers();
-      paliers.forEach(function(p, pi){
-        if (_selTiersR.indexOf(pi) === -1) return;
-        var tot=data.reduce(function(s,b){return s+Math.round(b.prix*(1-p.d));},0) + _twAdd;
-        var saving = baseTotal - tot;
-        var annualSaving = Math.round(saving * 12);
-        var bg=p.d>0?'rgba(176,148,56,0.12)':'rgba(255,255,255,0.05)'; var fw=p.d>0?'500':'300';
-        var chip='';
-        if (pi>0 && annualSaving>0) {
-          var chipTxt=isEN?'\u2713 '+fmt(annualSaving)+'\u00a0\u20ac\u2009/ yr':'\u2713 '+fmt(annualSaving)+'\u00a0\u20ac\u2009/ an';
-          chip='&nbsp;&nbsp;<span style="background:rgba(30,64,53,0.18);border:1px solid rgba(30,64,53,0.3);border-radius:50px;padding:1px 8px;font-size:9px;color:#1E4035;font-weight:500;white-space:nowrap">'+chipTxt+'</span>';
-        }
-        trows+='<tr style="background:'+bg+'">'
-          +'<td style="padding:7px 16px;font-size:12px;color:rgba(245,239,229,0.7);font-weight:'+fw+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+p.label+chip+'</td>'
-          +'<td style="padding:7px 16px;font-size:14px;color:#FAFAFA;font-weight:'+fw+';text-align:right;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'
-          +fmt(tot)+'&nbsp;&euro;<span style="font-size:10px;color:rgba(176,148,56,0.6);font-weight:300"> '+moisLabel+'</span></td>'
-          +'</tr>';
+      var _mainLabels = isEN ? ['Monthly','12 months','24 months','36 months'] : ['Mensuel','12 mois','24 mois','36 mois'];
+      var _ths='', _tds='', _svs='', _lastCol=_selTiersR.length-1;
+      _selTiersR.forEach(function(pi, idx){
+        var p = paliers[pi];
+        var tot = data.reduce(function(s,b){return s+Math.round(b.prix*(1-p.d));},0) + _twAdd;
+        var isHl = (idx === _lastCol && _selTiersR.length > 1);
+        var thBg = isHl ? '#d6e8dd' : '#dceae2';
+        var tdBg = isHl ? '#d6e8dd' : '#eef5f1';
+        var bl = idx>0 ? 'border-left:1px solid #cfe2d6;' : '';
+        var sub, subColor, subWeight;
+        if (pi===0) { sub = (_remise>0 ? (isEN?'incl. '+Math.round(_remise*100)+'%':'remise '+Math.round(_remise*100)+'%') : (isEN?'3 months min.':'3 mois min.')); subColor='rgba(15,15,15,.45)'; subWeight='400'; }
+        else { sub = '\u2212'+(Math.round(p.d*1000)/10)+'\u00a0%'; subColor='#7A6015'; subWeight='600'; }
+        _ths += '<th style="background:'+thBg+';padding:8px 8px;text-align:center;font-size:10px;font-weight:600;color:#1E4035;'+bl+'line-height:1.3;font-family:Plus Jakarta Sans,Arial,sans-serif">'+_mainLabels[pi]+'<br><span style="font-size:8.5px;color:'+subColor+';font-weight:'+subWeight+'">'+sub+'</span></th>';
+        _tds += '<td style="background:'+tdBg+';padding:9px 8px;text-align:center;font-size:15px;font-weight:700;color:#1E4035;'+bl+'border-top:1px solid #d3e6da;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+fmt(tot)+'<sup style="color:#B09438;font-size:9px"> \u20ac</sup></td>';
+        var saving = Math.round((baseTotal - tot)*12);
+        var svTxt = (pi===0||saving<=0) ? '\u2014' : '\u2212'+fmt(saving)+'\u00a0\u20ac/'+(isEN?'yr':'an');
+        _svs += '<td style="background:'+tdBg+';padding:0 8px 8px;text-align:center;font-size:9px;font-weight:600;color:#7A6015;'+bl+'font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+svTxt+'</td>';
       });
-      recap='<tr><td style="background:#1E4035;padding:20px 36px">'
-        +'<p style="margin:0 0 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#F5EFE5;font-family:Plus Jakarta Sans,Arial,sans-serif">'+recapTitle+'</p>'
-        +'<table width="100%" cellpadding="0" cellspacing="0" border="0">'+trows+'</table>'
-        +'</td></tr>';
+      var recapTitle2 = isEN ? 'Total monthly excl. VAT by commitment' : 'Total mensuel H.T. selon l\u2019engagement';
+      recap='<tr><td style="background:#ffffff;padding:4px 36px 22px">'
+        +'<p style="margin:0 0 10px;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700">'
+        +'<span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+recapTitle2+'</p>'
+        +'<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:1px solid #d3e6da;border-radius:10px;overflow:hidden">'
+        +'<tr>'+_ths+'</tr><tr>'+_tds+'</tr><tr>'+_svs+'</tr>'
+        +'</table></td></tr>';
     }
 
     var h='';
@@ -1605,10 +1608,10 @@ function buildEmail(data, showTotal) {
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAFAFA;padding:32px 0"><tr><td align="center">';
     h+='<table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">';
     /* Header — ivoire */
-    h+='<tr><td style="background:#F5EFE5;padding:20px 36px 14px;border-radius:4px 4px 0 0">';
+    h+='<tr><td style="background:#1E4035;padding:22px 36px;border-radius:4px 4px 0 0">';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h+='<td><img src="https://teamlounge.thebureau.paris/logo.svg" alt="The Bureau" height="30" style="display:block"/></td>';
-    h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#1E4035;font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+propLabel+'</td>';
+    h+='<td><img src="https://teamlounge.thebureau.paris/logo-white.svg" alt="The Bureau" height="30" style="display:block"/></td>';
+    h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#B09438;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700;vertical-align:middle">'+propLabel+'</td>';
     h+='</tr></table></td></tr>';
     /* Intro */
     h+='<tr><td style="background:#ffffff;padding:26px 36px 20px;border-bottom:1px solid rgba(15,15,15,.09)">';
@@ -1616,8 +1619,8 @@ function buildEmail(data, showTotal) {
     h+='<p style="margin:0;font-size:13px;color:'+GR+';line-height:1.65;font-family:Plus Jakarta Sans,Arial,sans-serif">'+introText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')+'</p>';
     h+='</td></tr>';
     /* Section */
-    h+='<tr><td style="background:'+'#ffffff'+';padding:10px 36px;border-bottom:1px solid rgba(15,15,15,.09)">';
-    h+='<span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR2+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+nbLabel+'</span>';
+    h+='<tr><td style="background:#ffffff;padding:16px 36px 2px">';
+    h+='<span style="font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+nbLabel+'</span>';
     h+='</td></tr>';
     /* Cards */
     h+='<tr><td style="background:#ffffff;padding:22px 36px">';
@@ -1638,13 +1641,14 @@ function buildEmail(data, showTotal) {
     /* Recap */
     h+=recap;
     /* CTA — or (reserve) */
-    h+='<tr><td style="background:#ffffff;padding:20px 36px;border-top:1px solid rgba(15,15,15,.09);text-align:center">';
-    h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#7A6015;color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:50px">'+ctaLabel+'</a>';
+    h+='<tr><td style="background:#ffffff;padding:24px 36px;text-align:center">';
+    h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#B09438;color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 34px;border-radius:50px">'+ctaLabel+'</a>';
+    h+='<p style="margin:10px 0 0;font-size:11px;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?'or simply reply to this email':'ou répondez simplement à cet email')+'</p>';
     h+='</td></tr>';
     /* Inclusions — fond ivoire, checkmarks */
     var inclTitle = isEN ? 'ALL-INCLUSIVE' : 'TOUT INCLUS';
     h+='<tr><td style="background:#F5EFE5;padding:20px 28px">';
-    h+='<p style="margin:0 0 10px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR2+';font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:600">'+inclTitle+'</p>';
+    h+='<p style="margin:0 0 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+inclTitle+'</p>';
     h+='<p style="margin:0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText.replace(/<br>/g,'</p><p style="margin:3px 0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">').replace(/\u2022/g,'&#10003;')+'</p>';
     h+='</td></tr>';
     /* Conditions contractuelles — fond creme */
@@ -1663,28 +1667,27 @@ function buildEmail(data, showTotal) {
     h+='<p style="margin:0 0 8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(15,15,15,.35);font-family:Plus Jakarta Sans,Arial,sans-serif">'+ccTitle+'</p>';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">'+ccList+'</table>';
     h+='</td></tr>';
-    /* Footer — contact jade */
-    h+='<tr><td style="background:#1E4035;padding:0;border-radius:0 0 4px 4px">';
-    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h+='<td width="96" style="padding:12px 0 12px 12px;vertical-align:middle;text-align:center">';
-    h+='<img src="https://teamlounge.thebureau.paris/chevrons-email.png" alt="The Bureau" width="40" style="display:block;opacity:0.55;margin:auto"/>';
-    h+='</td><td width="1" style="background:rgba(176,148,56,0.15)"></td>';
-    h+='<td style="padding:10px 18px;vertical-align:middle">';
-    h+='<p style="margin:0 0 2px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+yourRef+'</p>';
+    /* Signature — fond blanc, chevrons */
     var _snd=getCurrentSender();
-    h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:15px;color:#FAFAFA">'+_snd.name+'</p>';
-    h+='<p style="margin:0 0 5px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(176,148,56,0.6);font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?_snd.titleEN:_snd.title)+'</p>';
-    h+='<p style="margin:0;font-size:11px;color:rgba(245,239,229,0.55);line-height:1.55;font-family:Plus Jakarta Sans,Arial,sans-serif">';
-    h+='<a href="tel:'+_snd.phone.replace(/\s/g,'')+'" style="color:rgba(245,239,229,0.7);text-decoration:none">'+_snd.phone+'</a><br>';
-    h+='<a href="mailto:'+_snd.email+'" style="color:'+OR+';text-decoration:none">'+_snd.email+'</a><br>';
-    h+='<a href="https://www.thebureau.paris" style="color:rgba(245,239,229,0.7);text-decoration:none">www.thebureau.paris</a>';
+    h+='<tr><td style="background:#ffffff;padding:22px 36px;border-top:1px solid rgba(15,15,15,.09)">';
+    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+    h+='<td width="54" style="vertical-align:middle"><img src="https://teamlounge.thebureau.paris/chevrons-email.png" alt="The Bureau" width="42" style="display:block"/></td>';
+    h+='<td style="vertical-align:middle;padding-left:14px">';
+    h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:14px;font-weight:700;color:#0F0F0F">'+_snd.name+'</p>';
+    h+='<p style="margin:1px 0 4px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#7A6015;font-weight:600;font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?_snd.titleEN:_snd.title)+'</p>';
+    h+='<p style="margin:0;font-size:11.5px;color:'+GR+';line-height:1.5;font-family:Plus Jakarta Sans,Arial,sans-serif">';
+    h+='<a href="tel:'+_snd.phone.replace(/\s/g,'')+'" style="color:'+GR+';text-decoration:none">'+_snd.phone+'</a> · ';
+    h+='<a href="mailto:'+_snd.email+'" style="color:#1E4035;text-decoration:none">'+_snd.email+'</a> · ';
+    h+='<a href="https://www.thebureau.paris" style="color:#1E4035;text-decoration:none">thebureau.paris</a>';
     h+='</p></td></tr></table></td></tr>';
-    /* Social links bar */
-    h+='<tr><td style="background:#1E4035;padding:10px 36px;border-top:1px solid rgba(255,255,255,.1);border-radius:0 0 4px 4px;text-align:center">';
-    h+='<a href="https://www.thebureau.paris" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">thebureau.paris</a>';
-    h+='<a href="https://www.instagram.com/thebureauparis/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">Instagram</a>';
-    h+='<a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">LinkedIn</a>';
-    h+='</td></tr>';
+    /* Footer jade fin */
+    h+='<tr><td style="background:#1E4035;padding:16px 36px;border-radius:0 0 4px 4px;text-align:center">';
+    h+='<p style="margin:0;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,239,229,.8);font-family:Plus Jakarta Sans,Arial,sans-serif">The Bureau Paris · <span style="color:#B09438">75002 · 75008</span></p>';
+    h+='<p style="margin:8px 0 0;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-family:Plus Jakarta Sans,Arial,sans-serif">';
+    h+='<a href="https://www.instagram.com/thebureauparis/" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">Instagram</a>·';
+    h+='<a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">LinkedIn</a>·';
+    h+='<a href="https://www.thebureau.paris" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">thebureau.paris</a>';
+    h+='</p></td></tr>';
     h+='</table></td></tr></table>\n</body></html>';
     return h;
   }
@@ -2241,7 +2244,7 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   var ccItems = isEN ? ccItemsEN : ccItemsFR;
   var ccList = ccItems.map(function(i){ return '<li style="margin:0 0 2px;font-size:11px;color:rgba(245,239,229,0.65);font-family:Plus Jakarta Sans,Arial,sans-serif">'+i+'</li>'; }).join('');
 
-  var propLabel = isEN ? 'COMMERCIAL PROPOSAL' : 'PROPOSITION COMMERCIALE';
+  var propLabel = isEN ? 'Personalised proposal' : 'Proposition personnalisée';
   var yourRef   = isEN ? 'Your contact' : 'Votre interlocuteur';
   var ctaLabel  = isEN ? 'BOOK A VISIT' : 'R\u00c9SERVER UNE VISITE';
   var CAL_URL   = 'https://calendar.app.google/TpzHDUHnLvaxVLL59';
@@ -2253,11 +2256,11 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAFAFA;padding:32px 0"><tr><td align="center">';
   h+='<table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">';
 
-  /* Header — ivoire */
-  h+='<tr><td style="background:#F5EFE5;padding:20px 36px 14px;border-radius:4px 4px 0 0">';
+  /* Header — jade */
+  h+='<tr><td style="background:#1E4035;padding:22px 36px;border-radius:4px 4px 0 0">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td><img src="https://teamlounge.thebureau.paris/logo.svg" alt="The Bureau" height="30" style="display:block"/></td>';
-  h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#1E4035;font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+propLabel+'</td>';
+  h+='<td><img src="https://teamlounge.thebureau.paris/logo-white.svg" alt="The Bureau" height="30" style="display:block"/></td>';
+  h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#B09438;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700;vertical-align:middle">'+propLabel+'</td>';
   h+='</tr></table></td></tr>';
 
   /* Intro — identical */
@@ -2267,8 +2270,8 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='</td></tr>';
 
   /* Options count label */
-  h+='<tr><td style="background:'+'#ffffff'+';padding:10px 36px;border-bottom:1px solid rgba(15,15,15,.09)">';
-  h+='<span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR2+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+nbLabel+'</span>';
+  h+='<tr><td style="background:#ffffff;padding:16px 36px 2px">';
+  h+='<span style="font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+nbLabel+'</span>';
   h+='</td></tr>';
 
   /* Option blocks */
@@ -2284,13 +2287,14 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<tr><td style="background:#ffffff;height:16px"></td></tr>';
 
   /* CTA */
-  h+='<tr><td style="background:#ffffff;padding:20px 36px;border-top:1px solid rgba(15,15,15,.09);text-align:center">';
-  h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#7A6015;color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:50px">'+ctaLabel+'</a>';
+  h+='<tr><td style="background:#ffffff;padding:24px 36px;text-align:center">';
+  h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#B09438;color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 34px;border-radius:50px">'+ctaLabel+'</a>';
+  h+='<p style="margin:10px 0 0;font-size:11px;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?'or simply reply to this email':'ou répondez simplement à cet email')+'</p>';
   h+='</td></tr>';
   /* Inclusions — fond ivoire, checkmarks */
   var inclTitle2 = isEN ? 'ALL-INCLUSIVE' : 'TOUT INCLUS';
   h+='<tr><td style="background:#F5EFE5;padding:20px 28px">';
-  h+='<p style="margin:0 0 10px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR2+';font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:600">'+inclTitle2+'</p>';
+  h+='<p style="margin:0 0 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+inclTitle2+'</p>';
   h+='<p style="margin:0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText.replace(/<br>/g,'</p><p style="margin:3px 0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">').replace(/•/g,'✓')+'</p>';
   h+='</td></tr>';
   /* Conditions contractuelles — fond creme */
@@ -2300,28 +2304,27 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">'+ccList2+'</table>';
   h+='</td></tr>';
 
-  /* Footer — contact jade + social links */
-  h+='<tr><td style="background:#1E4035;padding:0;border-radius:0 0 4px 4px">';
-  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td width="96" style="padding:12px 0 12px 12px;vertical-align:middle;text-align:center">';
-  h+='<img src="https://teamlounge.thebureau.paris/chevrons-email.png" alt="The Bureau" width="40" style="display:block;opacity:0.55;margin:auto"/>';
-  h+='</td><td width="1" style="background:rgba(176,148,56,0.15)"></td>';
-  h+='<td style="padding:10px 18px;vertical-align:middle">';
-  h+='<p style="margin:0 0 2px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+yourRef+'</p>';
+  /* Signature — fond blanc, chevrons */
   var _snd2=getCurrentSender();
-  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:15px;color:#FAFAFA">'+_snd2.name+'</p>';
-  h+='<p style="margin:0 0 5px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(176,148,56,0.6);font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?_snd2.titleEN:_snd2.title)+'</p>';
-  h+='<p style="margin:0;font-size:11px;color:rgba(245,239,229,0.55);line-height:1.55;font-family:Plus Jakarta Sans,Arial,sans-serif">';
-  h+='<a href="tel:'+_snd2.phone.replace(/\s/g,'')+'" style="color:rgba(245,239,229,0.7);text-decoration:none">'+_snd2.phone+'</a><br>';
-  h+='<a href="mailto:'+_snd2.email+'" id="femail" style="color:rgba(245,239,229,0.7);text-decoration:none">'+_snd2.email+'</a><br>';
-  h+='<a href="https://www.thebureau.paris" style="color:rgba(245,239,229,0.7);text-decoration:none">www.thebureau.paris</a>';
+  h+='<tr><td style="background:#ffffff;padding:22px 36px;border-top:1px solid rgba(15,15,15,.09)">';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+  h+='<td width="54" style="vertical-align:middle"><img src="https://teamlounge.thebureau.paris/chevrons-email.png" alt="The Bureau" width="42" style="display:block"/></td>';
+  h+='<td style="vertical-align:middle;padding-left:14px">';
+  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:14px;font-weight:700;color:#0F0F0F">'+_snd2.name+'</p>';
+  h+='<p style="margin:1px 0 4px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#7A6015;font-weight:600;font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?_snd2.titleEN:_snd2.title)+'</p>';
+  h+='<p style="margin:0;font-size:11.5px;color:'+GR+';line-height:1.5;font-family:Plus Jakarta Sans,Arial,sans-serif">';
+  h+='<a href="tel:'+_snd2.phone.replace(/\s/g,'')+'" style="color:'+GR+';text-decoration:none">'+_snd2.phone+'</a> · ';
+  h+='<a href="mailto:'+_snd2.email+'" id="femail" style="color:#1E4035;text-decoration:none">'+_snd2.email+'</a> · ';
+  h+='<a href="https://www.thebureau.paris" style="color:#1E4035;text-decoration:none">thebureau.paris</a>';
   h+='</p></td></tr></table></td></tr>';
-  /* Social links bar */
-  h+='<tr><td style="background:#1E4035;padding:10px 36px;border-top:1px solid rgba(255,255,255,.1);border-radius:0 0 4px 4px;text-align:center">';
-  h+='<a href="https://www.thebureau.paris" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">thebureau.paris</a>';
-  h+='<a href="https://www.instagram.com/thebureauparis/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">Instagram</a>';
-  h+='<a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;margin:0 8px">LinkedIn</a>';
-  h+='</td></tr>';
+  /* Footer jade fin */
+  h+='<tr><td style="background:#1E4035;padding:16px 36px;border-radius:0 0 4px 4px;text-align:center">';
+  h+='<p style="margin:0;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,239,229,.8);font-family:Plus Jakarta Sans,Arial,sans-serif">The Bureau Paris · <span style="color:#B09438">75002 · 75008</span></p>';
+  h+='<p style="margin:8px 0 0;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-family:Plus Jakarta Sans,Arial,sans-serif">';
+  h+='<a href="https://www.instagram.com/thebureauparis/" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">Instagram</a>·';
+  h+='<a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">LinkedIn</a>·';
+  h+='<a href="https://www.thebureau.paris" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">thebureau.paris</a>';
+  h+='</p></td></tr>';
   h+='</table></td></tr></table>\n</body></html>';
   return h;
 }
