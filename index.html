@@ -2783,6 +2783,9 @@ function exportPDF(){
   ];
   var activeTiers = allTiers.filter(function(_,i){ return _selTiers.indexOf(i)>-1; });
   if(activeTiers.length===0) activeTiers=[allTiers[0]];
+  var _defTierIdx=getDefaultTier();
+  var _defKey=allTiers[_defTierIdx]?allTiers[_defTierIdx].key:null;
+  if(!activeTiers.some(function(t){return t.key===_defKey;})) _defKey=activeTiers[activeTiers.length-1].key;
 
   var OR='#B09438',OR2='#7A6015',JADE='#1E4035',INK='#0F0F0F',CR='#F5EFE5',GR='#5a5248',LIGHT='#faf8f4',IVORY='#F5EFE5';
   var GFONTS='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap';
@@ -2837,11 +2840,12 @@ function exportPDF(){
 
   var soc=''; try{ soc=((document.getElementById('fs')||{}).value||'').trim(); }catch(e){}
   var subLine=selData.length+' '+(selData.length>1?T.offices:T.office)+(soc?(isEN?' · for ':' · pour ')+esc(soc):'');
-  function priceCell(v){ return '<td class="num">'+fmt(Math.round(v))+'<span class="cur"> €</span></td>'; }
+  function priceCell(v, hl){ return '<td class="num'+(hl?' hl':'')+'">'+fmt(Math.round(v))+'<span class="cur"> €</span></td>'; }
+  var _pickLbl=isEN?'★ DISPLAYED RATE':'★ TARIF AFFICHÉ';
   function tableHeader(){
     var th='<thead><tr>';
     th+='<th class="ctr" style="width:62px">'+T.refH+'</th><th style="width:165px">'+T.siteH+'</th><th class="ctr" style="width:48px">'+T.floorH+'</th><th class="num" style="width:44px">'+T.surfH+'</th><th class="ctr" style="width:52px">'+T.deskH+'</th><th style="width:104px">'+T.dispoH+'</th><th>'+T.descH+'</th>';
-    activeTiers.forEach(function(t){ th+='<th class="num">'+t.label+(t.d>0?' <span class="disc">-'+Math.round(t.d*1000)/10+'%</span>':'')+'</th>'; });
+    activeTiers.forEach(function(t){ var hl=t.key===_defKey; th+='<th class="num'+(hl?' hl':'')+'">'+(hl?'<span class="pick">'+_pickLbl+'</span>':'')+t.label+(t.d>0?' <span class="disc">-'+Math.round(t.d*1000)/10+'%</span>':'')+'</th>'; });
     th+='</tr></thead>';
     return th;
   }
@@ -2859,7 +2863,7 @@ function exportPDF(){
       out+='<td class="ctr meta">'+(b.isItin?(q+(isEN?(q>1?' subs':' sub'):' abo.')):b.cap)+'</td>';
       out+='<td class="'+(b.dispo==='immediate'?'dispo-now':'muted')+'">'+dispoStr(b)+'</td>';
       out+='<td class="desc">'+esc(cleanDesc(b.desc||''))+'</td>';
-      activeTiers.forEach(function(t){ out+=priceCell(Math.round(b.prix*(1-t.d))*q); });
+      activeTiers.forEach(function(t){ out+=priceCell(Math.round(b.prix*(1-t.d))*q, t.key===_defKey); });
       out+='</tr>';
     });
     return out;
@@ -2870,13 +2874,13 @@ function exportPDF(){
     o+='<td class="ctr muted">—</td><td class="num muted">—</td><td class="ctr meta">'+qty+'</td>';
     o+='<td class="dispo-now">'+(isEN?'Immediate':'Immédiate')+'</td>';
     o+='<td class="desc">'+(isEN?'Additional access. Two users/members for the same workstation. Alternating presence of only one collaborator at a time in the building.':'Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.')+'</td>';
-    activeTiers.forEach(function(t){ o+=priceCell(qty*170); });
+    activeTiers.forEach(function(t){ o+=priceCell(qty*170, t.key===_defKey); });
     o+='</tr>';
     return o;
   }
   function totRow(label, totsObj){
     var o='<tr class="tot"><td colspan="7" class="lbl">'+label+'</td>';
-    activeTiers.forEach(function(t){ o+='<td class="num">'+fmt(totsObj[t.key])+'<span class="cur"> €</span></td>'; });
+    activeTiers.forEach(function(t){ o+='<td class="num'+(t.key===_defKey?' hl':'')+'">'+fmt(totsObj[t.key])+'<span class="cur"> €</span></td>'; });
     o+='</tr>';
     return o;
   }
@@ -2902,6 +2906,12 @@ function exportPDF(){
   h+='.tbl thead th:first-child{border-radius:6px 0 0 0}.tbl thead th:last-child{border-radius:0 6px 0 0}';
   h+='.tbl thead th.num{text-align:right}.tbl thead th.ctr{text-align:center}';
   h+='.tbl thead th .disc{display:inline-block;background:var(--or);color:#fff;border-radius:50px;padding:2px 7px;font-size:8px;font-weight:700;margin-left:4px}';
+  h+='.tbl thead th.num.hl{background:var(--or);color:#fff}';
+  h+='.tbl thead th.hl .pick{display:block;font-size:7px;letter-spacing:.08em;color:#fff;font-weight:700;margin-bottom:3px}';
+  h+='.tbl thead th.hl .disc{background:#fff;color:var(--orD)}';
+  h+='.tbl tbody td.num.hl{background:#fbf2d8!important;border-left:2px solid var(--or);border-right:2px solid var(--or);color:var(--jade);font-weight:700}';
+  h+='.tbl tr.tot td.num.hl{background:var(--or)!important;color:#fff;border-left:2px solid var(--or);border-right:2px solid var(--or)}';
+  h+='.tbl tr.tot td.num.hl .cur{color:#fff}';
   h+='.tbl tbody td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}';
   h+='.tbl tbody tr:nth-child(even):not(.tot) td{background:var(--cream)}';
   h+='.tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;color:var(--ink)}';
