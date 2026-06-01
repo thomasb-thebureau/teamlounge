@@ -2820,29 +2820,27 @@ function exportPDF(){
   var chevronsUrl=window.location.origin+'/chevrons.svg';
 
   var services = isEN ? [
-    '24/7 access in your arrondissement, plus weekday access (8am\u20137pm) to all The Bureau locations.',
-    'All shared spaces: coworking, dining area, patio, showers, gym and phone booths.',
-    'Business address registration and drawer storage included (except Nomad).',
-    'Fixed-line phone with unlimited calls to France and worldwide.',
-    'Print allowance: 200 B&W and 25 colour copies per person/month.',
-    'Unlimited break areas: coffee, tea, filtered water and fresh fruit.',
-    'Events programme: evenings, openings, partnerships and Thursday aperitivo.',
-    'Furniture: desk, chair and pedestal.',
-    'Concierge: guest reception, mail, taxis and meeting room bookings.',
+    '24/7 access in our buildings.',
+    'Shared spaces: coworking, dining, patio, gym.',
+    'Business address & drawer storage (except Nomad).',
+    'Fixed line, calls to France & worldwide included.',
+    'Print allowance: 200 B&W and 25 colour / month.',
+    'Unlimited break areas: coffee, tea, fresh fruit.',
+    'Events programme: evenings, openings, partnerships & Thursday aperitivo.',
+    'Concierge: mail, taxis, meeting room bookings.',
     'Global Collective: 2 days/month at partner spaces (globalcollective.co).',
-    'All-inclusive: electricity, cleaning, utilities, AC and heating.'
+    'ALL-INCLUSIVE: electricity, cleaning, utilities, AC, heating.'
   ] : [
-    'Acc\u00e8s 24h/24 et 7j/7 dans l\u2019arrondissement choisi, et du lundi au vendredi de 8h \u00e0 19h aux autres espaces The Bureau.',
-    'Acc\u00e8s \u00e0 l\u2019ensemble des espaces communs\u00a0: coworking, espace restauration, patio, douches, salle de sport, cabines t\u00e9l\u00e9phoniques.',
-    'Domiciliation et rangement tiroir inclus (sauf Itinérant).',
-    'T\u00e9l\u00e9phone fixe, communications France et monde incluses (fixe et portable).',
-    'Forfait impression : 200 copies N&B et 25 couleurs par mois et par personne.',
-    'Acc\u00e8s illimit\u00e9 aux tisaneries\u00a0: caf\u00e9, th\u00e9, eau filtr\u00e9e et fruits frais \u00e0 discr\u00e9tion.',
-    'Programmation \u00e9v\u00e9nementielle\u00a0: soir\u00e9es, vernissages, partenariats et ap\u00e9ritivo du jeudi.',
-    'Mobilier\u00a0: bureau, chaise et caisson.',
-    'Conciergerie\u00a0: accueil clients, courrier, taxis, r\u00e9servations de salles.',
-    'Global Collective\u00a0: 2 jours/mois dans les espaces partenaires (globalcollective.co).',
-    'All-inclus\u00a0: \u00e9lectricit\u00e9, m\u00e9nage, charges, climatisation, chauffage.'
+    'Accès 24/7 dans nos bâtiments.',
+    'Espaces communs : coworking, restauration, patio, sport.',
+    'Domiciliation et rangement tiroir (sauf Itinérant).',
+    'Téléphone fixe, communications France et monde incluses.',
+    'Forfait impression : 200 N&B et 25 couleurs / mois.',
+    'Tisaneries illimitées : café, thé, fruits frais.',
+    'Programmation événementielle : soirées, vernissages, partenariats et apéritivo du jeudi.',
+    'Conciergerie : courrier, taxis, réservations de salles.',
+    'Global Collective : 2 jours/mois dans les espaces partenaires (globalcollective.co).',
+    'ALL-INCLUSIVE : électricité, ménage, charges, climatisation, chauffage.'
   ];
   var conditions = isEN ? [
     '3-month minimum commitment, then rolling monthly until notice.',
@@ -2951,10 +2949,9 @@ function exportPDF(){
   h+='.box{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:14px 16px}';
   h+='.box h3{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}';
   h+='.box h3::before{content:\'\';width:16px;height:1.5px;background:var(--or)}';
-  h+='.box ul{list-style:none}.box.incl ul{column-count:2;column-gap:18px}';
+  h+='.box ul{list-style:none}.box.incl ul,.box.cond ul{column-count:2;column-gap:18px}';
   h+='.box li{position:relative;padding-left:16px;margin-bottom:5px;font-size:8.8px;color:var(--gris);line-height:1.4;break-inside:avoid}';
   h+='.box li::before{content:\'✓\';position:absolute;left:0;top:0;color:var(--jade);font-weight:700;font-size:9px}';
-  h+='.box.cond li::before{content:\'•\';color:var(--or);font-size:12px;top:-1px}';
   h+='.ft{margin-top:18px;background:var(--jade);color:var(--ivory);border-radius:8px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-top:3px solid var(--or)}';
   h+='.ft-l{display:flex;align-items:center;gap:16px}.ft-chev{height:30px;opacity:.9}';
   h+='.ft-name{font-weight:700;color:#fff;font-size:12px}.ft-meta{font-size:10px;color:rgba(245,239,229,.85);line-height:1.6}.ft-meta a{color:var(--ivory);text-decoration:none}';
