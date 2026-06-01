@@ -630,7 +630,7 @@ body.dark .tw-desc strong{color:#F5EFE5}
 <div class="tb"><div class="rc"><strong id="cnt">-</strong> bureau<span id="ps"></span> disponible<span id="ps2"></span></div><span class="hint">Cliquer sur une carte pour la sélectionner</span><div class="view-seg" id="viewToggle" role="group" aria-label="Mode d'affichage"><button type="button" id="vtList" title="Liste" aria-label="Affichage liste"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button><button type="button" id="vtGrid" title="Grille" aria-label="Affichage grille"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button></div><button class="filter-fab" id="filterFab" onclick="openFilterDrawer()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<div class="filter-fab-dot" id="filterFabDot"></div></button></div>
 <div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
-<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div><div class="tw-desc"><strong id="twDescTitle">Offre Télétravail · 0 Utilisateurs</strong>Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.</div></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
+<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div><div class="tw-desc"><strong id="twDescTitle">Offre Télétravail · 0 Utilisateurs</strong>Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.</div></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1"><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3" checked><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
 <div class="pipeline-overlay" id="pipelineOverlay"><div class="pipeline-modal"><div class="pipeline-hdr"><h3>Pipeline propositions</h3><button class="mclose" id="pipClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="pipBody"></div><div style="padding:12px 20px;border-top:1px solid var(--cf);text-align:right"><button class="pip-btn" id="pipClear" style="color:#c0392b;border-color:#c0392b">Tout effacer</button></div></div></div>
 <button class="present-exit" id="presentExit">&#10005; Quitter</button>
 <div class="cmp-overlay" id="cmpOverlay"><div class="cmp-modal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="font-size:15px;font-weight:600">Comparaison</h3><button class="mclose" id="cmpClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="cmpBody"></div></div></div>
@@ -1376,6 +1376,14 @@ function getSelectedTiers() {
   checks.forEach(function(c){ if(c.checked) sel.push(parseInt(c.value)); });
   return sel.length ? sel : [0];
 }
+/* Durée d'engagement mise en avant (prix des cartes + total surligné) */
+function getDefaultTier() {
+  var r = document.querySelector('#defaultTierChecks input[type=radio]:checked');
+  var sel = getSelectedTiers();
+  var d = r ? parseInt(r.value) : (sel.length ? sel[sel.length-1] : 0);
+  if (sel.indexOf(d) === -1) d = sel.length ? sel[sel.length-1] : 0;
+  return d;
+}
 
 /* ============================================================
    SEND EMAIL
@@ -1452,93 +1460,31 @@ function buildCard(b) {
     var vatLabel = isEN?'excl. VAT/month':'H.T./mois';
     var postes = b.cap + (isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'));
 
-    var tarifs = '';
+    var dt = getDefaultTier();
+    var p = paliers[dt] || paliers[0];
     var _itinAddons = b.isItin ? (b.prix - ITIN_PRIX) : 0;
-    var basePrice = b.isItin ? Math.round(ITIN_PRIX*(1-paliers[0].d))+_itinAddons : Math.round(b.prix*(1-paliers[0].d));
-    var _selTiers = getSelectedTiers();
-    paliers.forEach(function(p, pi) {
-      if (_selTiers.indexOf(pi) === -1) return; /* skip unchecked tiers */
-      var price   = b.isItin ? Math.round(ITIN_PRIX*(1-p.d))+_itinAddons : Math.round(b.prix*(1-p.d));
-      var saving  = basePrice - price;
-      var months  = [0,12,24,36][pi] || 0;
-      var totalSaving = saving * months;
-      var bg = p.d>0?'rgba(30,64,53,.08)':'#FAFAFA'; var fw = p.d>0?'500':'300';
-      var savingHtml = '';
-      if (p.d > 0 && totalSaving > 0) {
-        var annualSaving = Math.round(saving * 12);
-        var savingLabel = isEN
-          ? ('\u2713 Saves '+fmt(annualSaving)+'&nbsp;&euro;&nbsp;/&nbsp;year')
-          : ('\u2713 \u00c9conomie\u00a0: '+fmt(annualSaving)+'&nbsp;&euro;&nbsp;/ an');
-        savingHtml = true; /* marker only — chip is inline */
-      }
-      var savingChip = '';
-      if (savingHtml) {
-        var annualSaving2 = Math.round((basePrice - price) * 12);
-        var chipLabel = isEN ? '\u2713 '+fmt(annualSaving2)+'&nbsp;&euro;&thinsp;/ yr' : '\u2713 '+fmt(annualSaving2)+'&nbsp;&euro;&thinsp;/ an';
-        savingChip = '&nbsp;&nbsp;<span style="display:inline;background:rgba(30,64,53,0.1);border:1px solid rgba(30,64,53,0.25);border-radius:50px;padding:1px 8px;font-size:9px;color:#1E4035;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500;white-space:nowrap">'+chipLabel+'</span>';
-      }
-      /* Prix barré + badge remise sur la ligne mensuelle (pi===0) si remise > 0 */
-      var prixRefBrut = b.isItin ? Math.round(ITIN_PRIX)+_itinAddons : b.prix;
-      var remiseBadge = '';
-      var prixCell = '';
-      if (pi === 0 && remise > 0) {
-        var remBadgeTxt = isEN
-          ? ('★ Exceptional discount — '+Math.round(remise*100)+'% off')
-          : ('★ Remise exceptionnelle — '+Math.round(remise*100)+'% incluse');
-        remiseBadge = '<tr style="background:#fef9f0"><td colspan="2" style="padding:2px 16px 6px">'
-          +'<span style="display:inline-block;background:rgba(192,120,48,0.1);border:1px solid rgba(192,120,48,0.3);border-radius:50px;padding:2px 10px;font-size:10px;color:#c07830;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500">'
-          +remBadgeTxt+'</span></td></tr>';
-        prixCell = '<td style="padding:6px 16px;font-size:13px;color:'+INK+';font-weight:'+fw+';text-align:right;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'
-          +'<span style="font-size:11px;color:#aaa;text-decoration:line-through;font-weight:300;margin-right:5px">'+fmt(prixRefBrut)+'&nbsp;&euro;</span>'
-          +'<span style="color:#c07830;font-weight:600">'+fmt(price)+'&nbsp;&euro;</span>'
-          +'<span style="font-size:10px;color:'+GR+';font-weight:300"> '+vatLabel+'</span>'
-          +'</td>';
-      } else {
-        prixCell = '<td style="padding:6px 16px;font-size:13px;color:'+INK+';font-weight:'+fw+';text-align:right;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'
-          +fmt(price)+'&nbsp;&euro;<span style="font-size:10px;color:'+GR+';font-weight:300"> '+vatLabel+'</span></td>';
-      }
-      tarifs += '<tr style="background:'+bg+'">'
-        +'<td style="padding:6px 16px;font-size:12px;color:'+GR+';font-weight:'+fw+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+p.label+savingChip+'</td>'
-        +prixCell
-        +'</tr>';
-      if (pi === 0 && remise > 0) tarifs += remiseBadge;
-    });
-    return '<tr><td style="padding:0 0 24px 0">'
-      +'<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid rgba(15,15,15,.09);border-radius:4px">'
-        +'<tr><td style="background:'+INK+';padding:7px 20px 8px;border-radius:4px 4px 0 0;border-bottom:2px solid '+OR+'">'+'<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'+'<td style="vertical-align:top;text-align:left">'+'<span style="display:block;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+CR+';line-height:1.2">'+(b.isItin?'ITINÉRANT':b.ref)+'</span>'+'<span style="display:block;margin-top:1px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(176,148,56,0.55);font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500;line-height:1.3">'+b.label.toUpperCase()+'<span style="color:rgba(176,148,56,0.25)"> &middot; </span><span style="font-size:10px;color:rgba(176,148,56,0.35);letter-spacing:.3px;text-transform:none;font-weight:300">'+b.adresse+'</span></span>'+'</td>'+'<td align="right" style="vertical-align:middle"><a href="'+siteUrl+'" target="_blank" style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:'+OR+';text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;border:1px solid rgba(176,148,56,0.4);border-radius:50px;padding:4px 12px;white-space:nowrap">'+siteLabel+' &rsaquo;</a></td>'+'</tr></table>'+'</td></tr>'
-        +'<tr><td style="padding:14px 20px 12px;background:#F5F5F5">'
-          /* ── Info chips row ── */
-          +'<div style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:5px">'
-          /* Etage chip — skip for itin */
-          +(b.isItin?'':'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F">'+etageLabel+'</span>')
-          /* Surface chip */
-          +(b.surface?'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F">'
-          +b.surface.toLocaleString('fr-FR')+'\u00a0m\u00b2</span>':'')
-          /* Postes chip */
-          +'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F">'
-          +b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))
-          +'</span>'
-          /* Dispo chip */
-          +'<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;border:1px solid rgba('+( b.dispo==='immediate'?'30,64,53':'192,120,48' )+',0.3);background:rgba('+( b.dispo==='immediate'?'30,64,53':'192,120,48' )+',0.08);font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500;color:'+dispo_color+'">&#9679;&nbsp;'+dispo_label+'</span>'
-          /* Accès 24/7 chip */
-          +'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:rgba(15,15,15,.40)">'
-          +(isEN?'Access 24/7':'Acc\u00e8s 24/7')
-          +'</span>'
-          +'</div>'
-          /* Description */
-          +(b.isItin
-            ?'<p style="margin:6px 0 0;font-size:12px;color:rgba(15,15,15,.45);line-height:1.55;font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?(b.descEN||b.desc):b.desc)+'</p>'
-             +(b.addons&&b.addons.domi?'<p style="margin:2px 0 0;font-size:11px;color:#B09438;font-family:Plus Jakarta Sans,Arial,sans-serif">+ Domiciliation — 60 € H.T./mois</p>':'')
-             +(b.addons&&b.addons.casier?'<p style="margin:2px 0 0;font-size:11px;color:#B09438;font-family:Plus Jakarta Sans,Arial,sans-serif">+ Casier — 30 € H.T./mois</p>':'')
-            :(b.desc?'<p style="margin:6px 0 0;font-size:12px;color:rgba(15,15,15,.45);line-height:1.55;font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?(b.descEN&&b.descEN.length>3?b.descEN:cleanDesc(b.desc)):cleanDesc(b.desc))+'</p>':''))
-        +'</td></tr>'
-        +'<tr><td style="border-top:1px solid rgba(15,15,15,.09)">'
-          +'<table width="100%" cellpadding="0" cellspacing="0" border="0">'
-            +'<tr><td colspan="2" style="padding:8px 16px 3px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+OR2+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+tarifLabel+'</td></tr>'
-            +tarifs
-          +'</table>'
-        +'</td></tr>'
-      +'</table></td></tr>';
+    var price = b.isItin ? Math.round(ITIN_PRIX*(1-p.d))+_itinAddons : Math.round(b.prix*(1-p.d));
+    var metaParts = [];
+    if (!b.isItin) metaParts.push(etageLabel);
+    if (b.surface) metaParts.push(b.surface.toLocaleString('fr-FR')+' m²');
+    metaParts.push(postes);
+    if (b.isItin && b.itinQty && b.itinQty>1) metaParts.push(b.itinQty+' abonnements');
+    var meta = metaParts.join(' · ');
+    var refTxt = b.isItin?'ITIN':b.ref;
+    return '<tr><td style="padding:0 0 10px">'
+      +'<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e9e1d2;border-radius:12px">'
+      +'<tr>'
+      +'<td width="74" valign="middle" style="padding:14px 0 14px 16px"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:5px 12px;font-weight:700;font-size:12px;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>'
+      +'<td valign="middle" style="padding:12px 12px">'
+      +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13.5px;font-weight:700;color:#0F0F0F">'+b.label+'</div>'
+      +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#5a5248;margin-top:2px">'+meta+'</div>'
+      +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;color:'+dispo_color+';font-weight:600;margin-top:3px">'+dispo_label+'</div>'
+      +'</td>'
+      +'<td align="right" valign="middle" style="padding:12px 16px 12px 0;white-space:nowrap">'
+      +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:16px;font-weight:600;color:#0F0F0F">'+fmt(price)+'<sup style="color:#B09438;font-size:10px"> €</sup></div>'
+      +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#5a5248">'+vatLabel+'</div>'
+      +'</td>'
+      +'</tr></table></td></tr>';
   }
 
 function buildEmail(data, showTotal) {
@@ -1576,11 +1522,11 @@ function buildEmail(data, showTotal) {
       var baseTotal = data.reduce(function(s2,b2){ return s2+Math.round(b2.prix*(1-paliers[0].d)); }, 0) + _twAdd;
       var _selTiersR = getSelectedTiers();
       var _mainLabels = isEN ? ['Monthly','12 months','24 months','36 months'] : ['Mensuel','12 mois','24 mois','36 mois'];
-      var _ths='', _tds='', _svs='', _lastCol=_selTiersR.length-1;
+      var _ths='', _tds='', _svs='', _defTier=getDefaultTier();
       _selTiersR.forEach(function(pi, idx){
         var p = paliers[pi];
         var tot = data.reduce(function(s,b){return s+Math.round(b.prix*(1-p.d));},0) + _twAdd;
-        var isHl = (idx === _lastCol && _selTiersR.length > 1);
+        var isHl = (pi === _defTier);
         var thBg = isHl ? '#d6e8dd' : '#dceae2';
         var tdBg = isHl ? '#d6e8dd' : '#eef5f1';
         var bl = idx>0 ? 'border-left:1px solid #cfe2d6;' : '';
@@ -2278,9 +2224,9 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<tr><td style="background:#ffffff;padding:22px 36px">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">';
   enrichedOpts.forEach(function(opt, oi) {
-    h+='<tr><td style="padding:0 0 '+(oi<enrichedOpts.length-1?'24':'0')+'px">';
-    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:2px solid #B09438;border-radius:4px;overflow:hidden">';
-    h+=buildOptionEmail(allData, opt, isEN, LOGO_B64, CHEV_B64);
+    h+='<tr><td style="padding:0 0 '+(oi<enrichedOpts.length-1?'14':'0')+'px">';
+    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e9e1d2;border-left:5px solid #B09438;border-radius:12px;overflow:hidden">';
+    h+=buildOptionEmail(allData, opt, isEN, oi+1, LOGO_B64, CHEV_B64);
     h+='</table></td></tr>';
   });
   h+='</table></td></tr>';
@@ -2329,149 +2275,61 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   return h;
 }
 
-function buildOptionEmail(allData, opt, isEN, LOGO_B64, CHEV_B64) {
-  var OR='#B09438', OR2='#B09438', INK='#0F0F0F', CR='#FAFAFA', GR='rgba(15,15,15,.40)';
-  /* Remise commerciale — lire depuis le DOM */
-  var _remEl = document.getElementById('remiseInput');
-  var remise = _remEl ? Math.min(25, Math.max(0, parseFloat(_remEl.value)||0)) / 100 : 0;
-  var remLabel = remise > 0 ? (isEN ? ' (incl. '+Math.round(remise*100)+'% discount)' : ' (remise '+Math.round(remise*100)+'% incluse)') : '';
-  var vatLabel = isEN ? 'excl. VAT/month' : 'H.T./mois';
-  var moisLabel = isEN ? '/ month' : '/ mois';
-  var tarifsTitle = isEN ? 'TOTAL EXCL. VAT / MONTH' : 'TOTAL MENSUEL H.T./MOIS';
-  var h = '';
-
-  /* Option header */
-  /* Option label header */
-  h += '<tr><td style="background:#B09438;padding:10px 20px">';
-  h += '<span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ffffff">'+(opt.label||'')+'</span>';
-  h += '</td></tr>';
-
-  /* Per-bureau cards */
-  opt.bureaux.forEach(function(b) {
-    var etLblEmail = isEN
-      ? (b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor')
-      : etLbl(b.etage);
-    var siteUrls = {'I':'https://thebureau.paris/fr/28-cours-albert-1-er','II':'https://thebureau.paris/fr/16-cours-albert-1-er','III':'https://thebureau.paris/fr/25-rue-iv-septembre','IV':'https://thebureau.paris/fr/42-rue-notre-dame-des-victoires'};
-    var siteUrl = siteUrls[b.site] || 'https://thebureau.paris';
-    var siteLabel = isEN ? 'View the space' : 'Voir le site';
-    var dispo_color = b.dispo==='immediate' ? '#1E4035' : '#c07830';
-    var dispo_label = b.dispo==='immediate'
-      ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
-      : (isEN?'From ':'A partir du ') + dtLbl(b.date, isEN);
-    var _d = isEN?(b.descEN&&b.descEN.length>3?b.descEN:b.desc):b.desc;
-    var desc = _d ? _d.replace(/^[A-Z]\d{3}[^:]*:\s*/,'').trim() : '';
-
-    /* Card header */
-    h += '<tr><td style="background:'+INK+';padding:7px 20px 8px;border-bottom:2px solid '+OR+'">';
-    h += '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h += '<td style="vertical-align:top">';
-    h += '<span style="display:block;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+CR+';line-height:1.2">'+(b.isItin?'ITINÉRANT':b.ref)+'</span>';
-    if (b.isItin && b.itinQty && b.itinQty > 1) {
-      h += '<span style="display:block;margin-top:2px;font-size:10px;letter-spacing:.5px;color:rgba(176,148,56,0.7);font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500">' + b.itinQty + ' abonnement' + (b.itinQty>1?'s':'') + '</span>';
-    }
-    h += '<span style="display:block;margin-top:1px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(176,148,56,0.55);font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500;line-height:1.3">'+b.label.toUpperCase()+'<span style="color:rgba(176,148,56,0.25)"> &middot; </span><span style="font-size:10px;color:rgba(176,148,56,0.35);letter-spacing:.3px;text-transform:none;font-weight:300">'+b.adresse+'</span></span>';
-    h += '</td>';
-    h += '<td align="right" style="vertical-align:middle">';
-    h += '<a href="'+siteUrl+'" target="_blank" style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:'+OR+';text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;border:1px solid rgba(176,148,56,0.4);border-radius:50px;padding:4px 12px;white-space:nowrap">'+siteLabel+' &rsaquo;</a>';
-    h += '</td></tr></table></td></tr>';
-
-    /* Card body */
-    h += '<tr><td style="background:#F5F5F5;padding:12px 20px 10px">';
-    /* Chips */
-    h += '<div style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:5px">';
-    if (!b.isItin) h += '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F">'+etLblEmail+'</span>';
-    if (b.surface) h += '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F">'+b.surface.toLocaleString('fr-FR')+'\u00a0m\u00b2</span>';
-    h += '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F">'+(b.isItin&&b.itinQty&&b.itinQty>1 ? b.itinQty+' abonnements' : b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste')))+'</span>';
-    h += '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;border:1px solid rgba('+( b.dispo==='immediate'?'30,64,53':'192,120,48' )+',0.3);background:rgba('+( b.dispo==='immediate'?'30,64,53':'192,120,48' )+',0.08);font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500;color:'+dispo_color+'">&#9679;&nbsp;'+dispo_label+'</span>';
-    h += '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;border:1px solid rgba(15,15,15,.09);background:#FAFAFA;font-size:11px;font-family:Plus Jakarta Sans,Arial,sans-serif;color:rgba(15,15,15,.40)">'+(isEN?'Access 24/7':'Acc\u00e8s 24/7')+'</span>';
-    h += '</div>';
-    /* Prix catalogue + remise */
-    var prixRef = b.isItin ? ITIN_PRIX : b.prix;
-    var prixRemise = remise > 0 ? Math.round(prixRef * (1 - remise)) : 0;
-    h += '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px solid rgba(15,15,15,.09)">';
-    h += '<span style="font-size:11px;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?'Monthly rate':'Tarif mensuel')+'</span>';
-    if (remise > 0) {
-      h += '<span style="font-family:Plus Jakarta Sans,Arial,sans-serif">';
-      h += '<span style="font-size:12px;color:#aaa;text-decoration:line-through;font-weight:300;margin-right:6px">'+fmt(prixRef)+'&nbsp;\u20ac</span>';
-      h += '<span style="font-size:15px;font-weight:600;color:#c07830">'+fmt(prixRemise)+'&nbsp;\u20ac</span>';
-      h += '<span style="font-size:10px;color:'+GR+';font-weight:300"> '+(b.isItin?(isEN?'excl. VAT/pers./month':'H.T./pers./mois'):vatLabel)+'</span>';
-      h += '</span>';
-    } else {
-      h += '<span style="font-size:15px;font-weight:500;color:'+INK+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+fmt(prixRef)+'&nbsp;\u20ac <span style="font-size:10px;color:'+GR+';font-weight:300">'+(b.isItin?(isEN?'excl. VAT/pers./month':'H.T./pers./mois'):vatLabel)+'</span></span>';
-    }
-    h += '</div>';
-    if (remise > 0) {
-      var remiseLabel = isEN ? ('Exceptional discount — ' + Math.round(remise*100) + '% off') : ('Remise exceptionnelle — ' + Math.round(remise*100) + '% incluse');
-      h += '<div style="display:flex;align-items:center;gap:5px;padding:3px 0 4px;font-size:10px;color:#c07830;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500">';
-      h += '<span style="display:inline-block;background:rgba(192,120,48,0.12);border:1px solid rgba(192,120,48,0.3);border-radius:50px;padding:1px 8px">★ '+remiseLabel+'</span>';
-      h += '</div>';
-    }
-    if (b.isItin && b.addons) {
-      if (b.addons.domi)   h += '<div style="display:flex;justify-content:space-between;padding:4px 0;border-top:1px solid rgba(15,15,15,.09)"><span style="font-size:11px;color:'+GR+'">'+(isEN?'+ Mailing address':'+ Domiciliation')+'</span><span style="font-size:13px;color:'+INK+'">60&nbsp;\u20ac <span style="font-size:10px;color:'+GR+';font-weight:300">'+vatLabel+'</span></span></div>';
-      if (b.addons.casier) h += '<div style="display:flex;justify-content:space-between;padding:4px 0;border-top:1px solid rgba(15,15,15,.09)"><span style="font-size:11px;color:'+GR+'">'+(isEN?'+ Locker':'+ Casier')+'</span><span style="font-size:13px;color:'+INK+'">30&nbsp;\u20ac <span style="font-size:10px;color:'+GR+';font-weight:300">'+vatLabel+'</span></span></div>';
-    }
-    /* Description */
-    if (desc) h += '<p style="margin:8px 0 0;font-size:12px;color:rgba(15,15,15,.45);line-height:1.55;font-family:Plus Jakarta Sans,Arial,sans-serif">'+desc+'</p>';
-    h += '</td></tr>';
-  });
-
-  /* TW block (between bureaux and total) — affiché si opt.tw > 0 */
-  if (opt.tw && opt.tw > 0) {
-    var _twPriceOpt = opt.tw * 170;
-    h += '<tr><td style="padding:14px 16px;background:#F5EFE5;border-top:1px solid rgba(15,15,15,.09);font-family:Plus Jakarta Sans,Arial,sans-serif">';
-    h += '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h += '<td style="vertical-align:middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:3px;margin-right:10px">'+(isEN?'Telework':'Télétravail')+'</span><span style="font-size:11px;color:#0F0F0F">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</span></td>';
-    h += '<td align="right" style="vertical-align:middle;font-size:15px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twPriceOpt)+'&nbsp;€</td>';
-    h += '</tr></table>';
-    h += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(30,64,53,.15);font-size:10.5px;color:rgba(15,15,15,.6);line-height:1.5"><strong style="display:block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#0F0F0F;margin-bottom:4px">'+(isEN?'Telework Option · ':'Offre Télétravail · ')+opt.tw+(opt.tw>1?' Utilisateurs':' Utilisateur')+'</strong>'+(isEN?'Additional access. Two users/members for the same workstation. Alternating presence of only one collaborator at a time in the building.':'Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.')+'</div>';
-    h += '</td></tr>';
+function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
+  var INK='#0F0F0F', GR='rgba(15,15,15,.40)';
+  var _remEl=document.getElementById('remiseInput');
+  var remise=_remEl?Math.min(25,Math.max(0,parseFloat(_remEl.value)||0))/100:0;
+  var vatLabel=isEN?'excl. VAT/month':'H.T./mois';
+  var dt=getDefaultTier();
+  var paliers=[{d:remise},{d:1-(1-0.05)*(1-remise)},{d:1-(1-0.10)*(1-remise)},{d:1-(1-0.15)*(1-remise)}];
+  var mainLabels=isEN?['Monthly','12 months','24 months','36 months']:['3 mois','12 mois','24 mois','36 mois'];
+  function optTotalAt(d){
+    return opt.bureaux.reduce(function(s,b){
+      if(b.isItin){var q=b.itinQty||1,add=b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0;return s+Math.round(ITIN_PRIX*(1-d))*q+add;}
+      return s+Math.round(b.prix*(1-d));
+    },0)+((opt.tw||0)*170);
   }
-
-  /* Tarifs section avec remise intégrée */
-  var paliers = isEN
-    ? [{label:'Monthly (3 months minimum)'+remLabel,d:remise},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise)}]
-    : [{label:'Mensuel (3 mois minimum)'+remLabel,d:remise},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise)}];
-
-  h += '<tr><td style="border-top:1px solid rgba(15,15,15,.09)">';
-  h += '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">';
-  /* Tarifs header */
-  h += '<tr><td colspan="2" style="padding:8px 16px 4px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:'+'#B09438'+';font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:600;background:#FAFAFA">'+tarifsTitle+'</td></tr>';
-  /* baseTotal: prix de référence AVEC remise appliquée (palier mensuel) */
-  var baseTotal = opt.bureaux.reduce(function(s,b) {
-    if (b.isItin) {
-      var q=b.itinQty||1, add=(b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0);
-      return s + Math.round(ITIN_PRIX*(1-remise))*q + add;
-    }
-    return s + Math.round(b.prix*(1-remise));
-  }, 0);
-  var _twOptAdd = (opt.tw || 0) * 170;
-  baseTotal += _twOptAdd;
-  var _selTiersO = getSelectedTiers();
-  paliers.forEach(function(p, pi) {
-    if (_selTiersO.indexOf(pi) === -1) return;
-    var tot = opt.bureaux.reduce(function(s2,b2){
-      if (b2.isItin) {
-        var q2=b2.itinQty||1;
-        var add2=b2.addons?(b2.addons.domi?60:0)+(b2.addons.casier?30:0):0;
-        return s2 + Math.round(ITIN_PRIX*(1-p.d))*q2 + add2;
-      }
-      return s2 + Math.round(b2.prix*(1-p.d));
-    }, 0) + _twOptAdd;
-    var saving = baseTotal - tot;
-    var annualSaving = Math.round(saving * 12);
-    var bg = pi>0 ? 'rgba(30,64,53,.08)' : '#FAFAFA';
-    var fw = pi>0 ? '500' : '300';
-    var chip = '';
-    if (pi>0 && annualSaving>0) {
-      var chipTxt = isEN ? '\u2713 '+fmt(annualSaving)+'\u00a0\u20ac\u2009/ yr' : '\u2713 '+fmt(annualSaving)+'\u00a0\u20ac\u2009/ an';
-      chip = '&nbsp;&nbsp;<span style="background:rgba(30,64,53,0.1);border:1px solid rgba(30,64,53,0.25);border-radius:50px;padding:1px 8px;font-size:9px;color:#1E4035;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:500;white-space:nowrap">'+chipTxt+'</span>';
-    }
-    h += '<tr style="background:'+bg+'">';
-    h += '<td style="padding:6px 16px;font-size:12px;color:'+GR+';font-weight:'+fw+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+p.label+chip+'</td>';
-    h += '<td style="padding:6px 16px;font-size:13px;color:'+INK+';font-weight:'+fw+';text-align:right;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'+fmt(tot)+'&nbsp;\u20ac<span style="font-size:10px;color:'+GR+';font-weight:300"> '+vatLabel+'</span></td>';
-    h += '</tr>';
+  var totDefault=optTotalAt(paliers[dt].d);
+  var h='';
+  var pname=opt.label||'';
+  var isPlaceholder=!pname||pname==='Texte personnalisé'||pname==='Custom text';
+  h+='<tr><td style="background:#faf8f4;padding:13px 16px;border-bottom:1px solid #e9e1d2">';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+  h+='<td valign="middle"><span style="display:inline-block;background:#B09438;color:#fff;border-radius:50px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;font-family:Plus Jakarta Sans,Arial,sans-serif">Option '+optNum+'</span>';
+  if(!isPlaceholder) h+='<span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#0F0F0F;margin-left:10px">'+pname+'</span>';
+  h+='</td>';
+  h+='<td align="right" valign="middle"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:17px;font-weight:700;color:#1E4035;white-space:nowrap">'+fmt(totDefault)+'<sup style="color:#B09438;font-size:10px"> €</sup></div><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:#5a5248">'+vatLabel+'</div></td>';
+  h+='</tr></table></td></tr>';
+  h+='<tr><td style="background:#ffffff;padding:6px 16px">';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">';
+  opt.bureaux.forEach(function(b,bi){
+    var price=b.isItin?Math.round(ITIN_PRIX*(1-paliers[dt].d))*(b.itinQty||1)+(b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0):Math.round(b.prix*(1-paliers[dt].d));
+    var etageLabel=isEN?(b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor'):etLbl(b.etage);
+    var metaParts=[]; if(!b.isItin)metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); if(b.isItin&&b.itinQty&&b.itinQty>1)metaParts.push(b.itinQty+' abonnements');
+    var meta=metaParts.join(' · ');
+    var refTxt=b.isItin?'ITIN':b.ref;
+    var bb=bi<opt.bureaux.length-1?'border-bottom:1px solid #f1ede4;':'';
+    h+='<tr><td style="'+bb+'padding:9px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+    h+='<td width="62" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10.5px;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>';
+    h+='<td valign="middle" style="padding:0 10px"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#0F0F0F">'+b.label+'</div><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10.5px;color:#5a5248;margin-top:1px">'+meta+'</div></td>';
+    h+='<td align="right" valign="middle" style="white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:600;color:#0F0F0F">'+fmt(price)+'<sup style="color:#B09438;font-size:9px"> €</sup></td>';
+    h+='</tr></table></td></tr>';
   });
-  h += '</table></td></tr>';
+  h+='</table></td></tr>';
+  if(opt.tw && opt.tw>0){
+    var _twPriceOpt=opt.tw*170;
+    h+='<tr><td style="padding:2px 16px 8px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+    h+='<td valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;margin-right:8px">'+(isEN?'Telework':'Télétravail')+'</span><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</span></td>';
+    h+='<td align="right" valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twPriceOpt)+' €</td>';
+    h+='</tr></table></td></tr>';
+  }
+  var _selTiersO=getSelectedTiers();
+  var ftParts=[];
+  _selTiersO.forEach(function(pi){
+    var tot=optTotalAt(paliers[pi].d);
+    ftParts.push(mainLabels[pi]+' <b style="color:#1E4035;font-weight:700">'+fmt(tot)+' €</b>');
+  });
+  h+='<tr><td style="background:#f3efe6;padding:9px 16px;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;color:#5a5248;line-height:1.7">'+ftParts.join(' &nbsp;·&nbsp; ')+'</td></tr>';
   return h;
 }
 
