@@ -1384,6 +1384,39 @@ function getDefaultTier() {
   if (sel.indexOf(d) === -1) d = sel.length ? sel[sel.length-1] : 0;
   return d;
 }
+/* Bloc "Tout inclus" — 2 colonnes, checkmarks (email-safe) */
+function buildInclEmail(isEN) {
+  var items = isEN ? [
+    '24/7 access in your chosen arrondissement.',
+    'Shared spaces: coworking, dining, patio, gym.',
+    'Business address & drawer storage (except Nomad).',
+    'Fixed line, calls to France & worldwide included.',
+    'Print allowance: 200 B&W and 25 colour / month.',
+    'Unlimited break areas: coffee, tea, fresh fruit.',
+    'Concierge: mail, taxis, meeting room bookings.',
+    'All-inclusive: electricity, cleaning, utilities, AC.'
+  ] : [
+    'Accès 24h/24 et 7j/7 dans l’arrondissement choisi.',
+    'Espaces communs : coworking, restauration, patio, sport.',
+    'Domiciliation et rangement tiroir (sauf Itinérant).',
+    'Téléphone fixe, communications France et monde incluses.',
+    'Forfait impression : 200 N&B et 25 couleurs / mois.',
+    'Tisaneries illimitées : café, thé, fruits frais.',
+    'Conciergerie : courrier, taxis, réservations de salles.',
+    'All-inclus : électricité, ménage, charges, climatisation.'
+  ];
+  var title = isEN ? 'ALL-INCLUSIVE — EXCL. VAT' : 'TOUT INCLUS — TARIFS H.T.';
+  function li(t){ return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:7px"><tr><td width="16" valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#1E4035;font-weight:700;line-height:1.45">&#10003;</td><td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#5a5248;line-height:1.45">'+t+'</td></tr></table>'; }
+  var colL='', colR='';
+  for (var i=0;i<items.length;i++){ if(i<4) colL+=li(items[i]); else colR+=li(items[i]); }
+  var h='<tr><td style="background:#F5EFE5;padding:20px 28px">';
+  h+='<p style="margin:0 0 14px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+title+'</p>';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+  h+='<td width="50%" valign="top" style="padding-right:12px">'+colL+'</td>';
+  h+='<td width="50%" valign="top" style="padding-left:12px">'+colR+'</td>';
+  h+='</tr></table></td></tr>';
+  return h;
+}
 
 /* ============================================================
    SEND EMAIL
@@ -1605,11 +1638,7 @@ function buildEmail(data, showTotal) {
     h+='<p style="margin:10px 0 0;font-size:11px;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?'or simply reply to this email':'ou répondez simplement à cet email')+'</p>';
     h+='</td></tr>';
     /* Inclusions — fond ivoire, checkmarks */
-    var inclTitle = isEN ? 'ALL-INCLUSIVE' : 'TOUT INCLUS';
-    h+='<tr><td style="background:#F5EFE5;padding:20px 28px">';
-    h+='<p style="margin:0 0 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+inclTitle+'</p>';
-    h+='<p style="margin:0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText.replace(/<br>/g,'</p><p style="margin:3px 0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">').replace(/\u2022/g,'&#10003;')+'</p>';
-    h+='</td></tr>';
+    h+=buildInclEmail(isEN);
     /* Conditions contractuelles — fond creme */
     var ccTitle = isEN ? 'CONTRACTUAL CONDITIONS' : 'CONDITIONS CONTRACTUELLES';
     var ccItems = isEN
@@ -2251,11 +2280,7 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<p style="margin:10px 0 0;font-size:11px;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?'or simply reply to this email':'ou répondez simplement à cet email')+'</p>';
   h+='</td></tr>';
   /* Inclusions — fond ivoire, checkmarks */
-  var inclTitle2 = isEN ? 'ALL-INCLUSIVE' : 'TOUT INCLUS';
-  h+='<tr><td style="background:#F5EFE5;padding:20px 28px">';
-  h+='<p style="margin:0 0 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+inclTitle2+'</p>';
-  h+='<p style="margin:0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+legalText.replace(/<br>/g,'</p><p style="margin:3px 0;font-size:11px;color:#0F0F0F;line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">').replace(/•/g,'✓')+'</p>';
-  h+='</td></tr>';
+  h+=buildInclEmail(isEN);
   /* Conditions contractuelles — fond creme */
   var ccList2 = ccItems.map(function(i){ return '<tr><td style="padding:2px 0;font-size:11px;color:rgba(15,15,15,.6);font-family:Plus Jakarta Sans,Arial,sans-serif;line-height:1.5">'+i+'</td></tr>'; }).join('');
   h+='<tr><td style="background:#FAFAFA;padding:16px 28px;border-top:1px solid rgba(15,15,15,.06)">';
