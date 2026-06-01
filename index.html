@@ -1527,17 +1527,28 @@ function buildEmail(data, showTotal) {
         var p = paliers[pi];
         var tot = data.reduce(function(s,b){return s+Math.round(b.prix*(1-p.d));},0) + _twAdd;
         var isHl = (pi === _defTier);
-        var thBg = isHl ? '#d6e8dd' : '#dceae2';
-        var tdBg = isHl ? '#d6e8dd' : '#eef5f1';
         var bl = idx>0 ? 'border-left:1px solid #cfe2d6;' : '';
         var sub, subColor, subWeight;
         if (pi===0) { sub = (_remise>0 ? (isEN?'incl. '+Math.round(_remise*100)+'%':'remise '+Math.round(_remise*100)+'%') : (isEN?'3 months min.':'3 mois min.')); subColor='rgba(15,15,15,.45)'; subWeight='400'; }
         else { sub = '\u2212'+(Math.round(p.d*1000)/10)+'\u00a0%'; subColor='#7A6015'; subWeight='600'; }
-        _ths += '<th style="background:'+thBg+';padding:8px 8px;text-align:center;font-size:10px;font-weight:600;color:#1E4035;'+bl+'line-height:1.3;font-family:Plus Jakarta Sans,Arial,sans-serif">'+_mainLabels[pi]+'<br><span style="font-size:8.5px;color:'+subColor+';font-weight:'+subWeight+'">'+sub+'</span></th>';
-        _tds += '<td style="background:'+tdBg+';padding:9px 8px;text-align:center;font-size:15px;font-weight:700;color:#1E4035;'+bl+'border-top:1px solid #d3e6da;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+fmt(tot)+'<sup style="color:#B09438;font-size:9px"> \u20ac</sup></td>';
+        if (isHl) {
+          var pickLbl = isEN ? '\u2605 DISPLAYED RATE' : '\u2605 TARIF AFFICH\u00c9';
+          _ths += '<th style="background:#B09438;padding:7px 8px;text-align:center;border:2px solid #B09438;border-bottom:none;line-height:1.25;font-family:Plus Jakarta Sans,Arial,sans-serif">'
+            +'<span style="display:block;font-size:7px;letter-spacing:.1em;color:#fff;font-weight:700;margin-bottom:2px;opacity:.95">'+pickLbl+'</span>'
+            +'<span style="font-size:11px;font-weight:700;color:#fff">'+_mainLabels[pi]+'</span>'
+            +'<br><span style="font-size:8.5px;color:#fff;font-weight:600;opacity:.85">'+sub+'</span></th>';
+          _tds += '<td style="background:#fbf2d8;padding:10px 8px;text-align:center;font-size:16px;font-weight:700;color:#1E4035;border-left:2px solid #B09438;border-right:2px solid #B09438;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+fmt(tot)+'<sup style="color:#B09438;font-size:9px"> \u20ac</sup></td>';
+        } else {
+          _ths += '<th style="background:#dceae2;padding:8px 8px;text-align:center;font-size:10px;font-weight:600;color:#1E4035;'+bl+'line-height:1.3;font-family:Plus Jakarta Sans,Arial,sans-serif">'+_mainLabels[pi]+'<br><span style="font-size:8.5px;color:'+subColor+';font-weight:'+subWeight+'">'+sub+'</span></th>';
+          _tds += '<td style="background:#eef5f1;padding:9px 8px;text-align:center;font-size:15px;font-weight:700;color:#1E4035;'+bl+'border-top:1px solid #d3e6da;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+fmt(tot)+'<sup style="color:#B09438;font-size:9px"> \u20ac</sup></td>';
+        }
         var saving = Math.round((baseTotal - tot)*12);
         var svTxt = (pi===0||saving<=0) ? '\u2014' : '\u2212'+fmt(saving)+'\u00a0\u20ac/'+(isEN?'yr':'an');
-        _svs += '<td style="background:'+tdBg+';padding:0 8px 8px;text-align:center;font-size:9px;font-weight:600;color:#7A6015;'+bl+'font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+svTxt+'</td>';
+        if (isHl) {
+          _svs += '<td style="background:#fbf2d8;padding:0 8px 9px;text-align:center;font-size:9px;font-weight:700;color:#7A6015;border-left:2px solid #B09438;border-right:2px solid #B09438;border-bottom:2px solid #B09438;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+svTxt+'</td>';
+        } else {
+          _svs += '<td style="background:#eef5f1;padding:0 8px 8px;text-align:center;font-size:9px;font-weight:600;color:#7A6015;'+bl+'font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+svTxt+'</td>';
+        }
       });
       var recapTitle2 = isEN ? 'Total monthly excl. VAT by commitment' : 'Total mensuel H.T. selon l\u2019engagement';
       recap='<tr><td style="background:#ffffff;padding:4px 36px 22px">'
@@ -1545,7 +1556,9 @@ function buildEmail(data, showTotal) {
         +'<span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+recapTitle2+'</p>'
         +'<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:1px solid #d3e6da;border-radius:10px;overflow:hidden">'
         +'<tr>'+_ths+'</tr><tr>'+_tds+'</tr><tr>'+_svs+'</tr>'
-        +'</table></td></tr>';
+        +'</table>'
+        +'<p style="margin:8px 0 0;font-size:10px;color:#5a5248;font-family:Plus Jakarta Sans,Arial,sans-serif;line-height:1.5">'+(isEN?'The office prices shown above correspond to the highlighted commitment ':'Les prix des bureaux indiqués ci-dessus correspondent à l’engagement surligné ')+'<span style="color:#7A6015;font-weight:700">'+_mainLabels[_defTier]+'</span>.</p>'
+        +'</td></tr>';
     }
 
     var h='';
@@ -2327,7 +2340,11 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   var ftParts=[];
   _selTiersO.forEach(function(pi){
     var tot=optTotalAt(paliers[pi].d);
-    ftParts.push(mainLabels[pi]+' <b style="color:#1E4035;font-weight:700">'+fmt(tot)+' €</b>');
+    if(pi===dt){
+      ftParts.push('<span style="background:#B09438;color:#fff;border-radius:50px;padding:2px 9px;font-weight:700;white-space:nowrap">'+mainLabels[pi]+' '+fmt(tot)+' €</span>');
+    } else {
+      ftParts.push(mainLabels[pi]+' <b style="color:#1E4035;font-weight:700">'+fmt(tot)+' €</b>');
+    }
   });
   h+='<tr><td style="background:#f3efe6;padding:9px 16px;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;color:#5a5248;line-height:1.7">'+ftParts.join(' &nbsp;·&nbsp; ')+'</td></tr>';
   return h;
