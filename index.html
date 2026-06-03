@@ -2240,17 +2240,29 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
       +'</body></html>';
   }
 
+  var _nOpts = enrichedOpts.length;
+  var _cwFR = ['','une','deux','trois','quatre','cinq','six','sept','huit'];
+  var _cwEN = ['','one','two','three','four','five','six','seven','eight'];
+  var _cw = (isEN?_cwEN:_cwFR)[_nOpts] || _nOpts;
   var nbLabel = isEN
-    ? (enrichedOpts.length + ' option' + (enrichedOpts.length>1?'s':'') + ' — ' + allData.length + ' office' + (allData.length>1?'s':''))
-    : (enrichedOpts.length + ' option' + (enrichedOpts.length>1?'s':'') + ' — ' + allData.length + ' bureau' + (allData.length>1?'x':'') + ' sélectionné' + (allData.length>1?'s':''));
+    ? (_cw + ' configuration' + (_nOpts>1?'s':'') + ' to choose from')
+    : (_cw + ' configuration' + (_nOpts>1?'s':'') + ' au choix');
 
-  var introText = isEN
-    ? 'Following our discussions, please find below our selection of available offices at The Bureau.'
-    : 'Suite \u00e0 nos \u00e9changes, veuillez trouver ci-dessous notre s\u00e9lection de bureaux disponibles au sein de The Bureau.';
-  /* Override with customMsg if filled */
+  /* Intro sp\u00e9cifique mode options (HTML autoris\u00e9 : \u00ab N configurations \u00bb en gras) */
   var _cmEl = document.getElementById('customMsg');
   var _cm = _cmEl ? _cmEl.value.trim() : '';
-  if (_cm) introText = _cm;
+  /* Le message générique (défaut mode normal) n'est PAS considéré comme personnalisé en mode options */
+  var _genFR = 'Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.';
+  var _genEN = 'Following our discussions, please find below our selection of available offices at The Bureau.';
+  var _isCustom = _cm && _cm !== _genFR && _cm !== _genEN;
+  var introHTML;
+  if (_isCustom) {
+    introHTML = _cm.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  } else {
+    introHTML = isEN
+      ? 'Following our discussions, here are <b style="color:'+INK+';font-weight:700">'+_cw+' possible configurations</b> based on your priorities. Each one is independent \u2014 let me know which suits you best.'
+      : 'Suite \u00e0 nos \u00e9changes, voici <b style="color:'+INK+';font-weight:700">'+_cw+' configurations</b> possibles selon vos priorit\u00e9s. Chacune est ind\u00e9pendante \u2014 dites-moi celle qui vous convient le mieux.';
+  }
 
   var legalText = document.querySelector ? '' : ''; /* reuse from buildEmail scope */
   /* Rebuild legal same as buildEmail */
@@ -2289,10 +2301,10 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#B09438;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700;vertical-align:middle">'+propLabel+'</td>';
   h+='</tr></table></td></tr>';
 
-  /* Intro — identical */
-  h+='<tr><td style="background:#ffffff;padding:26px 36px 20px;border-bottom:1px solid rgba(15,15,15,.09)">';
-  h+='<p style="margin:0 0 6px;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:20px;font-weight:600;color:'+INK+'">'+(isEN?'Dear ':'Bonjour ')+civ+(soc?' <span style="font-size:14px;color:'+GR+'">| '+soc+'</span>':'')+',</p>';
-  h+='<p style="margin:0;font-size:13px;color:'+GR+';line-height:1.65;font-family:Plus Jakarta Sans,Arial,sans-serif">'+introText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')+'</p>';
+  /* Intro — maquette mode options : prénom en gras + « · société », intro spécifique */
+  h+='<tr><td style="background:#ffffff;padding:28px 36px 22px;border-bottom:1px solid rgba(15,15,15,.09)">';
+  h+='<p style="margin:0 0 8px;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:21px;font-weight:300;color:'+INK+'">'+(isEN?'Hello ':'Bonjour ')+'<b style="font-weight:700">'+civ+'</b>'+(soc?' <span style="font-size:14px;color:'+GR+';font-weight:500">· '+soc+'</span>':'')+'</p>';
+  h+='<p style="margin:0;font-size:13.5px;color:'+GR+';line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+introHTML+'</p>';
   h+='</td></tr>';
 
   /* Options count label */
