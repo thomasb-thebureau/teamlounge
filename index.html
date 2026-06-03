@@ -605,8 +605,8 @@ body.dark .lang-toggle button.on{background:var(--or);color:#1a1a1a}
 .tw-section{margin:10px 0 0;transition:all .25s}
 .tw-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--creme);border:1px solid var(--cf);border-radius:3px}
 .tw-section.on .tw-row{border-radius:3px 3px 0 0;border-color:var(--vert);border-bottom-color:transparent}
-.tw-badge{display:inline-flex;align-items:center;background:var(--vert);color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.12em;padding:4px 10px;border-radius:50px;text-transform:uppercase;flex-shrink:0}
-.tw-sub{font-size:11px;color:var(--gris);flex:1}
+.tw-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--vert);color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:50px;text-transform:uppercase;flex-shrink:0;width:124px;box-sizing:border-box}
+.tw-sub{font-size:11px;color:var(--gris);flex:1;white-space:nowrap}
 .tw-qty{display:flex;align-items:center;gap:2px;background:#fff;border:1px solid var(--cf);border-radius:50px;padding:2px;flex-shrink:0}
 .tw-qty button{background:none;border:none;width:24px;height:24px;cursor:pointer;font-size:14px;color:var(--vert);border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;font-weight:600}
 .tw-qty button:hover{background:rgba(30,64,53,.1)}
@@ -784,8 +784,8 @@ var OPT_COUNTER = 0;
 /* Extras additionnels par option (quantité × prix, non remisés) */
 var ADDONS = [
   {k:'domi',   fr:'Domiciliation',            en:'Business address',     p:60,  perFr:'/mois',       perEn:'/mo'},
-  {k:'parking',fr:'Place de parking',         en:'Parking space',        p:300, perFr:'/mois/place', perEn:'/mo/space'},
-  {k:'ev',     fr:'Place voiture électrique', en:'EV parking space',     p:400, perFr:'/mois/place', perEn:'/mo/space'},
+  {k:'parking',fr:'Parking',                   en:'Parking',              p:300, perFr:'/mois/place', perEn:'/mo/space'},
+  {k:'ev',     fr:'Parking élec.',             en:'EV parking',           p:400, perFr:'/mois/place', perEn:'/mo/space'},
   {k:'moto',   fr:'Parking moto',             en:'Motorbike parking',    p:150, perFr:'/mois/place', perEn:'/mo/space'},
   {k:'casier', fr:'Casier',                   en:'Locker',               p:30,  perFr:'/mois',       perEn:'/mo'},
   {k:'signal', fr:'Signalétique',             en:'Signage',              p:30,  perFr:'/mois',       perEn:'/mo'}
