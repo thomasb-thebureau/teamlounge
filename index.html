@@ -233,6 +233,8 @@ body.dark .badge-large{background:rgba(74,154,122,.12);color:#5cb88a;border-colo
 .opt-tw{display:flex;align-items:center;gap:9px;margin-top:11px;padding-top:11px;border-top:1px dashed var(--cf)}
 .opt-tw .tw-qty{margin-left:auto}
 .opt-tw .twadd{margin-left:auto;border:1px dashed var(--vert);background:none;border-radius:50px;padding:5px 12px;font:600 10px 'Plus Jakarta Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--vert);cursor:pointer}
+.exchip{display:inline-block;border:1px dashed var(--vert);background:none;border-radius:50px;padding:5px 13px;font:600 10px 'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--vert);cursor:pointer;margin:0 6px 6px 0}
+.exchip:hover{background:var(--vp)}
 .add-opt{width:100%;border:1.5px dashed var(--or);background:var(--op);color:var(--orAA);border-radius:12px;padding:13px;font:700 11px 'Plus Jakarta Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
 .add-opt:hover{background:rgba(176,148,56,.14)}
 .mhdr-right{display:flex;align-items:center;gap:14px}
@@ -2097,7 +2099,7 @@ function toggleOptMode() {
   var sortRow = document.getElementById('msortBtns');
   var optHead = document.getElementById('optHead');
   var optHint = document.getElementById('optHint');
-  var gtw = document.getElementById('groupToggleWrap'); var twHead = document.getElementById('twHead'); var twSec = document.getElementById('twSection');
+  var gtw = document.getElementById('groupToggleWrap'); var twHead = document.getElementById('twHead'); var twSec = document.getElementById('twSection'); var twEx = document.getElementById('twExtras');
   if (OPT_MODE) {
     if(selHead) selHead.style.display='none';
     if(moffs) moffs.style.display='none';
@@ -2105,7 +2107,7 @@ function toggleOptMode() {
     if(optHead) optHead.style.display='flex';
     if(optHint) optHint.style.display='block';
     panel.style.display='block';
-    if(gtw) gtw.style.display='none'; if(twHead) twHead.style.display='none'; if(twSec) twSec.style.display='none';
+    if(gtw) gtw.style.display='none'; if(twHead) twHead.style.display='none'; if(twSec) twSec.style.display='none'; if(twEx) twEx.style.display='none';
     if (!OPTIONS.length) addOption();
     renderOptPanel();
   } else {
@@ -2115,7 +2117,7 @@ function toggleOptMode() {
     if(optHead) optHead.style.display='none';
     if(optHint) optHint.style.display='none';
     panel.style.display='none';
-    if(gtw) gtw.style.display='flex'; if(twHead) twHead.style.display=''; if(twSec) twSec.style.display='';
+    if(gtw) gtw.style.display='flex'; if(twHead) twHead.style.display=''; if(twSec) twSec.style.display=''; if(twEx){ twEx.style.display=''; renderTwExtras(); }
   }
 }
 
@@ -2178,8 +2180,8 @@ function renderOptPanel() {
       }
     });
     var chips='';
-    ADDONS.forEach(function(a){ if(!(_ex[a.k]>0)) chips += '<button class="twadd" style="margin:0 6px 6px 0" onclick="setOptExtra('+opt.id+',\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
-    if(chips) html += '<div style="display:flex;flex-wrap:wrap;margin-top:6px">'+chips+'</div>';
+    ADDONS.forEach(function(a){ if(!(_ex[a.k]>0)) chips += '<button class="exchip" onclick="setOptExtra('+opt.id+',\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
+    if(chips) html += '<div style="display:flex;flex-wrap:wrap;margin-top:8px">'+chips+'</div>';
     html += '</div></div>';
   });
   html += '<button class="add-opt" onclick="addOption()">+ Ajouter une option</button>';
@@ -3022,7 +3024,7 @@ function renderTwExtras(){
     h+='<div class="tw-row" style="margin-top:8px"><span class="tw-badge">'+a.fr+'</span><span class="tw-sub">'+a.p+' € H.T.'+a.perFr+'</span><div class="tw-qty"><button type="button" onclick="setExtra(\''+a.k+'\','+(q-1)+')">−</button><input type="number" min="0" max="50" value="'+q+'" onchange="setExtra(\''+a.k+'\',parseInt(this.value)||0)"><button type="button" onclick="setExtra(\''+a.k+'\','+(q+1)+')">+</button></div><div class="tw-price">'+fmt(q*a.p)+' €</div><button class="opt-del" onclick="setExtra(\''+a.k+'\',0)" title="Retirer" style="margin-left:6px">×</button></div>';
   });
   var chips='';
-  ADDONS.forEach(function(a){ if(!(EXTRAS[a.k]>0)) chips+='<button class="twadd" style="margin:0 6px 6px 0" onclick="setExtra(\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
+  ADDONS.forEach(function(a){ if(!(EXTRAS[a.k]>0)) chips+='<button class="exchip" onclick="setExtra(\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
   if(chips) h+='<div style="display:flex;flex-wrap:wrap;margin-top:8px">'+chips+'</div>';
   el.innerHTML=h;
 }
