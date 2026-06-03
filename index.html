@@ -777,8 +777,21 @@ var ITIN_PRIX   = 499;
 var ITIN_ADDONS = {domi:false, casier:false};
 var EP_LANG = 'fr'; /* current preview language */
 var OPT_MODE = false;       /* Options mode active */
-var OPTIONS = [];           /* [{id, label, refs:[]}] */
+var OPTIONS = [];           /* [{id, label, refs:[], tw, extras:{}}] */
 var OPT_COUNTER = 0;
+/* Extras additionnels par option (quantité × prix, non remisés) */
+var ADDONS = [
+  {k:'domi',   fr:'Domiciliation',            en:'Business address',     p:60,  perFr:'/mois',       perEn:'/mo'},
+  {k:'parking',fr:'Place de parking',         en:'Parking space',        p:300, perFr:'/mois/place', perEn:'/mo/space'},
+  {k:'ev',     fr:'Place voiture électrique', en:'EV parking space',     p:400, perFr:'/mois/place', perEn:'/mo/space'},
+  {k:'moto',   fr:'Parking moto',             en:'Motorbike parking',    p:150, perFr:'/mois/place', perEn:'/mo/space'},
+  {k:'casier', fr:'Casier',                   en:'Locker',               p:30,  perFr:'/mois',       perEn:'/mo'},
+  {k:'signal', fr:'Signalétique',             en:'Signage',              p:30,  perFr:'/mois',       perEn:'/mo'}
+];
+function optExtrasTotal(opt){
+  if(!opt||!opt.extras) return 0;
+  var t=0; ADDONS.forEach(function(a){ t += (opt.extras[a.k]||0)*a.p; }); return t;
+}
 var SEL_ORDER = [];
 var MODAL_SORT = 'custom';
 
@@ -2145,7 +2158,7 @@ function toggleOptMode() {
 
 function addOption() {
   OPT_COUNTER++;
-  OPTIONS.push({ id: OPT_COUNTER, label: 'Texte personnalisé', refs: [], tw: getTwQty() });
+  OPTIONS.push({ id: OPT_COUNTER, label: 'Texte personnalisé', refs: [], tw: getTwQty(), extras: {} });
   renderOptPanel();
 }
 
@@ -2175,6 +2188,7 @@ function renderOptPanel() {
     var optBureaux = selData.filter(function(b){ return opt.refs.indexOf(b.ref) > -1; });
     var total = optBureaux.reduce(function(s,b){ var q = b.isItin && opt.itinQty ? opt.itinQty : 1; return s + b.prix * q; }, 0);
     total += (opt.tw || 0) * 170;
+    total += optExtrasTotal(opt);
     html += '<div class="opt-card"><div class="opt-hdr">';
     html += '<span class="opt-badge">'+letter+'</span>';
     html += '<input class="opt-name" value="'+esc(opt.label)+'" onchange="OPTIONS.find(function(o){return o.id==='+opt.id+'}).label=this.value">';
@@ -2193,6 +2207,16 @@ function renderOptPanel() {
     } else {
       html += '<div class="opt-tw"><button class="twadd" onclick="setOptTw('+opt.id+',1)">+ Offre Télétravail</button></div>';
     }
+    var _ex = opt.extras || {};
+    ADDONS.forEach(function(a){
+      var q=_ex[a.k]||0;
+      if(q>0){
+        html += '<div class="opt-tw"><span class="tw-badge">'+a.fr+'</span><span class="tw-sub">'+a.p+' €'+a.perFr+'</span><div class="tw-qty"><button type="button" onclick="setOptExtra('+opt.id+',\''+a.k+'\','+(q-1)+')">−</button><input type="number" min="0" max="50" value="'+q+'" onchange="setOptExtra('+opt.id+',\''+a.k+'\',parseInt(this.value)||0)"><button type="button" onclick="setOptExtra('+opt.id+',\''+a.k+'\','+(q+1)+')">+</button></div><span class="tw-price">'+fmt(q*a.p)+' €</span><button class="opt-del" onclick="setOptExtra('+opt.id+',\''+a.k+'\',0)" title="Retirer" style="margin-left:4px">×</button></div>';
+      }
+    });
+    var chips='';
+    ADDONS.forEach(function(a){ if(!(_ex[a.k]>0)) chips += '<button class="twadd" style="margin:0 6px 6px 0" onclick="setOptExtra('+opt.id+',\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
+    if(chips) html += '<div style="display:flex;flex-wrap:wrap;margin-top:6px">'+chips+'</div>';
     html += '</div></div>';
   });
   html += '<button class="add-opt" onclick="addOption()">+ Ajouter une option</button>';
@@ -2203,6 +2227,13 @@ function setOptTw(optId, qty){
   var opt=OPTIONS.find(function(o){return o.id===optId});
   if(!opt)return;
   opt.tw=Math.max(0,Math.min(20,qty||0));
+  renderOptPanel();
+}
+function setOptExtra(optId, key, qty){
+  var opt=OPTIONS.find(function(o){return o.id===optId});
+  if(!opt)return;
+  if(!opt.extras) opt.extras={};
+  opt.extras[key]=Math.max(0,Math.min(50,qty||0));
   renderOptPanel();
 }
 
@@ -2217,7 +2248,7 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
     var bureaux = allData.filter(function(b){ return opt.refs.indexOf(b.ref) > -1; }).map(function(b) {
       return b.isItin ? Object.assign({},b,{itinQty:opt.itinQty||1}) : b;
     });
-    return { id:opt.id, label:opt.label, itinQty:opt.itinQty||1, tw:opt.tw||0, bureaux:bureaux };
+    return { id:opt.id, label:opt.label, itinQty:opt.itinQty||1, tw:opt.tw||0, extras:opt.extras||{}, bureaux:bureaux };
   }).filter(function(o){ return o.bureaux.length > 0; });
   if (!enrichedOpts.length) {
     /* No option contains any bureau — fall back to non-options email if available, else show a message.
@@ -2347,7 +2378,7 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
     return opt.bureaux.reduce(function(s,b){
       if(b.isItin){var q=b.itinQty||1,add=b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0;return s+Math.round(ITIN_PRIX*(1-d))*q+add;}
       return s+Math.round(b.prix*(1-d));
-    },0)+((opt.tw||0)*170);
+    },0)+((opt.tw||0)*170)+optExtrasTotal(opt);
   }
   var totDefault=optTotalAt(paliers[dt].d);
   var h='';
@@ -2382,6 +2413,15 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
     h+='<td valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;margin-right:8px">'+(isEN?'Telework':'Télétravail')+'</span><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</span></td>';
     h+='<td align="right" valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twPriceOpt)+' €</td>';
     h+='</tr></table></td></tr>';
+  }
+  if(opt.extras){
+    ADDONS.forEach(function(a){
+      var q=opt.extras[a.k]||0; if(q<=0) return;
+      h+='<tr><td style="padding:2px 16px 8px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+      h+='<td valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;margin-right:8px">'+(isEN?a.en:a.fr)+'</span><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr)+'</span></td>';
+      h+='<td align="right" valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(q*a.p)+' €</td>';
+      h+='</tr></table></td></tr>';
+    });
   }
   var _selTiersO=getSelectedTiers();
   var ftParts=[];
@@ -2898,6 +2938,19 @@ function exportPDF(){
     o+='</tr>';
     return o;
   }
+  function extraRows(opt){
+    if(!opt.extras) return '';
+    var o='';
+    ADDONS.forEach(function(a){
+      var q=opt.extras[a.k]||0; if(q<=0) return;
+      o+='<tr><td class="ctr"><span class="tw-tag">'+(isEN?'Extra':'Extra')+'</span></td>';
+      o+='<td><span class="site">'+(isEN?a.en:a.fr)+'<span class="bdesc">'+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr)+'</span></span></td>';
+      o+='<td class="ctr muted">—</td><td class="num muted">—</td><td class="ctr meta">'+q+'</td>';
+      o+='<td class="dispo-now">'+(isEN?'Immediate':'Immédiate')+'</td>';
+      o+='<td class="num"><span class="price">'+fmt(q*a.p)+'<span class="cur"> €</span></span></td></tr>';
+    });
+    return o;
+  }
   function recapTable(totsObj){
     var ths='',tds='',svs='';
     activeTiers.forEach(function(t){
@@ -2952,11 +3005,11 @@ function exportPDF(){
     OPTIONS.forEach(function(opt,_oi){
       var optB=selData.filter(function(b){return opt.refs.indexOf(b.ref)>=0});
       if(optB.length===0)return;
-      var _twOptP=(opt.tw||0)*170;
+      var _twOptP=(opt.tw||0)*170+optExtrasTotal(opt);
       var optT={};activeTiers.forEach(function(t){optT[t.key]=optB.reduce(function(s,b){var q=b.isItin?(opt.itinQty||1):1;return s+Math.round(b.prix*(1-t.d))*q},0)+_twOptP});
       var custom=(opt.label&&opt.label!=='Texte personnalisé'&&opt.label!=='Custom text')?'<span class="opt-name">'+esc(opt.label)+'</span>':'';
       h+='<div class="opt"><div class="opt-hd"><span class="opt-num">Option '+(_oi+1)+'</span>'+custom+'<span class="opt-tot"><div class="v">'+fmt(optT[_defKey])+'<span class="cur"> €</span></div><div class="l">'+(isEN?'excl. VAT/mo · ':'H.T./mois · ')+defShort+'</div></span></div>';
-      h+='<table class="tbl">'+simpleHeader()+'<tbody>'+simpleRows(optB, opt.itinQty)+((opt.tw&&opt.tw>0)?simpleTwRow(opt.tw):'')+'</tbody></table>';
+      h+='<table class="tbl">'+simpleHeader()+'<tbody>'+simpleRows(optB, opt.itinQty)+((opt.tw&&opt.tw>0)?simpleTwRow(opt.tw):'')+extraRows(opt)+'</tbody></table>';
       h+=optFooter(optT);
       h+='</div>';
     });
