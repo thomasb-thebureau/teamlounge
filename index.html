@@ -1616,6 +1616,13 @@ function buildEmail(data, showTotal) {
     h+='<tr><td style="background:#ffffff;padding:22px 36px">';
     h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">'+cards+'</table>';
     h+='</td></tr>';
+    /* Sous-titre VOS OPTIONS (si télétravail ou extras) */
+    var _hasOptions = getTwQty()>0 || (typeof getExtrasTotal==='function' && getExtrasTotal()>0);
+    if(_hasOptions){
+      h+='<tr><td style="background:#ffffff;padding:14px 36px 2px">';
+      h+='<span style="font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+(isEN?'Your options':'Vos options')+'</span>';
+      h+='</td></tr>';
+    }
     /* TW standalone block (always visible if qty > 0) */
     var _twQS=getTwQty();
     if(_twQS>0){
