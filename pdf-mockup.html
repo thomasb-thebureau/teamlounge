@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280,initial-scale=1"/>
+<title>Team Lounge — PDF A4 (maquette refonte · épurée)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--jade:#1E4035;--or:#B09438;--orD:#7A6015;--ink:#0F0F0F;--gris:#5a5248;--ivory:#F5EFE5;--cream:#faf8f4;--line:#e9e1d2}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',Arial,sans-serif;color:var(--ink);background:#0d1714;display:flex;justify-content:center;padding:28px 18px 60px;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(120% 120% at 50% 0,rgba(30,64,53,.5),rgba(13,23,20,.95));z-index:0}
+
+.page{position:relative;z-index:1;width:297mm;min-height:210mm;background:#fff;padding:13mm 14mm 11mm;display:flex;flex-direction:column;box-shadow:0 40px 110px rgba(0,0,0,.6);font-size:10.5px;line-height:1.5;border:2px solid rgba(176,148,56,.6);border-radius:8px;overflow:hidden}
+
+/* HEADER */
+.hd{display:flex;align-items:center;justify-content:space-between;gap:24px;background:var(--jade);margin:-13mm -14mm 0;padding:18px 14mm}
+.hd-l{display:flex;align-items:center;gap:16px}
+.hd-logo{height:34px;width:auto}
+.hd-div{width:1px;height:34px;background:rgba(176,148,56,.5)}
+.hd-title .eyebrow{font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);font-weight:700;margin-bottom:3px}
+.hd-title h1{font-size:20px;font-weight:300;color:#fff;line-height:1}
+.hd-title h1 b{font-weight:700;color:#fff}
+.hd-r{text-align:right}
+.hd-r .date{font-size:13px;font-weight:700;color:#fff}
+.hd-r .sub{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,239,229,.7);margin-top:2px}
+
+/* SECTION LABEL */
+.sec{display:flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;margin:18px 0 10px}
+.sec::before{content:'';width:18px;height:2px;background:var(--or)}
+.sec .eng{margin-left:auto;background:var(--or);color:#fff;border-radius:50px;padding:3px 12px;font-size:8.5px;letter-spacing:.06em;font-weight:700}
+
+/* TABLE bureaux — épurée, 1 seule colonne prix */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tbl thead th{background:var(--jade);color:var(--ivory);text-align:left;padding:9px 12px;font-weight:600;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase}
+.tbl thead th.num{text-align:right}.tbl thead th.ctr{text-align:center}
+.tbl tbody td{padding:11px 12px;border-top:1px solid var(--line);vertical-align:middle}
+.tbl tbody tr:nth-child(even) td{background:var(--cream)}
+.tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl td.ctr{text-align:center}
+.refb{display:inline-block;background:var(--jade);color:var(--ivory);padding:5px 12px;border-radius:50px;font-size:10px;font-weight:700}
+.site{font-weight:700;font-size:11.5px;color:var(--ink)}
+.site .desc{display:block;color:var(--gris);font-size:9px;font-weight:400;margin-top:2px;line-height:1.4}
+.meta{color:var(--ink);font-weight:500}.muted{color:var(--gris)}
+.dispo-now{color:var(--jade);font-weight:600}
+.price{font-size:14px;font-weight:700;color:var(--ink)}
+.price .cur{color:var(--or);font-size:9px}
+.tw-tag{display:inline-block;background:rgba(176,148,56,.14);color:var(--orD);padding:4px 11px;border-radius:50px;font-size:9px;font-weight:700}
+
+/* RECAP vert — totaux par engagement */
+.recap{margin-top:16px}
+.rt{display:flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;margin-bottom:9px}
+.rt::before{content:'';width:18px;height:2px;background:var(--or)}
+.rtable{width:100%;border-collapse:collapse;border:1px solid #d3e6da;border-radius:10px;overflow:hidden}
+.rtable th{background:#dceae2;padding:9px 10px;text-align:center;font-size:11px;font-weight:600;color:var(--jade);border-left:1px solid #cfe2d6;line-height:1.3}
+.rtable th:first-child{border-left:none}
+.rtable th .pct{display:block;font-size:9px;color:var(--orD);font-weight:600;margin-top:2px}
+.rtable th .pct.mono{color:var(--gris);font-weight:400}
+.rtable td{background:#eef5f1;padding:11px 10px;text-align:center;font-size:17px;font-weight:700;color:var(--jade);border-left:1px solid #cfe2d6;border-top:1px solid #d3e6da}
+.rtable td:first-child{border-left:none}
+.rtable td .cur{color:var(--or);font-size:10px}
+.rtable tr.sv td{font-size:9.5px;font-weight:600;color:var(--orD);padding:0 10px 9px;border-top:none}
+/* colonne mise en avant (doré) */
+.rtable th.hl{background:var(--or);color:#fff;border-color:var(--or)}
+.rtable th.hl .pick{display:block;font-size:7.5px;letter-spacing:.1em;color:#fff;font-weight:700;margin-bottom:2px}
+.rtable th.hl .pct{color:#fff}
+.rtable td.hl{background:#fbf2d8;color:var(--jade);border-left:2px solid var(--or);border-right:2px solid var(--or)}
+.rtable tr.sv td.hl{border-left:2px solid var(--or);border-right:2px solid var(--or);border-bottom:2px solid var(--or)}
+
+/* BOTTOM — pleine largeur empilé */
+.bottom{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.box{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:13px 16px}
+.box h3{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--orD);font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.box h3::before{content:'';width:16px;height:2px;background:var(--or)}
+.box ul{list-style:none;column-count:2;column-gap:22px}
+.box li{position:relative;padding-left:17px;margin-bottom:5px;font-size:9px;color:var(--gris);line-height:1.4;break-inside:avoid}
+.box li::before{content:'\2713';position:absolute;left:0;top:0;color:var(--jade);font-weight:700;font-size:9px}
+
+/* FOOTER */
+.ft{margin-top:14px;background:var(--jade);color:var(--ivory);border-radius:10px;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-top:3px solid var(--or)}
+.ft-l{display:flex;align-items:center;gap:14px}
+.ft-chev{height:28px;opacity:.9}
+.ft-name{font-weight:700;color:#fff;font-size:12px}
+.ft-meta{font-size:10px;color:rgba(245,239,229,.85);line-height:1.6}
+.ft-meta a{color:var(--ivory);text-decoration:none}
+.ft-r{text-align:right;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,239,229,.75);line-height:1.7}
+.ft-r b{color:var(--or);font-weight:600;font-size:11px}
+.cap{position:fixed;left:0;right:0;bottom:14px;text-align:center;color:rgba(245,239,229,.5);font-size:11px;letter-spacing:.14em;text-transform:uppercase;z-index:5}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hd">
+    <div class="hd-l">
+      <img class="hd-logo" src="./logo-white.svg" alt="The Bureau"/>
+      <div class="hd-div"></div>
+      <div class="hd-title">
+        <div class="eyebrow">Proposition personnalisée</div>
+        <h1>Sélection <b>bureaux</b></h1>
+      </div>
+    </div>
+    <div class="hd-r">
+      <div class="date">29/05/2026</div>
+      <div class="sub">3 bureaux · pour Acme Studio</div>
+    </div>
+  </header>
+
+  <div class="sec">Votre sélection · 3 bureaux <span class="eng">Tarif affiché · 24 mois</span></div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th class="ctr" style="width:64px">Réf.</th>
+        <th>Bureau</th>
+        <th class="ctr" style="width:52px">Étage</th>
+        <th class="num" style="width:48px">m²</th>
+        <th class="ctr" style="width:56px">Postes</th>
+        <th style="width:150px">Disponibilité</th>
+        <th class="num" style="width:130px">Prix H.T./mois</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="ctr"><span class="refb">A304</span></td>
+        <td><span class="site">The Bureau I<span class="desc">Bureau calme et lumineux, plein Sud, vue quai de Seine et tour Eiffel.</span></span></td>
+        <td class="ctr meta">3e</td><td class="num meta">26,5</td><td class="ctr meta">10</td>
+        <td class="dispo-now">Immédiate</td>
+        <td class="num"><span class="price">6 879<span class="cur"> €</span></span></td>
+      </tr>
+      <tr>
+        <td class="ctr"><span class="refb">A211</span></td>
+        <td><span class="site">The Bureau I<span class="desc">Bureau calme et lumineux, vue patio.</span></span></td>
+        <td class="ctr meta">2e</td><td class="num meta">12,1</td><td class="ctr meta">4</td>
+        <td class="muted">Dès le 30 sept. 2026</td>
+        <td class="num"><span class="price">3 236<span class="cur"> €</span></span></td>
+      </tr>
+      <tr>
+        <td class="ctr"><span class="refb">A000</span></td>
+        <td><span class="site">The Bureau I<span class="desc">Grand plateau composé de 2 espaces. Belle vue sur le Patio.</span></span></td>
+        <td class="ctr meta">RDC</td><td class="num meta">90</td><td class="ctr meta">28</td>
+        <td class="dispo-now">Immédiate</td>
+        <td class="num"><span class="price">15 975<span class="cur"> €</span></span></td>
+      </tr>
+      <tr>
+        <td class="ctr"><span class="tw-tag">Télétravail</span></td>
+        <td><span class="site">Offre Télétravail<span class="desc">2 abonnements · accès supplémentaire, présence alternée d'un seul collaborateur à la fois.</span></span></td>
+        <td class="ctr muted">—</td><td class="num muted">—</td><td class="ctr meta">2</td>
+        <td class="dispo-now">Immédiate</td>
+        <td class="num"><span class="price">340<span class="cur"> €</span></span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="recap">
+    <div class="rt">Total mensuel H.T. selon l'engagement</div>
+    <table class="rtable">
+      <tr>
+        <th>Mensuel<span class="pct mono">3 mois min.</span></th>
+        <th>12 mois<span class="pct">−5 %</span></th>
+        <th class="hl"><span class="pick">★ TARIF AFFICHÉ</span>24 mois<span class="pct">−10 %</span></th>
+        <th>36 mois<span class="pct">−15 %</span></th>
+      </tr>
+      <tr>
+        <td>29 329<span class="cur"> €</span></td>
+        <td>27 880<span class="cur"> €</span></td>
+        <td class="hl">26 430<span class="cur"> €</span></td>
+        <td>24 982<span class="cur"> €</span></td>
+      </tr>
+      <tr class="sv">
+        <td>—</td>
+        <td>−17 388 €/an</td>
+        <td class="hl">−34 788 €/an</td>
+        <td>−52 164 €/an</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="bottom">
+    <div class="box incl">
+      <h3>Tout inclus — tarifs H.T.</h3>
+      <ul>
+        <li>Accès 24/7 dans nos bâtiments.</li>
+        <li>Espaces communs : coworking, restauration, patio, sport.</li>
+        <li>Domiciliation et rangement tiroir (sauf Itinérant).</li>
+        <li>Téléphone fixe, communications France et monde incluses.</li>
+        <li>Forfait impression : 200 N&B et 25 couleurs / mois.</li>
+        <li>Tisaneries illimitées : café, thé, fruits frais.</li>
+        <li>Programmation événementielle : soirées, vernissages, partenariats et apéritivo du jeudi.</li>
+        <li>Conciergerie : courrier, taxis, réservations de salles.</li>
+        <li>Global Collective : 2 jours/mois dans les espaces partenaires (globalcollective.co).</li>
+        <li>All-Inclusive : électricité, ménage, charges, climatisation, chauffage.</li>
+      </ul>
+    </div>
+    <div class="box cond">
+      <h3>Conditions contractuelles</h3>
+      <ul>
+        <li>3 mois d'engagement minimum puis contrat renouvelé au mois le mois jusqu'au préavis.</li>
+        <li>Dépôt de garantie : 2 mois d'abonnement H.T. (précisé dans le contrat).</li>
+        <li>Frais d'installation : 100 € H.T. par poste capacitaire.</li>
+        <li>Préavis de départ : un mois plus le mois en cours.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="ft">
+    <div class="ft-l">
+      <img class="ft-chev" src="./chevrons.svg" alt=""/>
+      <div class="ft-meta"><span class="ft-name">Thomas Bougeard</span> · Directeur Commercial<br>+33 6 59 23 15 92 · <a href="#">thomasb@thebureau.paris</a> · <a href="#">thebureau.paris</a></div>
+    </div>
+    <div class="ft-r">The Bureau Paris<br><b>75002 · 75008</b></div>
+  </footer>
+
+</div>
+<div class="cap">Maquette — refonte PDF A4 paysage épurée · mode normal · Team Lounge</div>
+</body>
+</html>
