@@ -630,7 +630,7 @@ body.dark .tw-desc strong{color:#F5EFE5}
 <div class="tb"><div class="rc"><strong id="cnt">-</strong> bureau<span id="ps"></span> disponible<span id="ps2"></span></div><span class="hint">Cliquer sur une carte pour la sélectionner</span><div class="view-seg" id="viewToggle" role="group" aria-label="Mode d'affichage"><button type="button" id="vtList" title="Liste" aria-label="Affichage liste"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button><button type="button" id="vtGrid" title="Grille" aria-label="Affichage grille"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button></div><button class="filter-fab" id="filterFab" onclick="openFilterDrawer()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<div class="filter-fab-dot" id="filterFabDot"></div></button></div>
 <div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
-<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div><div class="tw-desc"><strong id="twDescTitle">Offre Télétravail · 0 Utilisateurs</strong>Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.</div></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1" checked><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3"><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
+<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div><div class="tw-desc"><strong id="twDescTitle">Offre Télétravail · 0 Utilisateurs</strong>Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.</div></div><div id="twExtras"></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1" checked><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3"><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
 <div class="pipeline-overlay" id="pipelineOverlay"><div class="pipeline-modal"><div class="pipeline-hdr"><h3>Pipeline propositions</h3><button class="mclose" id="pipClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="pipBody"></div><div style="padding:12px 20px;border-top:1px solid var(--cf);text-align:right"><button class="pip-btn" id="pipClear" style="color:#c0392b;border-color:#c0392b">Tout effacer</button></div></div></div>
 <button class="present-exit" id="presentExit">&#10005; Quitter</button>
 <div class="cmp-overlay" id="cmpOverlay"><div class="cmp-modal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="font-size:15px;font-weight:600">Comparaison</h3><button class="mclose" id="cmpClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="cmpBody"></div></div></div>
@@ -829,21 +829,14 @@ function esc(s) {
 function makeItinCard() {
   var d = disc();
   var isSel = !!SEL[ITIN_REF];
-  var siteData = ITIN_SITE ? ITIN_SITES.find(function(s){ return s.id===ITIN_SITE; }) : null;
-  var addons = (ITIN_ADDONS.domi?60:0) + (ITIN_ADDONS.casier?30:0);
-  var base  = ITIN_PRIX + addons;
-  var price = Math.round(ITIN_PRIX*(1-d)) + addons;
-  var save  = d > 0 ? Math.round((ITIN_PRIX - Math.round(ITIN_PRIX*(1-d))) * 12) : 0;
+  var base  = ITIN_PRIX;
+  var price = Math.round(ITIN_PRIX*(1-d));
+  var save  = d > 0 ? Math.round((ITIN_PRIX - price) * 12) : 0;
   var engLbl = d===0
-    ? 'H.T./mois/pers. \u2014 tarif de r\u00e9f\u00e9rence'
-    : 'H.T./mois/pers. \u2014 engagement '+ST.eng+' <span class="echip">-'+Math.round(d*100)+'%</span>';
-  var rackHtml = d>0 ? '<span class="rack">'+base+' \u20ac</span>' : '';
-  var savHtml  = d>0 ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="var(--vert)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>\u00c9conomie\u00a0: '+fmt(save)+' \u20ac / an</div>' : '';
-
-  var siteOpts = '<option value="">— Choisir un site —</option>' +
-    ITIN_SITES.map(function(x){
-      return '<option value="'+x.id+'"'+(ITIN_SITE===x.id?' selected':'')+'>'+x.label+'</option>';
-    }).join('');
+    ? 'H.T./mois/pers. — tarif de référence'
+    : 'H.T./mois/pers. — engagement '+ST.eng+' <span class="echip">-'+Math.round(d*100)+'%</span>';
+  var rackHtml = d>0 ? '<span class="rack">'+base+' €</span>' : '';
+  var savHtml  = d>0 ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="var(--vert)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>Économie : '+fmt(save)+' € / an</div>' : '';
 
   var div = document.createElement('div');
   div.className = 'card itin-card' + (isSel?' sel':'');
@@ -853,73 +846,29 @@ function makeItinCard() {
     '<div class="chk"><svg viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1"/></svg></div>'+
     '<div class="ctop">'+
       '<div>'+
-        '<div class="cref">Itin\u00e9rant <span class="itin-badge">Starter</span></div>'+
-        '<div class="csite">'+(siteData?siteData.adresse:'<em style="color:var(--or2);font-style:normal;font-size:10px">S\u00e9lectionnez un site ci-dessous</em>')+'</div>'+
+        '<div class="cref">Itinérant <span class="itin-badge">Starter</span></div>'+
+        '<div class="csite">Placement libre · tous nos sites</div>'+
       '</div>'+
     '</div>'+
-    '<p class="cdesc">Acc\u00e8s en placement libre aux espaces partag\u00e9s et services The Bureau. Acc\u00e8s 24/7 au site choisi, acc\u00e8s \u00e0 la journ\u00e9e aux autres sites. Formule all-incluse.</p>'+
+    '<p class="cdesc">Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7, accès à la journée aux autres sites. Formule all-incluse.</p>'+
     '<div class="chips">'+
       '<span class="chip itin-chip">Placement libre</span>'+
-      '<span class="chip itin-chip">Acc\u00e8s 24/7</span>'+
+      '<span class="chip itin-chip">Accès 24/7</span>'+
       '<span class="chip itin-chip">Global Collective</span>'+
     '</div>'+
-    '<div class="itin-row" onclick="event.stopPropagation()">'+
-      '<label class="itin-lbl">Site</label>'+
-      '<select class="itin-sel" id="itinSiteSel">'+siteOpts+'</select>'+
-    '</div>'+
-    '<div class="itin-row" onclick="event.stopPropagation()">'+
-      '<label class="itin-lbl">Options</label>'+
-      '<div style="display:flex;gap:12px;flex-wrap:wrap">'+
-        '<label class="itin-chk-lbl"><input type="checkbox" id="itinDomi" '+(ITIN_ADDONS.domi?'checked':'')+'> Domiciliation <span class="itin-addon-price">+60\u00a0\u20ac/mois</span></label>'+
-        '<label class="itin-chk-lbl"><input type="checkbox" id="itinCasier" '+(ITIN_ADDONS.casier?'checked':'')+'> Casier <span class="itin-addon-price">+30\u00a0\u20ac/mois</span></label>'+
-      '</div>'+
-    '</div>'+
     '<div class="pb">'+
-      '<div class="pr"><div class="pm"><sup>\u20ac</sup>'+fmt(price)+'</div>'+rackHtml+'</div>'+
+      '<div class="pr"><div class="pm"><sup>€</sup>'+fmt(price)+'</div>'+rackHtml+'</div>'+
       '<div class="psub">'+engLbl+'</div>'+savHtml+
     '</div>';
 
-  function rebuildItin() {
-    ITIN_ADDONS.domi   = !!div.querySelector('#itinDomi').checked;
-    ITIN_ADDONS.casier = !!div.querySelector('#itinCasier').checked;
-    if (SEL[ITIN_REF]) {
-      SEL[ITIN_REF].addons = JSON.parse(JSON.stringify(ITIN_ADDONS));
-      SEL[ITIN_REF].prix = ITIN_PRIX + (ITIN_ADDONS.domi?60:0) + (ITIN_ADDONS.casier?30:0);
-    }
-    var old = document.querySelector('.itin-card');
-    if (old) old.parentNode.replaceChild(makeItinCard(), old);
-    updateSelBar(); updateModalTotal();
-  }
-
-  div.querySelector('#itinSiteSel').addEventListener('change', function() {
-    ITIN_SITE = this.value || null;
-    if (SEL[ITIN_REF] && ITIN_SITE) {
-      var sd = ITIN_SITES.find(function(x){ return x.id===ITIN_SITE; });
-      if (sd) { SEL[ITIN_REF].site=ITIN_SITE; SEL[ITIN_REF].label=sd.label; SEL[ITIN_REF].adresse=sd.adresse; }
-    }
-    var old = document.querySelector('.itin-card');
-    if (old) old.parentNode.replaceChild(makeItinCard(), old);
-  });
-  div.querySelector('#itinDomi').addEventListener('change', rebuildItin);
-  div.querySelector('#itinCasier').addEventListener('change', rebuildItin);
-
   div.addEventListener('click', function() {
-    if (!ITIN_SITE) {
-      var sel = div.querySelector('#itinSiteSel');
-      if (sel) { sel.focus(); sel.style.outline='2px solid var(--or)'; setTimeout(function(){sel.style.outline='';},1400); }
-      return;
-    }
     if (!SEL[ITIN_REF]) {
-      var sd2 = ITIN_SITES.find(function(x){ return x.id===ITIN_SITE; });
       SEL[ITIN_REF] = {
-        ref:ITIN_REF, site:ITIN_SITE,
-        label: sd2?sd2.label:'The Bureau',
-        adresse: sd2?sd2.adresse:'',
-        prix: ITIN_PRIX+(ITIN_ADDONS.domi?60:0)+(ITIN_ADDONS.casier?30:0),
+        ref:ITIN_REF, site:null, label:'Itinérant', adresse:'',
+        prix: ITIN_PRIX,
         cap:1, etage:0, surface:null, dispo:'immediate', date:null,
-        desc:'Acc\u00e8s en placement libre aux espaces partag\u00e9s et services The Bureau. Acc\u00e8s 24/7 au site choisi. Formule all-incluse.',
-        descEN:'Flexible access to shared spaces and The Bureau services. 24/7 access to chosen site. All-inclusive.',
-        addons: JSON.parse(JSON.stringify(ITIN_ADDONS)),
+        desc:'Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7. Formule all-incluse.',
+        descEN:'Flexible access to shared spaces and The Bureau services. 24/7 access. All-inclusive.',
         isItin: true
       };
       SEL_ORDER.push(ITIN_REF);
@@ -1145,6 +1094,7 @@ function openModal() {
   var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
   if (SEL[ITIN_REF] && !selData.find(function(b){ return b.ref===ITIN_REF; })) selData.unshift(SEL[ITIN_REF]);
   if (selData.length===0) return;
+  if (typeof renderTwExtras==='function') renderTwExtras();
   function getSortedSelData() {
     var d = DATA.filter(function(b){ return !!SEL[b.ref]; });
     if (SEL[ITIN_REF] && !d.find(function(b){ return b.ref===ITIN_REF; })) d.unshift(SEL[ITIN_REF]);
@@ -1277,6 +1227,8 @@ function updateModalTotal() {
   }
   if (grouped) {
     var tot = selData.reduce(function(s,b){ return s + b.prix*(1-d)*(1-remise); }, 0);
+    if (typeof getTwTotal==='function') tot += getTwTotal();
+    if (typeof getExtrasTotal==='function') tot += getExtrasTotal();
     if (mtot) { mtot.style.display = ''; mtot.innerHTML = '<div class="mtot-lbl">Total mensuel H.T.</div><div class="mtot-val">'+fmt(tot)+'\u00a0\u20ac / mois</div>'; }
   } else {
     if (mtot) mtot.style.display = 'none';
@@ -1592,9 +1544,9 @@ function buildEmail(data, showTotal) {
     var moisLabel = isEN?'/ month':'/ mois';
 
     var recap = '';
-    var _twForRecap = (typeof getTwTotal==="function"?getTwTotal():0) > 0;
+    var _twForRecap = ((typeof getTwTotal==="function"?getTwTotal():0) + (typeof getExtrasTotal==="function"?getExtrasTotal():0)) > 0;
     if (showTotal || _twForRecap) {
-      var _twAdd = (typeof getTwTotal==='function'?getTwTotal():0);
+      var _twAdd = (typeof getTwTotal==='function'?getTwTotal():0) + (typeof getExtrasTotal==='function'?getExtrasTotal():0);
       var baseTotal = data.reduce(function(s2,b2){ return s2+Math.round(b2.prix*(1-paliers[0].d)); }, 0) + _twAdd;
       var _selTiersR = getSelectedTiers();
       var _mainLabels = isEN ? ['Monthly','12 months','24 months','36 months'] : ['Mensuel','12 mois','24 mois','36 mois'];
@@ -1672,6 +1624,17 @@ function buildEmail(data, showTotal) {
       h+='<div style="font-size:9.5px;color:rgba(15,15,15,.55);line-height:1.5;margin-top:6px;max-width:380px">'+(isEN?'Additional access. Two users/members for the same workstation. Alternating presence of only one collaborator at a time in the building.':'Accès supplémentaire. Deux utilisateurs/membres pour un même poste de travail. Présence alternée d’un seul collaborateur à la fois dans le bâtiment.')+'</div></div>';
       h+='<div style="font-size:18px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twTS)+' €</div>';
       h+='</div></td></tr>';
+    }
+    /* Extras globaux */
+    if(typeof EXTRAS!=='undefined'){
+      ADDONS.forEach(function(a){
+        var q=EXTRAS[a.k]||0; if(q<=0) return;
+        h+='<tr><td style="background:#F5EFE5;padding:14px 36px;border-bottom:1px solid rgba(15,15,15,.06)">';
+        h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:Plus Jakarta Sans,Arial,sans-serif">';
+        h+='<div><div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#1E4035">'+(isEN?a.en:a.fr)+'</div><div style="font-size:11px;color:#0F0F0F;margin-top:2px">'+q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr)+'</div></div>';
+        h+='<div style="font-size:16px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(q*a.p)+' €</div>';
+        h+='</div></td></tr>';
+      });
     }
     /* Recap */
     h+=recap;
@@ -2895,7 +2858,7 @@ function exportPDF(){
   ];
 
   var totals={};
-  var _twTot=getTwTotal();
+  var _twTot=getTwTotal()+getExtrasTotal();
   activeTiers.forEach(function(t){totals[t.key]=selData.reduce(function(s,b){var q=b.isItin?(b.itinQty||1):1;return s+Math.round(b.prix*(1-t.d))*q},0)+_twTot});
 
   var soc=''; try{ soc=((document.getElementById('fs')||{}).value||'').trim(); }catch(e){}
@@ -3018,6 +2981,7 @@ function exportPDF(){
     h+='<table class="tbl">'+simpleHeader()+'<tbody>'+simpleRows(selData);
     var _twQ=getTwQty();
     if(_twQ>0) h+=simpleTwRow(_twQ);
+    h+=extraRows({extras:EXTRAS});
     h+='</tbody></table>';
     h+=recapTable(totals);
   }
@@ -3046,6 +3010,22 @@ function exportPDF(){
 var TW_PRICE = 170;
 function getTwQty(){var i=document.getElementById('twQty');return i?Math.max(0,parseInt(i.value)||0):0}
 function getTwTotal(){return getTwQty()*TW_PRICE}
+/* Extras globaux (mode normal) — quantité × prix, non remisés */
+var EXTRAS = {};
+function getExtrasTotal(){var t=0;ADDONS.forEach(function(a){t+=(EXTRAS[a.k]||0)*a.p;});return t;}
+function setExtra(key,qty){EXTRAS[key]=Math.max(0,Math.min(50,qty||0));renderTwExtras();if(typeof updateModalTotal==='function')updateModalTotal();}
+function renderTwExtras(){
+  var el=document.getElementById('twExtras');if(!el)return;
+  var h='';
+  ADDONS.forEach(function(a){
+    var q=EXTRAS[a.k]||0;if(q<=0)return;
+    h+='<div class="tw-row" style="margin-top:8px"><span class="tw-badge">'+a.fr+'</span><span class="tw-sub">'+a.p+' € H.T.'+a.perFr+'</span><div class="tw-qty"><button type="button" onclick="setExtra(\''+a.k+'\','+(q-1)+')">−</button><input type="number" min="0" max="50" value="'+q+'" onchange="setExtra(\''+a.k+'\',parseInt(this.value)||0)"><button type="button" onclick="setExtra(\''+a.k+'\','+(q+1)+')">+</button></div><div class="tw-price">'+fmt(q*a.p)+' €</div><button class="opt-del" onclick="setExtra(\''+a.k+'\',0)" title="Retirer" style="margin-left:6px">×</button></div>';
+  });
+  var chips='';
+  ADDONS.forEach(function(a){ if(!(EXTRAS[a.k]>0)) chips+='<button class="twadd" style="margin:0 6px 6px 0" onclick="setExtra(\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
+  if(chips) h+='<div style="display:flex;flex-wrap:wrap;margin-top:8px">'+chips+'</div>';
+  el.innerHTML=h;
+}
 function updateTwUI(){
   var qty=getTwQty(),total=getTwTotal();
   var price=document.getElementById('twPrice');if(price)price.textContent=fmt(total)+' €';
