@@ -868,7 +868,7 @@ function makeItinCard() {
     if (!SEL[ITIN_REF]) {
       SEL[ITIN_REF] = {
         ref:ITIN_REF, site:null, label:'Itinérant', adresse:'',
-        prix: ITIN_PRIX,
+        prix: ITIN_PRIX, itinQty:1,
         cap:1, etage:0, surface:null, dispo:'immediate', date:null,
         desc:'Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7. Formule all-incluse.',
         descEN:'Flexible access to shared spaces and The Bureau services. 24/7 access. All-inclusive.',
@@ -886,6 +886,11 @@ function makeItinCard() {
   return div;
 }
 
+function setItinAbo(qty) {
+  if (!SEL[ITIN_REF]) return;
+  SEL[ITIN_REF].itinQty = Math.max(1, Math.min(20, qty||1));
+  if (typeof openModal==='function') openModal();
+}
 function setItinQty(optId, qty) {
   var opt = OPTIONS.find(function(o){ return o.id===optId; });
   if (!opt) return;
@@ -1111,22 +1116,30 @@ function openModal() {
   var offs = document.getElementById('moffs');
   offs.innerHTML = '';
   getSortedSelData().forEach(function(b) {
-    var remEl2 = document.getElementById('remiseInput'); var remise2 = remEl2?Math.min(50,Math.max(0,parseFloat(remEl2.value)||0))/100:0; var price = b.prix*(1-d)*(1-remise2);
+    var remEl2 = document.getElementById('remiseInput'); var remise2 = remEl2?Math.min(50,Math.max(0,parseFloat(remEl2.value)||0))/100:0;
+    var _itinQ = b.isItin ? (b.itinQty||1) : 1;
+    var price = b.prix*_itinQ*(1-d)*(1-remise2);
     var row = document.createElement('div');
     row.className = 'mrow'; row.dataset.ref = b.ref;
     var info = document.createElement('div');
+    info.className = 'minfo';
     if (b.isItin) {
-      var addonLines = '';
-      if (b.addons&&b.addons.domi)   addonLines += '<div class="mname" style="color:var(--or2)">+ Domiciliation — 60 €/mois</div>';
-      if (b.addons&&b.addons.casier) addonLines += '<div class="mname" style="color:var(--or2)">+ Casier — 30 €/mois</div>';
-      var itinQtyDisplay = SEL[ITIN_REF] && SEL[ITIN_REF].itinQty && SEL[ITIN_REF].itinQty > 1 ? ' × '+SEL[ITIN_REF].itinQty+' abo.' : '';
-      info.innerHTML = '<div class="mref">Itinérant'+itinQtyDisplay+' — '+esc(b.label)+'</div><div class="mname">Placement libre'+(b.addons&&(b.addons.domi||b.addons.casier)?'':'')+' — '+((b.itinQty||1)+' abonnement'+((b.itinQty||1)>1?'s':''))+'</div>'+addonLines;
+      info.innerHTML = '<span class="refbadge">Itinérant</span><span class="mmeta">Placement libre · tous nos sites · '+_itinQ+' abonnement'+(_itinQ>1?'s':'')+'</span>';
     } else {
-      info.className = 'minfo';
-      info.innerHTML = '<span class="refbadge">'+esc(b.ref)+'</span><span class="mmeta">'+etLbl(b.etage)+(b.surface?' \u00b7 '+b.surface.toLocaleString('fr-FR')+'\u00a0m\u00b2':'')+' \u00b7 '+b.cap+' poste'+(b.cap>1?'s':'')+'</span>';
+      info.innerHTML = '<span class="refbadge">'+esc(b.ref)+'</span><span class="mmeta">'+etLbl(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' poste'+(b.cap>1?'s':'')+'</span>';
     }
     var right = document.createElement('div');
-    right.style.cssText = 'display:flex;align-items:center';
+    right.style.cssText = 'display:flex;align-items:center;gap:8px';
+    if (b.isItin) {
+      var stp = document.createElement('div');
+      stp.className = 'tw-qty';
+      stp.innerHTML = '<button type="button" aria-label="Moins">−</button><input type="number" min="1" max="20" value="'+_itinQ+'"><button type="button" aria-label="Plus">+</button>';
+      var sb = stp.querySelectorAll('button');
+      sb[0].addEventListener('click', function(e){ e.stopPropagation(); setItinAbo(_itinQ-1); });
+      sb[1].addEventListener('click', function(e){ e.stopPropagation(); setItinAbo(_itinQ+1); });
+      stp.querySelector('input').addEventListener('change', function(){ setItinAbo(parseInt(this.value)||1); });
+      right.appendChild(stp);
+    }
     var pe = document.createElement('div');
     pe.className = 'mprice'; pe.innerHTML = '<div class="pm">'+fmt(price)+'<sup> €</sup></div><div class="ps">H.T./mois</div>';
     var del = document.createElement('button');
@@ -1230,6 +1243,7 @@ function updateModalTotal() {
   }
   if (grouped) {
     var tot = selData.reduce(function(s,b){ return s + b.prix*(1-d)*(1-remise); }, 0);
+    if (SEL[ITIN_REF]) tot += ITIN_PRIX*(SEL[ITIN_REF].itinQty||1)*(1-d)*(1-remise);
     if (typeof getTwTotal==='function') tot += getTwTotal();
     if (typeof getExtrasTotal==='function') tot += getExtrasTotal();
     if (mtot) { mtot.style.display = ''; mtot.innerHTML = '<div class="mtot-lbl">Total mensuel H.T.</div><div class="mtot-val">'+fmt(tot)+'\u00a0\u20ac / mois</div>'; }
