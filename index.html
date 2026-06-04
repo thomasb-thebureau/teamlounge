@@ -2195,7 +2195,7 @@ function renderOptPanel() {
       }
     });
     var chips='';
-    if(_twOpt<=0 && opt.refs.length>0) chips += '<button class="exchip" onclick="setOptTw('+opt.id+',1)">+ Offre Télétravail</button>';
+    if(_twOpt<=0) chips += '<button class="exchip" onclick="setOptTw('+opt.id+',1)">+ Offre Télétravail</button>';
     ADDONS.forEach(function(a){ if(!(_ex[a.k]>0)) chips += '<button class="exchip" onclick="setOptExtra('+opt.id+',\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
     if(chips) html += '<div style="display:flex;flex-wrap:wrap;margin-top:8px">'+chips+'</div>';
     html += '</div></div>';
