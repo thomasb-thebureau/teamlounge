@@ -2394,8 +2394,8 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
     var refTxt=b.isItin?'ITIN':b.ref;
     var bb=bi<opt.bureaux.length-1?'border-bottom:1px solid #f1ede4;':'';
     h+='<tr><td style="'+bb+'padding:9px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h+='<td width="62" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10.5px;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>';
-    h+='<td valign="middle" style="padding:0 10px"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#0F0F0F">'+b.label+'</div><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10.5px;color:#5a5248;margin-top:1px">'+meta+'</div></td>';
+    h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10.5px;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>';
+    h+='<td valign="middle" style="padding:0 10px 0 0"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#0F0F0F">'+b.label+'</div><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10.5px;color:#5a5248;margin-top:1px">'+meta+'</div></td>';
     h+='<td align="right" valign="middle" style="white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:600;color:#0F0F0F">'+fmt(price)+'<sup style="color:#B09438;font-size:9px"> €</sup></td>';
     h+='</tr></table></td></tr>';
   });
@@ -2403,7 +2403,8 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   if(opt.tw && opt.tw>0){
     var _twPriceOpt=opt.tw*170;
     h+='<tr><td style="padding:2px 16px 8px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h+='<td valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;margin-right:8px">'+(isEN?'Telework':'Télétravail')+'</span><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</span></td>';
+    h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;white-space:nowrap">'+(isEN?'Telework':'Télétravail')+'</span></td>';
+    h+='<td valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</td>';
     h+='<td align="right" valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twPriceOpt)+' €</td>';
     h+='</tr></table></td></tr>';
   }
@@ -2411,7 +2412,8 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
     ADDONS.forEach(function(a){
       var q=opt.extras[a.k]||0; if(q<=0) return;
       h+='<tr><td style="padding:2px 16px 8px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-      h+='<td valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;margin-right:8px">'+(isEN?a.en:a.fr)+'</span><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr)+'</span></td>';
+      h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;white-space:nowrap">'+(isEN?a.en:a.fr)+'</span></td>';
+      h+='<td valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr)+'</td>';
       h+='<td align="right" valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(q*a.p)+' €</td>';
       h+='</tr></table></td></tr>';
     });
