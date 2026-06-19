@@ -1,0 +1,12 @@
+# ⚠ Repo PUBLIC — ne jamais committer de données clients ni de logique backend.
+
+# Apps Script : backend (logique Archie/INPI, IDs Drive) + fichiers générés
+# contenant des données clients (PII : noms, adresses, SIREN, représentants légaux).
+# LOCAL ONLY — collés/déployés manuellement dans le projet Apps Script.
+*.gs
+
+# Outils / scripts locaux
+publish-kyc.ps1
+
+# Caches temporaires de génération
+*.cache.json
