@@ -1,4 +1,18 @@
-const CACHE="tb-v36",ASSETS=["/","/index.html","/logo.svg?v=11","/logo-white.svg?v=11","/chevrons.svg","/theme.css?v=1","/core.js?v=1"];
+const CACHE="tb-v37",ASSETS=["/logo.svg?v=11","/logo-white.svg?v=11","/chevrons.svg","/theme.css?v=1","/core.js?v=1"];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(u.pathname.endsWith("data.json")){e.respondWith(fetch(e.request).then(r=>{caches.open(CACHE).then(c=>c.put(e.request,r.clone()));return r}).catch(()=>caches.match(e.request)))}else{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))}});
+self.addEventListener("fetch",e=>{
+  const u=new URL(e.request.url);
+  const p=u.pathname;
+  // Network-first with HTTP-cache bypass for HTML/data (guarantees latest code is served)
+  const networkFirst = p==='/' || p.endsWith('.html') || p.endsWith('data.json') || p.endsWith('updated_at.txt') || p.endsWith('manifest.json');
+  if(networkFirst){
+    e.respondWith(fetch(e.request,{cache:'no-cache'}).then(r=>{
+      const cacheKey = new Request(u.origin+u.pathname);
+      caches.open(CACHE).then(c=>c.put(cacheKey,r.clone()));
+      return r;
+    }).catch(()=>caches.match(new Request(u.origin+u.pathname)).then(r=>r||caches.match(e.request).then(r2=>r2||Response.error()))));
+  } else {
+    e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{caches.open(CACHE).then(c=>c.put(e.request,res.clone()));return res;})));
+  }
+});
