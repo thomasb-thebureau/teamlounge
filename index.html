@@ -2911,7 +2911,7 @@ function exportPDF(){
       var q=b.isItin?(optItinQty||b.itinQty||1):1;
       var price=Math.round(b.prix*(1-defD))*q;
       var nm=b.isItin?(isEN?'Nomad office':'Itinérant'):esc(b.label||'');
-      var d=b.isItin?esc(b.label||''):esc(cleanDesc(b.desc||''));
+      var d=b.isItin?esc(b.label||''):esc(cleanDesc((isEN&&b.descEN?b.descEN:b.desc)||''));
       var addr=(!b.isItin&&b.adresse)?'<span class="baddr"> · '+esc(b.adresse)+'</span>':'';
       out+='<tr>';
       out+='<td class="ctr"><span class="refb">'+(b.isItin?(isEN?'Nomad':'Itin.'):esc(b.ref))+'</span></td>';
@@ -2966,7 +2966,7 @@ function exportPDF(){
       var q=b.isItin?(optItinQty||b.itinQty||1):1;
       var price=Math.round(b.prix*(1-defD))*q;
       var nm=b.isItin?(isEN?'Nomad office':'Itinérant'):esc(b.label||'');
-      var desc=b.isItin?esc(b.label||''):esc(cleanDesc(b.desc||''));
+      var desc=b.isItin?esc(b.label||''):esc(cleanDesc((isEN&&b.descEN?b.descEN:b.desc)||''));
       var info=[];
       if(!b.isItin) info.push(etStr(b.etage)+(isEN?' floor':' étage'));
       if(b.surface) info.push(b.surface.toLocaleString('fr-FR')+' m²');
