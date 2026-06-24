@@ -1331,14 +1331,14 @@ function buildPlainText(data) {
   }
   t += sep + nl + nl;
   var ccItems = isEN
-    ? ['3-month minimum commitment, then rolling monthly until notice.',
+    ? ['3-month minimum, then renewed for successive 3-month periods.',
        'Security deposit: 2 months subscription excl. VAT (specified in the contract).',
        'Installation fee: 100\u20ac excl. VAT per workstation capacity.',
-       'Notice period: one month plus the current month.']
-    : ['3 mois d\u2019engagement minimum puis contrat renouvel\u00e9 au mois le mois jusqu\u2019au pr\u00e9avis.',
+       'Notice period: two months plus the current month.']
+    : ['3 mois minimum, puis renouvellement de 3 mois successifs.',
        'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
        'Frais d\u2019installation\u00a0: 100\u20ac H.T. par poste capacitaire.',
-       'Pr\u00e9avis de d\u00e9part\u00a0: un mois plus le mois en cours.'];
+       'Pr\u00e9avis\u00a0: 2 mois plus le mois en cours.'];
   t += (isEN?'CONDITIONS':'CONDITIONS CONTRACTUELLES') + nl;
   ccItems.forEach(function(c){ t += '  \u2022 ' + c + nl; });
   t += nl + sep + nl + nl;
@@ -1412,15 +1412,15 @@ function buildInclEmail(isEN) {
 /* Bloc "Conditions contractuelles" — même format 2 colonnes/checkmarks */
 function buildCondEmail(isEN) {
   var items = isEN ? [
-    '3-month minimum commitment, then rolling monthly until notice.',
+    '3-month minimum, then renewed for successive 3-month periods.',
     'Security deposit: 2 months’ subscription excl. VAT (specified in the contract).',
     'Installation fee: €100 excl. VAT per workstation capacity.',
-    'Notice period: one month plus the current month.'
+    'Notice period: two months plus the current month.'
   ] : [
-    '3 mois d’engagement minimum puis contrat renouvelé au mois le mois jusqu’au préavis.',
+    '3 mois minimum, puis renouvellement de 3 mois successifs.',
     'Dépôt de garantie : 2 mois d’abonnement H.T. (précisé dans le contrat).',
     'Frais d’installation : 100 € H.T. par poste capacitaire.',
-    'Préavis de départ : un mois plus le mois en cours.'
+    'Préavis : 2 mois plus le mois en cours.'
   ];
   var title = isEN ? 'CONTRACTUAL CONDITIONS' : 'CONDITIONS CONTRACTUELLES';
   var h='<tr><td style="background:#FAFAFA;padding:18px 28px;border-top:1px solid rgba(15,15,15,.06)">';
@@ -1667,14 +1667,14 @@ function buildEmail(data, showTotal) {
     /* Conditions contractuelles — fond creme */
     var ccTitle = isEN ? 'CONTRACTUAL CONDITIONS' : 'CONDITIONS CONTRACTUELLES';
     var ccItems = isEN
-      ? ['3-month minimum commitment, then rolling monthly contract until notice.',
+      ? ['3-month minimum, then renewed for successive 3-month periods.',
          'Security deposit: 2 months\u2019 subscription excl. VAT (specified in the contract).',
          'Installation fee: 100\u20ac excl. VAT per workstation capacity.',
-         'Notice period: one month plus the current month.']
-      : ['3 mois d\u2019engagement minimum puis contrat renouvel\u00e9 au mois le mois jusqu\u2019au pr\u00e9avis.',
+         'Notice period: two months plus the current month.']
+      : ['3 mois minimum, puis renouvellement de 3 mois successifs.',
          'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
          'Frais d\u2019installation\u00a0: 100\u20ac H.T. par poste capacitaire.',
-         'Pr\u00e9avis de d\u00e9part\u00a0: un mois plus le mois en cours.'];
+         'Pr\u00e9avis\u00a0: 2 mois plus le mois en cours.'];
     h+=buildCondEmail(isEN);
     /* Signature — fond blanc, chevrons */
     var _snd=getCurrentSender();
@@ -2271,14 +2271,14 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   legalText = isEN ? legalEN : legalFR;
 
   var ccTitle = isEN ? 'CONTRACTUAL CONDITIONS' : 'CONDITIONS CONTRACTUELLES';
-  var ccItemsFR = ['3 mois d\u2019engagement minimum puis contrat renouvel\u00e9 au mois le mois jusqu\u2019au pr\u00e9avis.',
+  var ccItemsFR = ['3 mois minimum, puis renouvellement de 3 mois successifs.',
     'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
     'Frais d\u2019installation\u00a0: 100\u20ac H.T. par poste capacitaire.',
-    'Pr\u00e9avis de d\u00e9part\u00a0: un mois plus le mois en cours.'];
-  var ccItemsEN = ['3-month minimum commitment, then rolling monthly until notice.',
+    'Pr\u00e9avis\u00a0: 2 mois plus le mois en cours.'];
+  var ccItemsEN = ['3-month minimum, then renewed for successive 3-month periods.',
     'Security deposit: 2 months subscription excl. VAT (specified in the contract).',
     'Installation fee: 100\u20ac excl. VAT per workstation capacity.',
-    'Notice period: one month plus the current month.'];
+    'Notice period: two months plus the current month.'];
   var ccItems = isEN ? ccItemsEN : ccItemsFR;
   var ccList = ccItems.map(function(i){ return '<li style="margin:0 0 2px;font-size:11px;color:rgba(245,239,229,0.65);font-family:Plus Jakarta Sans,Arial,sans-serif">'+i+'</li>'; }).join('');
 
@@ -2878,15 +2878,15 @@ function exportPDF(){
     'All-Inclusive : électricité, ménage, charges, climatisation, chauffage.'
   ];
   var conditions = isEN ? [
-    '3-month minimum commitment, then rolling monthly until notice.',
+    '3-month minimum, then renewed for successive 3-month periods.',
     'Security deposit: 2 months\u2019 subscription excl. VAT (specified in the contract).',
     'Installation fee: 100\u00a0\u20ac excl. VAT per workstation capacity.',
-    'Notice period: one month plus the current month.'
+    'Notice period: two months plus the current month.'
   ] : [
-    '3 mois d\u2019engagement minimum puis contrat renouvel\u00e9 au mois le mois jusqu\u2019au pr\u00e9avis.',
+    '3 mois minimum, puis renouvellement de 3 mois successifs.',
     'D\u00e9p\u00f4t de garantie : 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
     'Frais d\u2019installation : 100\u00a0\u20ac H.T. par poste capacitaire.',
-    'Pr\u00e9avis de d\u00e9part : un mois plus le mois en cours.'
+    'Pr\u00e9avis : 2 mois plus le mois en cours.'
   ];
 
   var totals={};
