@@ -3560,210 +3560,40 @@ function exportPDF(){
     downloadPdf(pdfBlob);
   }
 
-  /* PDF VECTORIEL (texte réel, net et léger) — dessiné avec jsPDF */
+  /* Génère un vrai PDF (logo inclus, sans aperçu HTML dans une autre fenêtre) */
   var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
-  if(!jsPDFLib){ openHtmlFallback(); return; }
+  if(typeof html2canvas!=='function' || !jsPDFLib){ openHtmlFallback(); return; }
   showToast(isEN?'Generating PDF…':'Génération du PDF…');
 
-  var _snd = (typeof getCurrentSender==='function') ? getCurrentSender() : {name:'',title:'',phone:'',email:''};
-  var hasOptsPdf = typeof OPT_MODE!=='undefined'&&OPT_MODE&&typeof OPTIONS!=='undefined'&&OPTIONS.some(function(o){return o.refs.length>0});
-
-  rasterizeSvg(logoWhiteUrl, 40).then(function(logoPng){
-    try {
-      var HX=function(h){ h=(h||'').replace('#',''); if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2]; return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; };
-      var CJADE=HX('#1E4035'),CGOLD=HX('#B09438'),CGOLD2=HX('#7A6015'),CINK=HX('#0F0F0F'),CGR=HX('#5a5248'),CCR=HX('#F5EFE5'),CLINE=HX('#e9e1d2'),CLIGHT=HX('#faf8f4'),CGREENL=HX('#dceae2'),CGREENL2=HX('#eef5f1'),CGOLDBG=HX('#fbf2d8');
-      var doc=new jsPDFLib({unit:'mm',format:'a4',orientation:'landscape',compress:true});
-      var PW=297, PH=210, M=14, y=0;
-      var fill=function(c){ doc.setFillColor(c[0],c[1],c[2]); };
-      var txt=function(c){ doc.setTextColor(c[0],c[1],c[2]); };
-      var strip=function(s){ return String(s==null?'':s).replace(/<[^>]+>/g,''); };
-      var eur=function(n){ return fmt(n)+' €'; };
-
-      /* Colonnes du tableau (mm) : total utile = 269 */
-      var COLS=[{x:M,w:20,a:'c'},{x:34,w:118,a:'l'},{x:152,w:16,a:'c'},{x:168,w:16,a:'r'},{x:184,w:18,a:'c'},{x:202,w:44,a:'l'},{x:246,w:37,a:'r'}];
-      var colX=function(i){ var c=COLS[i]; return c.a==='r'?c.x+c.w-2:(c.a==='c'?c.x+c.w/2:c.x+2); };
-
-      function drawHeaderBand(){
-        fill(CJADE); doc.rect(0,0,PW,24,'F');
-        fill(CGOLD); doc.rect(0,24,PW,0.9,'F');
-        var lx=M;
-        if(logoPng){ try{ var lh=9, lw=lh*(1500/341); doc.addImage(logoPng,'PNG',M,7.6,lw,lh); lx=M+lw+7; }catch(e){} }
-        txt(CGOLD); doc.setFont('helvetica','bold'); doc.setFontSize(6.5);
-        doc.text(strip(eyebrow).toUpperCase(), lx, 11, {charSpace:0.35});
-        txt([255,255,255]); doc.setFont('helvetica','normal'); doc.setFontSize(15);
-        doc.text(strip(T.selTitle), lx, 18);
-        txt([255,255,255]); doc.setFont('helvetica','bold'); doc.setFontSize(11.5);
-        doc.text(dateFr, PW-M, 11, {align:'right'});
-        txt([224,218,205]); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
-        doc.text(strip(subLine), PW-M, 16.5, {align:'right'});
-        y=24+9;
-      }
-      function ensure(need){ if(y+need>PH-10){ doc.addPage(); y=M; } }
-      function pill(x,yy,label,cbg,ctx){ var w=doc.getTextWidth(label)+7; fill(cbg); doc.roundedRect(x,yy-3.4,w,5,2.5,2.5,'F'); txt(ctx); doc.text(label,x+3.5,yy); return w; }
-      function sectionTitle(label,pillTxt){
-        ensure(12);
-        fill(CGOLD); doc.rect(M,y-1.6,6,1.8,'F');
-        txt(CGOLD2); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-        doc.text(label.toUpperCase(), M+9, y, {charSpace:0.3});
-        if(pillTxt){ doc.setFont('helvetica','bold'); doc.setFontSize(7); var pw=doc.getTextWidth(pillTxt)+8; fill(CGOLD); doc.roundedRect(PW-M-pw,y-3.6,pw,5.2,2.6,2.6,'F'); txt([255,255,255]); doc.text(pillTxt, PW-M-pw+4, y); }
-        y+=6;
-      }
-      function tableHeader(){
-        fill(CJADE); doc.rect(M,y,269,7.5,'F');
-        txt(CCR); doc.setFont('helvetica','bold'); doc.setFontSize(6.8);
-        var heads=[T.refH,(isEN?'Office':'Bureau'),T.floorH,T.surfH,T.deskH,T.dispoH,(isEN?'Price excl.VAT/mo':'Prix H.T./mois')];
-        heads.forEach(function(hd,i){ var c=COLS[i]; doc.text(hd.toUpperCase(), colX(i), y+5, {align:c.a==='r'?'right':(c.a==='c'?'center':'left'), charSpace:0.2}); });
-        y+=7.5;
-      }
-      function rowHeight(b){
-        var descW=COLS[1].w-2; doc.setFont('helvetica','normal'); doc.setFontSize(7.2);
-        var nm=b.isItin?(isEN?'Nomad office':'Itinérant'):strip(b.label||'');
-        var d=b.isItin?strip(b.label||''):strip(cleanDesc((isEN&&b.descEN?b.descEN:b.desc)||''));
-        var dl=d?doc.splitTextToSize(d,descW).length:0;
-        return Math.max(12, 6.5 + dl*3.0);
-      }
-      function drawRow(b,q,zebra){
-        var hgt=rowHeight(b);
-        ensure(hgt);
-        if(zebra){ fill(CLIGHT); doc.rect(M,y,269,hgt,'F'); }
-        doc.setDrawColor(CLINE[0],CLINE[1],CLINE[2]); doc.setLineWidth(0.2); doc.line(M,y,M+269,y);
-        var cy=y+5.4;
-        /* Réf badge */
-        var rf=b.isItin?(isEN?'Nomad':'Itin.'):strip(b.ref); doc.setFont('helvetica','bold'); doc.setFontSize(7);
-        var rw=doc.getTextWidth(rf)+6; var rx=COLS[0].x+(COLS[0].w-rw)/2;
-        fill(CJADE); doc.roundedRect(rx,y+3,rw,5.2,2.6,2.6,'F'); txt(CCR); doc.text(rf,rx+3,y+6.6);
-        /* Bureau : nom + desc */
-        var nm=b.isItin?(isEN?'Nomad office':'Itinérant'):strip(b.label||'');
-        var addr=(!b.isItin&&b.adresse)?('  ·  '+strip(b.adresse)):'';
-        txt(CINK); doc.setFont('helvetica','bold'); doc.setFontSize(8.4); doc.text(nm,COLS[1].x+2,cy);
-        if(addr){ var nw=doc.getTextWidth(nm); txt(CGOLD2); doc.setFont('helvetica','normal'); doc.setFontSize(6.4); doc.text(addr,COLS[1].x+2+nw,cy); }
-        var d=b.isItin?strip(b.label||''):strip(cleanDesc((isEN&&b.descEN?b.descEN:b.desc)||''));
-        if(d){ txt(CGR); doc.setFont('helvetica','normal'); doc.setFontSize(7); var dls=doc.splitTextToSize(d,COLS[1].w-2); doc.text(dls,COLS[1].x+2,cy+3.6); }
-        /* Étage / m² / postes */
-        txt(CINK); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-        doc.text(b.isItin?'—':etStr(b.etage),colX(2),cy,{align:'center'});
-        doc.text(b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—'),colX(3),cy,{align:'right'});
-        doc.text(b.isItin?String(q):String(b.cap),colX(4),cy,{align:'center'});
-        /* Dispo */
-        var imm=b.dispo==='immediate'; txt(imm?CJADE:CGR); doc.setFont('helvetica',imm?'bold':'normal'); doc.setFontSize(7.6);
-        doc.text(dispoStr(b),COLS[5].x+2,cy);
-        /* Prix */
-        txt(CINK); doc.setFont('helvetica','bold'); doc.setFontSize(10.5);
-        doc.text(eur(Math.round(b.prix*(1-defD))*q),colX(6),cy,{align:'right'});
-        y+=hgt;
-      }
-      function drawSimpleRow(tag,name,sub,qty,price,zebra){
-        var hgt=12; ensure(hgt); if(zebra){ fill(CLIGHT); doc.rect(M,y,269,hgt,'F'); }
-        doc.setDrawColor(CLINE[0],CLINE[1],CLINE[2]); doc.setLineWidth(0.2); doc.line(M,y,M+269,y);
-        doc.setFont('helvetica','bold'); doc.setFontSize(7); var rw=doc.getTextWidth(tag)+6; var rx=COLS[0].x+(COLS[0].w-rw)/2;
-        fill(CGOLD); doc.roundedRect(rx,y+3,rw,5.2,2.6,2.6,'F'); txt([255,255,255]); doc.text(tag,rx+3,y+6.6);
-        txt(CINK); doc.setFont('helvetica','bold'); doc.setFontSize(8.4); doc.text(name,COLS[1].x+2,y+5.4);
-        if(sub){ txt(CGR); doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text(doc.splitTextToSize(sub,COLS[1].w-2),COLS[1].x+2,y+9); }
-        txt(CINK); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-        doc.text(String(qty),colX(4),y+5.4,{align:'center'});
-        txt(CJADE); doc.setFont('helvetica','bold'); doc.setFontSize(7.6); doc.text(isEN?'Immediate':'Immédiate',COLS[5].x+2,y+5.4);
-        txt(CINK); doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.text(eur(price),colX(6),y+5.4,{align:'right'});
-        y+=hgt;
-      }
-      function drawTable(list,itinQty,twQ,extrasObj){
-        tableHeader();
-        var z=false;
-        list.forEach(function(b){ var q=b.isItin?(itinQty||b.itinQty||1):1; drawRow(b,q,z); z=!z; });
-        if(twQ>0){ drawSimpleRow(isEN?'Telework':'Télétravail',(isEN?'Telework offer':'Offre Télétravail'),twQ+(isEN?(twQ>1?' subscriptions':' subscription'):(twQ>1?' abonnements':' abonnement')),twQ,twQ*170,z); z=!z; }
-        if(extrasObj){ ADDONS.forEach(function(a){ var q=extrasObj[a.k]||0; if(q<=0)return; drawSimpleRow('Extra',(isEN?a.en:a.fr),a.p+' €'+(isEN?a.perEn:a.perFr),q,q*a.p,z); z=!z; }); }
-        doc.setDrawColor(CLINE[0],CLINE[1],CLINE[2]); doc.setLineWidth(0.3); doc.line(M,y,M+269,y);
-        y+=1;
-      }
-      function drawPaliers(totsObj){
-        ensure(26);
-        fill(CGOLD); doc.rect(M,y-1.4,6,1.8,'F'); txt(CGOLD2); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-        doc.text((isEN?'Total monthly excl. VAT by commitment':'Total mensuel H.T. selon l’engagement').toUpperCase(),M+9,y,{charSpace:0.2});
-        y+=4;
-        var n=activeTiers.length, cw=269/n, hh=17;
-        activeTiers.forEach(function(t,i){
-          var cx=M+i*cw, hl=t.key===_defKey, idx=_tierIdxOf[t.key];
-          fill(hl?CGOLD:CGREENL); doc.rect(cx,y,cw,6.5,'F');
-          fill(hl?CGOLDBG:CGREENL2); doc.rect(cx,y+6.5,cw,hh-6.5,'F');
-          txt(hl?[255,255,255]:CJADE); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
-          doc.text(_shortLabels[idx],cx+cw/2,y+3, {align:'center'});
-          var sub=idx===0?(remise>0?(isEN?'incl. '+Math.round(remise*100)+'%':'remise '+Math.round(remise*100)+'%'):(isEN?'3 months min.':'3 mois min.')):'–'+(Math.round(t.d*1000)/10)+' %';
-          doc.setFont('helvetica','normal'); doc.setFontSize(6); txt(hl?[255,255,255]:CGOLD2); doc.text(sub,cx+cw/2,y+5.6,{align:'center'});
-          txt(CJADE); doc.setFont('helvetica','bold'); doc.setFontSize(11.5); doc.text(eur(totsObj[t.key]),cx+cw/2,y+12.5,{align:'center'});
-          var sv=Math.round((baseRecap-totsObj[t.key])*12);
-          if(idx>0&&sv>0){ txt(CGOLD2); doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.text('–'+fmt(sv)+' €/'+(isEN?'yr':'an'),cx+cw/2,y+15.8,{align:'center'}); }
-        });
-        doc.setDrawColor(207,226,214); doc.setLineWidth(0.2);
-        for(var i=1;i<n;i++){ doc.line(M+i*cw,y,M+i*cw,y+hh); }
-        y+=hh+2;
-      }
-      function drawBoxes(){
-        ensure(34);
-        var bw=(269-8)/2, bx1=M, bx2=M+bw+8, boxY=y, pad=4;
-        function box(bx,title,items,cols){
-          fill(CLIGHT); doc.setDrawColor(CLINE[0],CLINE[1],CLINE[2]); doc.setLineWidth(0.3);
-          var innerW=bw-pad*2;
-          doc.setFont('helvetica','normal'); doc.setFontSize(7);
-          var colGap=6, cWidth=cols===2?(innerW-colGap)/2:innerW, lines=[];
-          items.forEach(function(it){ lines.push(doc.splitTextToSize(it,cWidth-4)); });
-          var per=cols===2?Math.ceil(lines.length/2):lines.length;
-          var colH=function(arr){ var s=0; arr.forEach(function(l){ s+=l.length*3.1+1.6; }); return s; };
-          var h1,h2=0;
-          if(cols===2){ h1=colH(lines.slice(0,per)); h2=colH(lines.slice(per)); } else { h1=colH(lines); }
-          var bodyH=Math.max(h1,h2)+3;
-          var totalH=8+bodyH;
-          doc.roundedRect(bx,boxY,bw,totalH,2,2,'FD');
-          fill(CGOLD); doc.rect(bx+pad,boxY+4,5,1.5,'F');
-          txt(CGOLD2); doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.text(title.toUpperCase(),bx+pad+7,boxY+5.6,{charSpace:0.2});
-          var drawCol=function(arr,cx){ var yy=boxY+10.5; arr.forEach(function(l){ fill(CJADE); doc.rect(cx,yy-1.8,1.5,1.5,'F'); txt(CGR); doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text(l,cx+3,yy); yy+=l.length*3.1+1.6; }); };
-          if(cols===2){ drawCol(lines.slice(0,per),bx+pad); drawCol(lines.slice(per),bx+pad+cWidth+colGap); } else { drawCol(lines,bx+pad); }
-          return totalH;
-        }
-        var h1=box(bx1,T.inclTitle,services,2);
-        var h2=box(bx2,T.condTitle,conditions,1);
-        y=boxY+Math.max(h1,h2)+3;
-      }
-      function drawFooter(){
-        ensure(20);
-        fill(CJADE); doc.roundedRect(M,y,269,15,2,2,'F'); fill(CGOLD); doc.rect(M,y,269,1,'F');
-        txt([255,255,255]); doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text(strip(_snd.name),M+6,y+6);
-        txt([224,218,205]); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
-        doc.text(strip(_snd.title),M+6,y+10);
-        doc.text(strip(_snd.phone)+'  ·  '+strip(_snd.email)+'  ·  thebureau.paris',M+6,y+13.5);
-        txt(CGOLD); doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text(strip(T.brand),PW-M-6,y+6,{align:'right'});
-        txt([224,218,205]); doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text('75002 · 75008',PW-M-6,y+10,{align:'right'});
-        y+=15;
-      }
-
-      drawHeaderBand();
-      if(hasOptsPdf){
-        sectionTitle(isEN?'Configurations to choose from':'Configurations au choix',(isEN?'Displayed rate · ':'Tarif affiché · ')+defShort);
-        OPTIONS.forEach(function(opt,_oi){
-          var optB=selData.filter(function(b){return opt.refs.indexOf(b.ref)>=0}); if(!optB.length)return;
-          var _twOptP=(opt.tw||0)*170+optExtrasTotal(opt);
-          var optT={}; activeTiers.forEach(function(t){optT[t.key]=optB.reduce(function(s,b){var q=b.isItin?(opt.itinQty||1):1;return s+Math.round(b.prix*(1-t.d))*q},0)+_twOptP;});
-          ensure(18);
-          fill(CLIGHT); doc.setDrawColor(CLINE[0],CLINE[1],CLINE[2]); doc.setLineWidth(0.3); doc.rect(M,y,269,8,'FD');
-          fill(CGOLD); doc.rect(M,y,1.5,8,'F');
-          doc.setFont('helvetica','bold'); doc.setFontSize(7); var lbl='Option '+(_oi+1); var lw=doc.getTextWidth(lbl)+7;
-          fill(CGOLD); doc.roundedRect(M+4,y+1.6,lw,4.8,2.4,2.4,'F'); txt([255,255,255]); doc.text(lbl,M+7.5,y+5);
-          if(opt.label&&opt.label!=='Texte personnalisé'&&opt.label!=='Custom text'){ txt(CINK); doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text(strip(opt.label),M+8+lw,y+5.4); }
-          txt(CJADE); doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.text(eur(optT[_defKey]),PW-M-3,y+5.6,{align:'right'});
-          y+=8;
-          drawTable(optB,opt.itinQty,opt.tw||0,opt.extras);
-          drawPaliers(optT); y+=2;
-        });
-      } else {
-        sectionTitle((isEN?'Your selection · ':'Votre sélection · ')+selData.length+' '+(selData.length>1?T.offices:T.office),(isEN?'Displayed rate · ':'Tarif affiché · ')+defShort);
-        drawTable(selData,null,getTwQty(),EXTRAS);
-        drawPaliers(totals);
-      }
-      drawBoxes();
-      drawFooter();
-
-      try{ doc.setProperties&&doc.setProperties({title:pdfTitle, subject:'The Bureau', author:'The Bureau'}); }catch(e){}
-      deliverPdf(doc.output('blob'));
-    } catch(e){ console.warn('[TheB] vector PDF failed:', e); openHtmlFallback(); }
-  }).catch(function(){ openHtmlFallback(); });
+  /* Le logo et les chevrons sont intégrés en data-URI PNG pour éviter que
+     html2canvas teinte le canvas (images cross-origin) → PDF sans logo + repli HTML. */
+  Promise.all([ rasterizeSvg(logoWhiteUrl,34), rasterizeSvg(chevronsUrl,28) ]).then(function(imgs){
+    h = h.replace(logoWhiteUrl, function(){ return imgs[0]||''; });
+    h = h.replace(chevronsUrl,  function(){ return imgs[1]||''; });
+    var frame=document.createElement('iframe');
+    frame.style.cssText='position:fixed;left:-9999px;top:0;width:1123px;height:10px;opacity:0;pointer-events:none';
+    document.body.appendChild(frame);
+    var fdoc=frame.contentDocument; fdoc.open(); fdoc.write(h); fdoc.close();
+    setTimeout(function(){
+      try{ var bp=fdoc.querySelector('.btn-print'); if(bp) bp.parentNode.removeChild(bp); }catch(e){}
+      var pageEl=fdoc.querySelector('.page')||fdoc.body;
+      var w=Math.round(pageEl.getBoundingClientRect().width)||1123;
+      var ht=Math.max(pageEl.scrollHeight, fdoc.body.scrollHeight)||794;
+      frame.style.height=ht+'px';
+      setTimeout(function(){
+        html2canvas(pageEl,{scale:2,useCORS:true,logging:false,backgroundColor:'#ffffff',width:w,height:ht,windowWidth:w}).then(function(canvas){
+          var orient=(canvas.width>=canvas.height)?'l':'p';
+          var pdf=new jsPDFLib({unit:'px',format:[w,ht],orientation:orient});
+          var pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+          pdf.addImage(canvas.toDataURL('image/jpeg',0.92),'JPEG',0,0,pw,ph);
+          try{ pdf.setProperties&&pdf.setProperties({title:pdfTitle}); }catch(e){}
+          var pdfBlob=pdf.output('blob');
+          try{ document.body.removeChild(frame); }catch(e){}
+          deliverPdf(pdfBlob);
+        }).catch(function(){ try{document.body.removeChild(frame);}catch(e){} openHtmlFallback(); });
+      },700);
+    },500);
+  });
 }
 
 
