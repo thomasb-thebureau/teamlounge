@@ -284,6 +284,20 @@ body.dark .badge-large{background:rgba(74,154,122,.12);color:#5cb88a;border-colo
 .mtiers-k{font-size:11.5px;color:var(--encre);font-weight:500;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .mtiers-badge{font-size:8px;letter-spacing:.1em;text-transform:uppercase;background:var(--vert);color:#F5EFE5;border-radius:50px;padding:2px 7px;font-weight:700}
 .mtiers-pct{font-size:10px;color:var(--gris)}
+/* Indicateur données de secours */
+.data-warn{display:none;align-items:center;gap:5px;background:rgba(192,120,48,.12);border:1px solid rgba(192,120,48,.4);color:#a5611f;border-radius:50px;padding:3px 11px;font-size:10.5px;font-weight:600;letter-spacing:.02em;white-space:nowrap;margin-left:10px}
+.data-warn.on{display:inline-flex}
+body.dark .data-warn{background:rgba(192,120,48,.16);color:#e0954f;border-color:rgba(192,120,48,.5)}
+/* Bandeau « nouvelle version » */
+#tbUpdateBar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);z-index:900;display:flex;align-items:center;gap:14px;background:var(--vert);color:#F5EFE5;border:1px solid rgba(176,148,56,.4);border-radius:50px;padding:9px 10px 9px 20px;box-shadow:0 12px 40px rgba(0,0,0,.28);font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;opacity:0;transition:opacity .3s,transform .3s;max-width:calc(100% - 32px)}
+#tbUpdateBar.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#tbUpdateBar .tbu-txt{display:flex;align-items:center;gap:8px;white-space:nowrap}
+#tbUpdateBar .tbu-txt::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--or);flex-shrink:0;animation:pulse 2.5s infinite}
+#tbUpdateBar button{background:#F5EFE5;color:var(--vert);border:none;border-radius:50px;padding:8px 18px;font:700 11px 'Plus Jakarta Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap}
+#tbUpdateBar button:hover{background:#fff}
+#tbUpdateBar .tbu-close{background:none;color:rgba(245,239,229,.6);padding:6px 8px;font-size:15px;letter-spacing:0}
+#tbUpdateBar .tbu-close:hover{background:none;color:#fff}
+@media(max-width:480px){#tbUpdateBar{bottom:auto;top:66px;font-size:11.5px;padding:8px 8px 8px 16px}}
 /* Aperçu inline de l'email */
 .ip-wrap{margin-top:14px;border:1px solid var(--cf);border-radius:12px;overflow:hidden;background:var(--blanc)}
 .ip-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--creme);border:none;border-bottom:1px solid transparent;padding:11px 14px;font:600 11px 'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;color:var(--encre);cursor:pointer}
@@ -724,7 +738,7 @@ body.dark .tw-desc strong{color:#F5EFE5}
 <div class="top-bar"><div class="logo-wrap"><a href="#" onclick="resetSession();return false;" title="Nouvelle session" style="display:flex;align-items:center;line-height:0"><img class="logo-main" src="./logo.svg?v=11" alt="The Bureau"/><img class="logo-main-dark" src="./logo-white.svg?v=11" alt="The Bureau"/></a><div class="logo-div"></div><span class="logo-tag">TEAM LOUNGE</span></div><div class="top-right"><div class="lang-toggle" id="langToggleHeader"><button data-lang="fr" class="on">FR</button><button data-lang="en">EN</button></div><button class="dark-toggle" id="darkToggle" title="Mode sombre">🌙</button><div class="status"><div class="sdot" id="sdot"></div><span class="stxt" id="stxt">Chargement…</span></div><button class="refresh-btn" id="refreshBtn" onclick="fetchData()">↻ Actualiser</button><span class="dlabel" id="dlabel"></span></div></div>
 <div class="hero"><div class="eyebrow">Paris — 75002 &amp; 75008</div><h1>Bureaux <em>disponibles</em></h1><div class="hero-sub">4 adresses — bureaux privatifs — données en temps réel</div></div>
 <div class="fp"><div style="display:flex;align-items:center;gap:7px"><span class="fl">Sites</span><div class="site-chips" id="sf"><span class="sc sc-all on" data-site="all">Tous</span><span class="sc" data-site="I">TB I</span><span class="sc" data-site="II">TB II</span><span class="sc" data-site="III">TB III</span><span class="sc" data-site="IV">TB IV</span></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Engagement</span><div class="sr eng" id="ef"><button class="sb on" data-eng="mensuel">Mensuel <small style="opacity:.55;font-size:9px">3 mois min.</small></button><button class="sb" data-eng="12m">12 mois <small style="opacity:.55">-5%</small></button><button class="sb" data-eng="24m">24 mois <small style="opacity:.55">-10%</small></button><button class="sb" data-eng="36m">36 mois <small style="opacity:.55">-15%</small></button></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Postes</span><div class="rw"><input type="number" class="ri" id="cmin" placeholder="min" min="1" max="100"><span style="font-size:11px;color:var(--gc)">—</span><input type="number" class="ri" id="cmax" placeholder="max" min="1" max="100"></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Etage</span><select class="fsel" id="etf"><option value="all">Tous</option><option value="0">RDC</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option><option value="5">5e</option></select></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Dispo</span><div class="sr" id="df"><button class="sb on" data-dispo="all">Toutes</button><button class="sb" data-dispo="immediate">Immédiate</button><button class="sb" data-dispo="future">A venir</button></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Tri</span><select class="fsel" id="srt"><option value="nom" selected>Référence</option><option value="pa">Prix croissant</option><option value="pd">Prix décroissant</option><option value="ca">Capacité croissante</option><option value="cd">Capacité décroissante</option><option value="dispo">Disponibilité</option></select></div><button class="reset" id="rst">Effacer</button><button class="occ-toggle" id="occBtn" title="Afficher les bureaux occupés"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21" class="occ-slash"/></svg> Occupés</button><button class="view-toggle" id="presentToggle" title="Mode présentation">▣</button><span class="sc" id="favFilter" style="background:transparent;border:1px solid var(--or);color:var(--or);cursor:pointer">★ Favoris</span><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Ref</span><input type="text" class="ri" id="search" placeholder="ex. B402" style="width:80px;letter-spacing:.06em;"></div></div>
-<div class="tb"><div class="rc"><strong id="cnt">-</strong> bureau<span id="ps"></span> disponible<span id="ps2"></span></div><span class="hint">Cliquer sur une carte pour la sélectionner</span><div class="view-seg" id="viewToggle" role="group" aria-label="Mode d'affichage"><button type="button" id="vtList" title="Liste" aria-label="Affichage liste"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button><button type="button" id="vtGrid" title="Grille" aria-label="Affichage grille"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button></div><button class="filter-fab" id="filterFab" onclick="openFilterDrawer()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<div class="filter-fab-dot" id="filterFabDot"></div></button></div>
+<div class="tb"><div class="rc"><strong id="cnt">-</strong> bureau<span id="ps"></span> disponible<span id="ps2"></span></div><span class="data-warn" id="dataWarn" role="status">⚠ Données de secours · hors ligne</span><span class="hint">Cliquer sur une carte pour la sélectionner</span><div class="view-seg" id="viewToggle" role="group" aria-label="Mode d'affichage"><button type="button" id="vtList" title="Liste" aria-label="Affichage liste"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button><button type="button" id="vtGrid" title="Grille" aria-label="Affichage grille"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button></div><button class="filter-fab" id="filterFab" onclick="openFilterDrawer()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<div class="filter-fab-dot" id="filterFabDot"></div></button></div>
 <div class="active-filters" id="activeFilters" aria-live="polite"></div>
 <div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
@@ -1587,6 +1601,38 @@ function updateInlinePreview(){
   var pren=_ipVal('fp'), nom=_ipVal('fn'), soc=_ipVal('fs');
   var civ = pren ? (pren+(nom?' '+nom:'')) : (isEN?'Sir or Madam':'Madame, Monsieur');
   var intro = _ipVal('customMsg') || (isEN?'Please find our selection below.':'Veuillez trouver notre sélection ci-dessous.');
+
+  var _writeDoc = function(inner){
+    try { var fd=frame.contentDocument; fd.open(); fd.write(wrap(inner)); fd.close(); } catch(e){ frame.srcdoc = wrap(inner); }
+    var _fit=function(){ try{ var hh=frame.contentDocument.body.scrollHeight; if(hh>60) frame.style.height=Math.min(hh,1600)+'px'; }catch(e){} };
+    setTimeout(_fit,120); setTimeout(_fit,500);
+  };
+
+  /* Mode options : aperçu des configurations au choix */
+  if (typeof OPT_MODE!=='undefined' && OPT_MODE) {
+    var oh='<div style="max-width:600px;margin:0 auto;padding:0 0 24px">';
+    oh+='<div style="background:#1E4035;padding:22px 24px;border-bottom:3px solid #B09438"><div style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#B09438;font-weight:700;margin-bottom:5px">The Bureau — '+(isEN?'Proposal':'Proposition')+'</div><div style="font-size:20px;font-weight:300;color:#fff">'+(isEN?'Configurations ':'Configurations ')+'<b style="font-weight:700">'+(isEN?'to choose':'au choix')+'</b>'+(soc?' <span style="font-size:13px;color:#F5EFE5">· '+esc(soc)+'</span>':'')+'</div></div>';
+    oh+='<div style="padding:20px 24px">';
+    oh+='<p style="font-size:13px;line-height:1.6;margin:0 0 6px">'+(isEN?'Dear ':'Bonjour ')+esc(civ)+',</p>';
+    oh+='<p style="font-size:12.5px;line-height:1.6;color:#5a5248;margin:0 0 16px">'+esc(intro)+'</p>';
+    var _any=false;
+    (typeof OPTIONS!=='undefined'?OPTIONS:[]).forEach(function(opt,i){
+      var ob=data.filter(function(b){ return opt.refs.indexOf(b.ref)>-1; });
+      if(!ob.length) return; _any=true;
+      var twFlatO=(opt.tw||0)*170 + (typeof optExtrasTotal==='function'?optExtrasTotal(opt):0);
+      var totO=ob.reduce(function(s,b){ var q=(b.isItin&&opt.itinQty)?opt.itinQty:1; return s+Math.round(b.prix*(1-defD))*q; },0)+twFlatO;
+      var nm=(opt.label&&opt.label!=='Texte personnalisé'&&opt.label!=='Custom text')?esc(opt.label):'';
+      oh+='<div style="border:1px solid #e9e1d2;border-left:4px solid #B09438;border-radius:12px;overflow:hidden;margin-bottom:12px">';
+      oh+='<div style="display:flex;align-items:center;gap:8px;background:#faf8f4;padding:10px 14px;border-bottom:1px solid #e9e1d2"><span style="background:#B09438;color:#fff;border-radius:50px;padding:3px 11px;font-size:10px;font-weight:700">Option '+(i+1)+'</span>'+(nm?'<span style="font-size:12px;font-weight:700">'+nm+'</span>':'')+'<span style="margin-left:auto;font-size:15px;font-weight:700;color:#1E4035">'+fmt(totO)+' <span style="color:#B09438;font-size:10px">€</span></span></div>';
+      oh+='<div style="padding:2px 14px">';
+      ob.forEach(function(b){ var q=(b.isItin&&opt.itinQty)?opt.itinQty:1; var pr=Math.round(b.prix*(1-defD))*q; oh+='<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #f1ede4"><span style="background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10px;font-weight:700">'+(b.isItin?'ITIN':esc(b.ref))+'</span><span style="font-size:12px">'+esc(b.label||'')+'</span><span style="margin-left:auto;font-size:13px;font-weight:700">'+fmt(pr)+' <span style="color:#B09438;font-size:9px">€</span></span></div>'; });
+      oh+='</div></div>';
+    });
+    if(!_any) oh+='<div style="color:#999;font-size:12.5px;padding:8px 0">'+(isEN?'Assign offices to your options to preview them.':'Attribuez des bureaux à vos options pour les prévisualiser.')+'</div>';
+    oh+='</div></div>';
+    _writeDoc(oh);
+    return;
+  }
   var senderSel = document.getElementById('senderSelect');
   var sender = senderSel ? senderSel.options[senderSel.selectedIndex].text : '';
 
@@ -2945,6 +2991,7 @@ function fetchData(cb) {
         PREV_DATA=JSON.parse(JSON.stringify(offices));
         DATA = offices;
         setStatus('live', 'Donn\u00e9es en direct');
+        var _dw=document.getElementById('dataWarn'); if(_dw) _dw.classList.remove('on');
         /* Show update time from data._updated or Last-Modified header */
         var lm = xhr.getResponseHeader ? xhr.getResponseHeader('Last-Modified') : null;
         if (lm) {
@@ -2970,6 +3017,7 @@ function fetchData(cb) {
     console.warn('[TheB] data.json fetch failed:', reason);
     DATA = FALLBACK.slice();
     setStatus('fallback', 'Donn\u00e9es hors ligne');
+    var dw=document.getElementById('dataWarn'); if(dw) dw.classList.add('on');
     render();
   }
 }
@@ -3851,7 +3899,30 @@ function generateProposalLink(){
 
 
 /* F13: PWA */
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){})}
+function showUpdateBanner(){
+  if(document.getElementById('tbUpdateBar')) return;
+  var bar=document.createElement('div'); bar.id='tbUpdateBar';
+  bar.innerHTML='<span class="tbu-txt">Nouvelle version disponible</span><button id="tbUpdateReload" type="button">Recharger</button><button class="tbu-close" id="tbUpdateClose" type="button" aria-label="Ignorer">×</button>';
+  document.body.appendChild(bar);
+  requestAnimationFrame(function(){ bar.classList.add('on'); });
+  document.getElementById('tbUpdateReload').addEventListener('click', function(){ location.reload(); });
+  document.getElementById('tbUpdateClose').addEventListener('click', function(){ bar.classList.remove('on'); setTimeout(function(){ if(bar.parentNode) bar.parentNode.removeChild(bar); }, 300); });
+}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').then(function(reg){
+    /* Nouvelle version détectée → propose de recharger */
+    reg.addEventListener('updatefound', function(){
+      var nw=reg.installing; if(!nw) return;
+      nw.addEventListener('statechange', function(){
+        if(nw.state==='installed' && navigator.serviceWorker.controller) showUpdateBanner();
+      });
+    });
+    /* Vérifie les mises à jour au retour sur l'onglet et périodiquement */
+    var check=function(){ try{ reg.update(); }catch(e){} };
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) check(); });
+    setInterval(check, 15*60*1000);
+  }).catch(function(){});
+}
 
 /* F1+F2: Restore session + share URL */
 (function(){var restored=restoreSession();if(location.hash.length>1){parseFullShareUrl();restored=true}if(restored){setTimeout(function(){render();updateSelBar();document.querySelectorAll('#sf .sc').forEach(function(c){c.classList.toggle('on',ST.sites.all?c.dataset.site==='all':!!ST.sites[c.dataset.site])});document.querySelectorAll('#ef .sb').forEach(function(c){c.classList.toggle('on',c.dataset.eng===ST.eng)});document.querySelectorAll('#df .sb').forEach(function(c){c.classList.toggle('on',c.dataset.dispo===ST.dispo)});showToast('Session restauree')},800)}})();
