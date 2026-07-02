@@ -654,7 +654,7 @@ body.dark .tw-desc strong{color:#F5EFE5}
 <div class="tb"><div class="rc"><strong id="cnt">-</strong> bureau<span id="ps"></span> disponible<span id="ps2"></span></div><span class="hint">Cliquer sur une carte pour la sélectionner</span><div class="view-seg" id="viewToggle" role="group" aria-label="Mode d'affichage"><button type="button" id="vtList" title="Liste" aria-label="Affichage liste"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button><button type="button" id="vtGrid" title="Grille" aria-label="Affichage grille"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button></div><button class="filter-fab" id="filterFab" onclick="openFilterDrawer()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<div class="filter-fab-dot" id="filterFabDot"></div></button></div>
 <div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
-<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div></div><div id="twExtras"></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1" checked><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3"><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div><div class="mtiers" id="mtiers" style="display:none"></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
+<div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div></div><div id="twExtras"></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1" checked><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3"><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div><div class="mtiers" id="mtiers" style="display:none"></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><button class="bcnl" id="modalRefreshBtn" style="font-size:9px" title="Actualiser les disponibilités et prix">↻ Actualiser</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
 <button class="present-exit" id="presentExit">&#10005; Quitter</button>
 <div class="cmp-overlay" id="cmpOverlay"><div class="cmp-modal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="font-size:15px;font-weight:600">Comparaison</h3><button class="mclose" id="cmpClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="cmpBody"></div></div></div>
 <div class="hist-overlay" id="histOverlay"><div class="hist-modal"><div style="padding:16px 20px;border-bottom:1px solid var(--cf);display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:15px;font-weight:600">Historique</h3><button class="mclose" id="histClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="histBody"></div></div></div>
@@ -1317,6 +1317,21 @@ document.getElementById('mcls').addEventListener('click', closeModal);
 document.getElementById('bcnl').addEventListener('click', closeModal);
 document.getElementById('mov').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 document.getElementById('bprop').addEventListener('click', openModal);
+/* Bouton Actualiser du modal — recharge les données puis rafraîchit le modal */
+(function(){
+  var mr = document.getElementById('modalRefreshBtn');
+  if (!mr) return;
+  mr.addEventListener('click', function(){
+    if (mr.disabled) return;
+    var old = mr.textContent;
+    mr.disabled = true; mr.textContent = '↻ …';
+    fetchData(function(){
+      if (document.getElementById('mov').classList.contains('on')) openModal();
+      mr.disabled = false; mr.textContent = old;
+      if (typeof showToast==='function') showToast('Disponibilités actualisées');
+    });
+  });
+})();
 
 /* ============================================================
    PLAIN TEXT RECAP (top-level so btnTxt handler can access it)
@@ -2559,7 +2574,7 @@ function setStatus(type,txt) {
   dot.style.background = type==='live'?'#1E4035':'#c07830';
   dot.className = 'sdot'+(type==='live'?' live':'');
 }
-function fetchData() {
+function fetchData(cb) {
   setStatus('loading', 'Chargement\u2026');
   var xhr = new XMLHttpRequest();
   var done = false;
@@ -2594,8 +2609,9 @@ function fetchData() {
           }
         }
         render();
-      } catch(e) { onFail(e.message); }
-    } else { onFail('HTTP ' + xhr.status); }
+        if (typeof cb === 'function') { try { cb(true); } catch(e){} }
+      } catch(e) { onFail(e.message); if (typeof cb === 'function') { try { cb(false); } catch(_){} } }
+    } else { onFail('HTTP ' + xhr.status); if (typeof cb === 'function') { try { cb(false); } catch(e){} } }
   };
   xhr.onerror = function() { clearTimeout(timer); if (!done) { done = true; onFail('network'); } };
   xhr.open('GET', DATA_URL + '?t=' + Date.now(), true);
@@ -2865,6 +2881,32 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ============================================================
    PDF EXPORT — A4 landscape (replicated from BrokerLounge)
 ============================================================ */
+/* Rastérise un SVG same-origin en data-URI PNG.
+   Évite que html2canvas « teinte » le canvas (images cross-origin) —
+   ce qui garantit le logo dans le PDF et empêche le repli sur la page HTML. */
+function rasterizeSvg(url, cssH){
+  var SCALE=4;
+  return fetch(url).then(function(r){ return r.text(); }).then(function(txt){
+    if(!/viewBox=/i.test(txt)){
+      var wm=txt.match(/\bwidth="([\d.]+)"/), hm=txt.match(/\bheight="([\d.]+)"/);
+      if(wm&&hm) txt=txt.replace(/<svg\b/i,'<svg viewBox="0 0 '+wm[1]+' '+hm[1]+'"');
+    }
+    var svgBlob=new Blob([txt],{type:'image/svg+xml;charset=utf-8'});
+    var burl=URL.createObjectURL(svgBlob);
+    return new Promise(function(res){
+      var img=new Image();
+      img.onload=function(){
+        var ratio=(img.naturalWidth&&img.naturalHeight)?(img.naturalWidth/img.naturalHeight):4.4;
+        var H=Math.round(cssH*SCALE), W=Math.round(H*ratio);
+        var c=document.createElement('canvas'); c.width=W; c.height=H;
+        try{ c.getContext('2d').drawImage(img,0,0,W,H); URL.revokeObjectURL(burl); res(c.toDataURL('image/png')); }
+        catch(e){ URL.revokeObjectURL(burl); res(null); }
+      };
+      img.onerror=function(){ URL.revokeObjectURL(burl); res(null); };
+      img.src=burl;
+    });
+  }).catch(function(){ return null; });
+}
 function exportPDF(){
   var isEN = (typeof EP_LANG!=='undefined' && EP_LANG==='en');
   var T = isEN ? {
@@ -3090,46 +3132,70 @@ function exportPDF(){
   h+='</div></body></html>';
 
   var fileBase=(pdfTitle||'The Bureau - Proposition').replace(/[^0-9A-Za-zÀ-ſ .-]/g,'').trim().replace(/\s+/g,'_');
+  var fileName=fileBase+'.pdf';
 
-  /* Repli : ouvre le récap HTML dans un onglet (ancien comportement) */
+  /* Repli : ouvre le récap HTML dans un onglet (uniquement si les librairies manquent) */
   function openHtmlFallback(){
     var blob=new Blob([h],{type:'text/html;charset=utf-8'});
     var url=URL.createObjectURL(blob);
     var win=window.open(url,'_blank'); if(!win) window.location.href=url;
     setTimeout(function(){URL.revokeObjectURL(url)},60000);
   }
+  /* Un seul fichier PDF propre : partage natif si dispo, sinon téléchargement */
+  function downloadPdf(pdfBlob){
+    var purl=URL.createObjectURL(pdfBlob);
+    var a=document.createElement('a'); a.href=purl; a.download=fileName; a.rel='noopener';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(purl)},60000);
+    showToast(isEN?'PDF ready':'PDF prêt');
+  }
+  function deliverPdf(pdfBlob){
+    try{
+      var file=new File([pdfBlob],fileName,{type:'application/pdf'});
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({files:[file],title:pdfTitle})
+          .then(function(){ showToast(isEN?'PDF shared':'PDF partagé'); })
+          .catch(function(e){ if(e&&e.name==='AbortError') return; downloadPdf(pdfBlob); });
+        return;
+      }
+    }catch(e){}
+    downloadPdf(pdfBlob);
+  }
 
-  /* Génère un vrai PDF téléchargeable (sans passer par l'aperçu dans une autre fenêtre) */
+  /* Génère un vrai PDF (logo inclus, sans aperçu HTML dans une autre fenêtre) */
   var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
   if(typeof html2canvas!=='function' || !jsPDFLib){ openHtmlFallback(); return; }
   showToast(isEN?'Generating PDF…':'Génération du PDF…');
-  var frame=document.createElement('iframe');
-  frame.style.cssText='position:fixed;left:-9999px;top:0;width:1123px;height:10px;opacity:0;pointer-events:none';
-  document.body.appendChild(frame);
-  var fdoc=frame.contentDocument; fdoc.open(); fdoc.write(h); fdoc.close();
-  setTimeout(function(){
-    try{ var bp=fdoc.querySelector('.btn-print'); if(bp) bp.parentNode.removeChild(bp); }catch(e){}
-    var pageEl=fdoc.querySelector('.page')||fdoc.body;
-    var w=Math.round(pageEl.getBoundingClientRect().width)||1123;
-    var ht=Math.max(pageEl.scrollHeight, fdoc.body.scrollHeight)||794;
-    frame.style.height=ht+'px';
+
+  /* Le logo et les chevrons sont intégrés en data-URI PNG pour éviter que
+     html2canvas teinte le canvas (images cross-origin) → PDF sans logo + repli HTML. */
+  Promise.all([ rasterizeSvg(logoWhiteUrl,34), rasterizeSvg(chevronsUrl,28) ]).then(function(imgs){
+    h = h.replace(logoWhiteUrl, function(){ return imgs[0]||''; });
+    h = h.replace(chevronsUrl,  function(){ return imgs[1]||''; });
+    var frame=document.createElement('iframe');
+    frame.style.cssText='position:fixed;left:-9999px;top:0;width:1123px;height:10px;opacity:0;pointer-events:none';
+    document.body.appendChild(frame);
+    var fdoc=frame.contentDocument; fdoc.open(); fdoc.write(h); fdoc.close();
     setTimeout(function(){
-      html2canvas(pageEl,{scale:2,useCORS:true,logging:false,backgroundColor:'#ffffff',width:w,height:ht,windowWidth:w}).then(function(canvas){
-        var orient=(canvas.width>=canvas.height)?'l':'p';
-        var pdf=new jsPDFLib({unit:'px',format:[w,ht],orientation:orient});
-        var pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
-        pdf.addImage(canvas.toDataURL('image/jpeg',0.92),'JPEG',0,0,pw,ph);
-        try{ pdf.setProperties&&pdf.setProperties({title:pdfTitle}); }catch(e){}
-        var pdfBlob=pdf.output('blob');
-        try{ document.body.removeChild(frame); }catch(e){}
-        var purl=URL.createObjectURL(pdfBlob);
-        var a=document.createElement('a'); a.href=purl; a.download=fileBase+'.pdf';
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(function(){URL.revokeObjectURL(purl)},60000);
-        showToast(isEN?'PDF ready':'PDF prêt');
-      }).catch(function(){ try{document.body.removeChild(frame);}catch(e){} openHtmlFallback(); });
-    },700);
-  },500);
+      try{ var bp=fdoc.querySelector('.btn-print'); if(bp) bp.parentNode.removeChild(bp); }catch(e){}
+      var pageEl=fdoc.querySelector('.page')||fdoc.body;
+      var w=Math.round(pageEl.getBoundingClientRect().width)||1123;
+      var ht=Math.max(pageEl.scrollHeight, fdoc.body.scrollHeight)||794;
+      frame.style.height=ht+'px';
+      setTimeout(function(){
+        html2canvas(pageEl,{scale:2,useCORS:true,logging:false,backgroundColor:'#ffffff',width:w,height:ht,windowWidth:w}).then(function(canvas){
+          var orient=(canvas.width>=canvas.height)?'l':'p';
+          var pdf=new jsPDFLib({unit:'px',format:[w,ht],orientation:orient});
+          var pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+          pdf.addImage(canvas.toDataURL('image/jpeg',0.92),'JPEG',0,0,pw,ph);
+          try{ pdf.setProperties&&pdf.setProperties({title:pdfTitle}); }catch(e){}
+          var pdfBlob=pdf.output('blob');
+          try{ document.body.removeChild(frame); }catch(e){}
+          deliverPdf(pdfBlob);
+        }).catch(function(){ try{document.body.removeChild(frame);}catch(e){} openHtmlFallback(); });
+      },700);
+    },500);
+  });
 }
 
 
