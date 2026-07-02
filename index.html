@@ -1317,6 +1317,7 @@ function openModal() {
     row.appendChild(mtop);
     offs.appendChild(row);
   });
+  if (typeof applyOptModeLayout==='function') applyOptModeLayout();
   updateModalTotal();
   if(typeof syncMovLang==='function') syncMovLang();
   var _sc=document.getElementById('selCount'); if(_sc) _sc.textContent=document.querySelectorAll('#moffs .mrow').length;
@@ -2463,10 +2464,11 @@ function resetSession() {
   /* Reset ITIN state */
   ITIN_SITE = null;
   ITIN_ADDONS = {domi:false, casier:false};
-  /* Reset OPT_MODE fully */
+  /* Reset OPT_MODE fully + restaure la mise en page normale du modal */
   OPT_MODE = false;
   OPTIONS = [];
   OPT_COUNTER = 0;
+  if (typeof applyOptModeLayout==='function') applyOptModeLayout();
   var optBtn = document.getElementById('optModeBtn');
   if (optBtn) { optBtn.textContent = '+ Mode options'; optBtn.style.background = 'var(--creme)'; optBtn.style.color = 'var(--gris)'; optBtn.style.border = '1px solid var(--cf)'; }
   var optPanel = document.getElementById('optPanel');
@@ -2506,8 +2508,9 @@ function resetSession() {
 /* ============================================================
    OPTIONS MODE
 ============================================================ */
-function toggleOptMode() {
-  OPT_MODE = !OPT_MODE;
+/* Synchronise l'affichage du modal (panneaux normaux vs options) sur OPT_MODE.
+   Appelée à chaque bascule ET à l'ouverture du modal → évite tout état incohérent. */
+function applyOptModeLayout() {
   var panel = document.getElementById('optPanel');
   var selHead = document.getElementById('selHead');
   var moffs = document.getElementById('moffs');
@@ -2521,7 +2524,7 @@ function toggleOptMode() {
     if(sortRow) sortRow.style.display='none';
     if(optHead) optHead.style.display='flex';
     if(optHint) optHint.style.display='block';
-    panel.style.display='block';
+    if(panel) panel.style.display='block';
     if(gtw) gtw.style.display='none'; if(twHead) twHead.style.display='none'; if(twSec) twSec.style.display='none'; if(twEx) twEx.style.display='none';
     if (!OPTIONS.length) addOption();
     renderOptPanel();
@@ -2531,9 +2534,13 @@ function toggleOptMode() {
     if(sortRow) sortRow.style.display='flex';
     if(optHead) optHead.style.display='none';
     if(optHint) optHint.style.display='none';
-    panel.style.display='none';
-    if(gtw) gtw.style.display='flex'; if(twHead) twHead.style.display=''; if(twSec) twSec.style.display=''; if(twEx){ twEx.style.display=''; renderTwExtras(); }
+    if(panel) panel.style.display='none';
+    if(gtw) gtw.style.display='flex'; if(twHead) twHead.style.display=''; if(twSec) twSec.style.display=''; if(twEx){ twEx.style.display=''; if(typeof renderTwExtras==='function') renderTwExtras(); }
   }
+}
+function toggleOptMode() {
+  OPT_MODE = !OPT_MODE;
+  applyOptModeLayout();
   if (typeof updateModalTotal==='function') updateModalTotal();
 }
 
