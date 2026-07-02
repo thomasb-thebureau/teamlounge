@@ -1078,7 +1078,9 @@ function toggleSel(ref) {
 function clearSel() {
   SEL = {}; SEL_ORDER = [];
   document.querySelectorAll('.card.sel').forEach(function(el){ el.classList.remove('sel'); });
+  var _r = document.getElementById('remiseInput'); if (_r) _r.value = '0';
   updateSelBar();
+  if (document.getElementById('mov') && document.getElementById('mov').classList.contains('on') && typeof updateModalTotal==='function') updateModalTotal();
 }
 
 /* ============================================================
@@ -2532,6 +2534,7 @@ function toggleOptMode() {
     panel.style.display='none';
     if(gtw) gtw.style.display='flex'; if(twHead) twHead.style.display=''; if(twSec) twSec.style.display=''; if(twEx){ twEx.style.display=''; renderTwExtras(); }
   }
+  if (typeof updateModalTotal==='function') updateModalTotal();
 }
 
 function addOption() {
@@ -2896,6 +2899,8 @@ function doReset() {
   document.querySelectorAll('#df .sb').forEach(function(b,i){ b.classList.toggle('on',i===0); });
   ['cmin','cmax','search'].forEach(function(id){ document.getElementById(id).value=''; }); ST.search='';
   document.getElementById('etf').value='all'; document.getElementById('srt').value='nom'; ST.sort='nom';
+  var _rr = document.getElementById('remiseInput'); if (_rr) _rr.value = '0';
+  if (document.getElementById('mov') && document.getElementById('mov').classList.contains('on') && typeof updateModalTotal==='function') updateModalTotal();
   render();
 }
 document.getElementById('rst').addEventListener('click', doReset);
