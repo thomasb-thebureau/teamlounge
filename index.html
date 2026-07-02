@@ -201,8 +201,23 @@ body.dark .badge-large{background:rgba(74,154,122,.12);color:#5cb88a;border-colo
 .finp:focus{border-color:var(--or)}
 .finp::placeholder{color:var(--gc);opacity:.6}
 .moffs{display:flex;flex-direction:column;gap:9px;margin-top:7px}
-.mrow{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--blanc);border-radius:10px;border:1px solid var(--cf);transition:box-shadow .2s}
+.mrow{display:flex;flex-direction:column;gap:10px;padding:11px 14px;background:var(--blanc);border-radius:10px;border:1px solid var(--cf);transition:box-shadow .2s}
 .mrow:hover{box-shadow:0 4px 16px rgba(15,15,15,.06)}
+.mrow-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mrow-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:6px}
+.mrt{border:1px solid var(--cf);border-radius:8px;padding:6px 8px;text-align:center;background:var(--creme)}
+.mrt.hl{border-color:var(--vert);background:var(--vp)}
+.mrt-k{display:block;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);font-weight:600;margin-bottom:2px;white-space:nowrap}
+.mrt-v{font-size:12.5px;font-weight:700;color:var(--encre);white-space:nowrap}
+.mrt.hl .mrt-v{color:var(--vert)}
+.mrt-v sup{color:var(--or);font-size:8px}
+.opt-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:6px;margin-top:11px;padding-top:11px;border-top:1px dashed var(--cf)}
+.opt-tier{border:1px solid var(--cf);border-radius:8px;padding:6px 4px;text-align:center;background:var(--creme)}
+.opt-tier.hl{border-color:var(--vert);background:var(--vp)}
+.ot-k{display:block;font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);font-weight:600;margin-bottom:2px;white-space:nowrap}
+.ot-v{font-size:12px;font-weight:700;color:var(--encre);white-space:nowrap}
+.opt-tier.hl .ot-v{color:var(--vert)}
+.ot-v sup{color:var(--or);font-size:8px}
 .minfo{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
 .refbadge{background:var(--vert);color:#F5EFE5;border-radius:50px;padding:3px 9px;font-weight:700;font-size:11px;letter-spacing:.02em;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
 .mmeta{font-size:11.5px;color:var(--gris);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1167,7 +1182,9 @@ function openModal() {
     del.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
     del.addEventListener('click', function(){ removeFromModal(b.ref); });
     right.appendChild(pe); right.appendChild(del);
-    row.appendChild(info); row.appendChild(right);
+    var mtop = document.createElement('div'); mtop.className = 'mrow-top';
+    mtop.appendChild(info); mtop.appendChild(right);
+    row.appendChild(mtop);
     offs.appendChild(row);
   });
   updateModalTotal();
@@ -1261,7 +1278,8 @@ function updateModalTotal() {
     if (lbl)   lbl.textContent  = grouped ? 'Total group\u00e9'    : 'Bureaux dissoci\u00e9s';
     if (sub)   sub.textContent  = grouped ? 'Un seul email avec le total des bureaux' : 'Un email s\u00e9par\u00e9 par bureau';
   }
-  if (grouped) {
+  var optMode = (typeof OPT_MODE!=='undefined' && OPT_MODE);
+  if (grouped && !optMode) {
     var tot = selData.reduce(function(s,b){ return s + b.prix*(1-d)*(1-remise); }, 0);
     if (SEL[ITIN_REF]) tot += ITIN_PRIX*(SEL[ITIN_REF].itinQty||1)*(1-d)*(1-remise);
     if (typeof getTwTotal==='function') tot += getTwTotal();
@@ -1270,8 +1288,53 @@ function updateModalTotal() {
   } else {
     if (mtot) mtot.style.display = 'none';
   }
-  /* Les paliers d'engagement avec montants restent visibles dès qu'il y a une sélection */
-  renderModalTiers(selData, remise);
+  if (optMode) {
+    if (typeof renderOptPanel==='function') renderOptPanel();
+    var _mtO = document.getElementById('mtiers'); if (_mtO) { _mtO.style.display='none'; _mtO.innerHTML=''; }
+  } else if (grouped) {
+    renderRowTiers(true, remise);
+    renderModalTiers(selData, remise);
+  } else {
+    renderRowTiers(false, remise);
+    var _mtD = document.getElementById('mtiers'); if (_mtD) { _mtD.style.display='none'; _mtD.innerHTML=''; }
+  }
+}
+
+/* Paliers d'engagement — définitions + remises (remise commerciale incluse) */
+function getTierList(remise) {
+  var p = function(d){ return '−' + (Math.round(d*1000)/10) + ' %'; };
+  return [
+    { i:0, label:'Mensuel', d:remise, sub:(remise>0 ? 'remise '+Math.round(remise*100)+' %' : '3 mois min.') },
+    { i:1, label:'12 mois', d:1-(1-0.05)*(1-remise), sub:p(1-(1-0.05)*(1-remise)) },
+    { i:2, label:'24 mois', d:1-(1-0.10)*(1-remise), sub:p(1-(1-0.10)*(1-remise)) },
+    { i:3, label:'36 mois', d:1-(1-0.15)*(1-remise), sub:p(1-(1-0.15)*(1-remise)) }
+  ];
+}
+
+/* Paliers par ligne — chaque bureau affiche ses prix par engagement (mode dissocié) */
+function renderRowTiers(grouped, remise) {
+  var selTiers = (typeof getSelectedTiers==='function') ? getSelectedTiers() : [0,1,2,3];
+  var defTier  = (typeof getDefaultTier==='function')  ? getDefaultTier()  : 1;
+  var defs = getTierList(remise);
+  document.querySelectorAll('#moffs .mrow').forEach(function(row){
+    var ref = row.dataset.ref;
+    var b = (ref===ITIN_REF) ? SEL[ITIN_REF] : DATA.find(function(x){ return x.ref===ref; });
+    var priceEl = row.querySelector('.mprice');
+    var existing = row.querySelector('.mrow-tiers');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (grouped || !b) { if (priceEl) priceEl.style.display=''; return; }
+    if (priceEl) priceEl.style.display='none';
+    var q = b.isItin ? (b.itinQty||1) : 1;
+    var grid = document.createElement('div'); grid.className='mrow-tiers';
+    defs.forEach(function(t){
+      if (selTiers.indexOf(t.i) < 0) return;
+      var amt = Math.round(b.prix*(1-t.d))*q;
+      var cell = document.createElement('div'); cell.className = 'mrt'+(t.i===defTier?' hl':'');
+      cell.innerHTML = '<span class="mrt-k">'+t.label+'</span><span class="mrt-v">'+fmt(amt)+'<sup> €</sup></span>';
+      grid.appendChild(cell);
+    });
+    row.appendChild(grid);
+  });
 }
 
 /* D\u00e9tail des paliers d'engagement avec montants \u2014 affich\u00e9 dans le modal */
@@ -1283,28 +1346,21 @@ function renderModalTiers(selData, remise) {
   var twFlat = 0;
   if (typeof getTwTotal==='function')     twFlat += getTwTotal();
   if (typeof getExtrasTotal==='function') twFlat += getExtrasTotal();
-  var pct = function(d){ return '\u2212' + (Math.round(d*1000)/10) + '\u00a0%'; };
-  var defs = [
-    { k:'Mensuel', d:remise,                        sub:(remise>0 ? 'remise '+Math.round(remise*100)+'\u00a0%' : '3 mois min.') },
-    { k:'12 mois', d:1-(1-0.05)*(1-remise) },
-    { k:'24 mois', d:1-(1-0.10)*(1-remise) },
-    { k:'36 mois', d:1-(1-0.15)*(1-remise) }
-  ];
+  var defs = getTierList(remise);
   var rows = '';
-  defs.forEach(function(t, i){
-    if (selTiers.indexOf(i) < 0) return;
+  defs.forEach(function(t){
+    if (selTiers.indexOf(t.i) < 0) return;
     var amt = selData.reduce(function(s,b){ var q=b.isItin?(b.itinQty||1):1; return s + Math.round(b.prix*(1-t.d))*q; }, 0);
     if (SEL[ITIN_REF]) amt += Math.round(ITIN_PRIX*(1-t.d)) * (SEL[ITIN_REF].itinQty||1);
     amt += twFlat;
-    var hl = (i === defTier);
-    var sub = t.sub || pct(t.d);
+    var hl = (t.i === defTier);
     rows += '<div class="mtiers-row'+(hl?' hl':'')+'">'
-         +  '<span class="mtiers-k">'+t.k+(hl?'<span class="mtiers-badge">Mis en avant</span>':'')+'<span class="mtiers-pct">'+sub+'</span></span>'
-         +  '<span class="mtiers-v">'+fmt(amt)+'<sup>\u00a0\u20ac</sup></span></div>';
+         +  '<span class="mtiers-k">'+t.label+(hl?'<span class="mtiers-badge">Mis en avant</span>':'')+'<span class="mtiers-pct">'+t.sub+'</span></span>'
+         +  '<span class="mtiers-v">'+fmt(amt)+'<sup> \u20ac</sup></span></div>';
   });
   if (rows) {
     mt.style.display = '';
-    mt.innerHTML = '<div class="mtiers-hd">Total mensuel H.T. par engagement</div>' + rows;
+    mt.innerHTML = '<div class="mtiers-hd">Total group\u00e9 H.T. par engagement</div>' + rows;
   } else {
     mt.style.display = 'none';
     mt.innerHTML = '';
@@ -1332,6 +1388,13 @@ document.getElementById('bprop').addEventListener('click', openModal);
     });
   });
 })();
+/* Rafraîchit le modal (paliers/prix) quand on change les paliers ou la durée mise en avant */
+['tierChecks','defaultTierChecks'].forEach(function(id){
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('change', function(){
+    if (document.getElementById('mov').classList.contains('on') && typeof updateModalTotal==='function') updateModalTotal();
+  });
+});
 
 /* ============================================================
    PLAIN TEXT RECAP (top-level so btnTxt handler can access it)
@@ -2238,6 +2301,11 @@ function renderOptPanel() {
   if (!el) return;
   var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
   if (SEL[ITIN_REF] && !selData.find(function(b){ return b.ref===ITIN_REF; })) selData.unshift(SEL[ITIN_REF]);
+  var _remEl = document.getElementById('remiseInput');
+  var _remOpt = _remEl ? Math.min(25,Math.max(0,parseFloat(_remEl.value)||0))/100 : 0;
+  var _selTiersOpt = (typeof getSelectedTiers==='function') ? getSelectedTiers() : [0,1,2,3];
+  var _defTierOpt  = (typeof getDefaultTier==='function')  ? getDefaultTier()  : 1;
+  var _tdefs = getTierList(_remOpt);
   var html = '';
   OPTIONS.forEach(function(opt, idx) {
     var letter = (idx+1);
@@ -2272,6 +2340,17 @@ function renderOptPanel() {
     if(_twOpt<=0) chips += '<button class="exchip" onclick="setOptTw('+opt.id+',1)">+ Offre Télétravail</button>';
     ADDONS.forEach(function(a){ if(!(_ex[a.k]>0)) chips += '<button class="exchip" onclick="setOptExtra('+opt.id+',\''+a.k+'\',1)">+ '+a.fr+'</button>'; });
     if(chips) html += '<div style="display:flex;flex-wrap:wrap;margin-top:8px">'+chips+'</div>';
+    /* Paliers chiffrés de l'option (total par engagement) */
+    if (optBureaux.length) {
+      var _twFlatOpt = (opt.tw||0)*170 + optExtrasTotal(opt);
+      var _cells = '';
+      _tdefs.forEach(function(t){
+        if (_selTiersOpt.indexOf(t.i) < 0) return;
+        var amt = optBureaux.reduce(function(s,b){ var q=(b.isItin&&opt.itinQty)?opt.itinQty:1; return s + Math.round(b.prix*(1-t.d))*q; }, 0) + _twFlatOpt;
+        _cells += '<div class="opt-tier'+(t.i===_defTierOpt?' hl':'')+'"><span class="ot-k">'+t.label+'</span><span class="ot-v">'+fmt(amt)+'<sup> €</sup></span></div>';
+      });
+      if (_cells) html += '<div class="opt-tiers">'+_cells+'</div>';
+    }
     html += '</div></div>';
   });
   html += '<button class="add-opt" onclick="addOption()">+ Ajouter une option</button>';
