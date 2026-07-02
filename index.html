@@ -333,6 +333,22 @@ footer{background:var(--encre);position:relative;overflow:hidden}
 .txt-copy-btn{background:var(--vert);color:#F5EFE5;border:none;border-radius:50px;padding:9px 20px;font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .25s;display:flex;align-items:center;gap:6px}
 .txt-copy-btn:hover{background:#16332b}
 
+/* ── Tablette / petit portable ────────────────────── */
+@media (max-width: 1024px) {
+  .top-bar{padding:12px 24px}
+  .hero{padding:26px 24px 22px}
+  .fp{padding:12px 24px;gap:10px 12px}
+  .tb{padding:11px 24px}
+  .selbar{padding:14px 24px}
+  .fbody{padding:32px 24px 26px;gap:28px}
+  .fbot{padding:14px 24px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin:14px 24px 90px}
+  .modal{max-width:calc(100% - 40px)}
+  .mhdr{padding:18px 24px}
+  .mcol{padding:20px 22px}
+  .mftr{padding:14px 24px}
+}
+
 @media (max-width: 768px) {
   .top-bar{padding:10px 16px}
   .logo-main{height:24px}
@@ -396,6 +412,18 @@ footer{background:var(--encre);position:relative;overflow:hidden}
   .status{display:none}
   .dlabel{display:none}
   .filter-fab{font-size:10px;padding:6px 10px}
+  /* Barre du haut compacte — évite le débordement horizontal */
+  .top-right{gap:8px}
+  .logo-wrap{gap:8px;min-width:0}
+  .logo-tag{font-size:9px;letter-spacing:.14em}
+  .refresh-btn{font-size:0;padding:5px 9px;line-height:1}
+  .refresh-btn::before{content:'↻';font-size:14px}
+  /* Barre de sélection — laisser les actions passer à la ligne */
+  .selbar{gap:10px}
+  .selbar>div:last-child{flex-wrap:wrap;justify-content:flex-end;flex:1}
+}
+@media (max-width: 360px) {
+  .logo-div,.logo-tag{display:none}
 }
 .itin-card{border:2px solid rgba(30,64,53,.4)!important;border-top:4px solid var(--vert)!important;background:linear-gradient(160deg,#1E4035,#1a3a30)!important;color:#F5EFE5}
 .itin-card .cref{color:#FAFAFA!important}
@@ -572,23 +600,6 @@ body.present .present-exit{display:flex;align-items:center;gap:6px}
 .split-close{background:none;border:none;color:rgba(245,239,229,.6);cursor:pointer;font-size:18px}
 .split-close:hover{color:#F5EFE5}
 @media(max-width:768px){.split-overlay.on{grid-template-columns:1fr}.split-left{display:none}}
-/* P3: Pipeline */
-.pipeline-overlay{position:fixed;inset:0;z-index:750;background:rgba(15,15,15,.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
-.pipeline-overlay.on{display:flex}
-.pipeline-modal{background:var(--blanc);border-radius:4px;width:100%;max-width:700px;max-height:85vh;overflow:auto;box-shadow:0 16px 48px rgba(0,0,0,.25)}
-.pipeline-hdr{padding:16px 20px;background:var(--vert);border-radius:4px 4px 0 0;display:flex;justify-content:space-between;align-items:center}
-.pipeline-hdr h3{color:#F5EFE5;font-size:15px;font-weight:600}
-.pip-item{padding:14px 20px;border-bottom:1px solid var(--cf);display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center}
-.pip-item:hover{background:rgba(30,64,53,.03)}
-.pip-client{font-weight:600;font-size:13px}
-.pip-meta{font-size:11px;color:var(--gris)}
-.pip-status{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:50px;font-weight:600}
-.pip-status.sent{background:rgba(176,148,56,.1);color:var(--orAA)}
-.pip-status.visited{background:rgba(30,64,53,.1);color:var(--vert)}
-.pip-status.signed{background:var(--vert);color:#F5EFE5}
-.pip-actions{display:flex;gap:6px}
-.pip-btn{background:none;border:1px solid var(--cf);border-radius:50px;padding:4px 10px;font-size:10px;cursor:pointer;color:var(--gris);font-family:'Plus Jakarta Sans',sans-serif}
-.pip-btn:hover{border-color:var(--vert);color:var(--vert)}
 
 /* F7: Site group headers */
 .site-group-hdr{grid-column:1/-1;background:var(--vert);color:#F5EFE5;padding:8px 26px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif}
@@ -627,14 +638,13 @@ body.dark .tw-desc strong{color:#F5EFE5}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-<div class="top-bar"><div class="logo-wrap"><a href="#" onclick="resetSession();return false;" title="Nouvelle session" style="display:flex;align-items:center;line-height:0"><img class="logo-main" src="./logo.svg?v=11" alt="The Bureau"/><img class="logo-main-dark" src="./logo-white.svg?v=11" alt="The Bureau"/></a><div class="logo-div"></div><span class="logo-tag">TEAM LOUNGE</span></div><div class="top-right"><div class="lang-toggle" id="langToggleHeader"><button data-lang="fr" class="on">FR</button><button data-lang="en">EN</button></div><button class="view-toggle" id="pipBtn" title="Pipeline" style="font-size:10px;letter-spacing:.06em">▶ Pipeline</button><button class="dark-toggle" id="darkToggle" title="Mode sombre">🌙</button><div class="status"><div class="sdot" id="sdot"></div><span class="stxt" id="stxt">Chargement…</span></div><button class="refresh-btn" id="refreshBtn" onclick="fetchData()">↻ Actualiser</button><span class="dlabel" id="dlabel"></span></div></div>
+<div class="top-bar"><div class="logo-wrap"><a href="#" onclick="resetSession();return false;" title="Nouvelle session" style="display:flex;align-items:center;line-height:0"><img class="logo-main" src="./logo.svg?v=11" alt="The Bureau"/><img class="logo-main-dark" src="./logo-white.svg?v=11" alt="The Bureau"/></a><div class="logo-div"></div><span class="logo-tag">TEAM LOUNGE</span></div><div class="top-right"><div class="lang-toggle" id="langToggleHeader"><button data-lang="fr" class="on">FR</button><button data-lang="en">EN</button></div><button class="dark-toggle" id="darkToggle" title="Mode sombre">🌙</button><div class="status"><div class="sdot" id="sdot"></div><span class="stxt" id="stxt">Chargement…</span></div><button class="refresh-btn" id="refreshBtn" onclick="fetchData()">↻ Actualiser</button><span class="dlabel" id="dlabel"></span></div></div>
 <div class="hero"><div class="eyebrow">Paris — 75002 &amp; 75008</div><h1>Bureaux <em>disponibles</em></h1><div class="hero-sub">4 adresses — bureaux privatifs — données en temps réel</div></div>
 <div class="fp"><div style="display:flex;align-items:center;gap:7px"><span class="fl">Sites</span><div class="site-chips" id="sf"><span class="sc sc-all on" data-site="all">Tous</span><span class="sc" data-site="I">TB I</span><span class="sc" data-site="II">TB II</span><span class="sc" data-site="III">TB III</span><span class="sc" data-site="IV">TB IV</span></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Engagement</span><div class="sr eng" id="ef"><button class="sb on" data-eng="mensuel">Mensuel <small style="opacity:.55;font-size:9px">3 mois min.</small></button><button class="sb" data-eng="12m">12 mois <small style="opacity:.55">-5%</small></button><button class="sb" data-eng="24m">24 mois <small style="opacity:.55">-10%</small></button><button class="sb" data-eng="36m">36 mois <small style="opacity:.55">-15%</small></button></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Postes</span><div class="rw"><input type="number" class="ri" id="cmin" placeholder="min" min="1" max="100"><span style="font-size:11px;color:var(--gc)">—</span><input type="number" class="ri" id="cmax" placeholder="max" min="1" max="100"></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Etage</span><select class="fsel" id="etf"><option value="all">Tous</option><option value="0">RDC</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option><option value="5">5e</option></select></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Dispo</span><div class="sr" id="df"><button class="sb on" data-dispo="all">Toutes</button><button class="sb" data-dispo="immediate">Immédiate</button><button class="sb" data-dispo="future">A venir</button></div></div><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Tri</span><select class="fsel" id="srt"><option value="nom" selected>Référence</option><option value="pa">Prix croissant</option><option value="pd">Prix décroissant</option><option value="ca">Capacité croissante</option><option value="cd">Capacité décroissante</option><option value="dispo">Disponibilité</option></select></div><button class="reset" id="rst">Effacer</button><button class="occ-toggle" id="occBtn" title="Afficher les bureaux occupés"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21" class="occ-slash"/></svg> Occupés</button><button class="view-toggle" id="presentToggle" title="Mode présentation">▣</button><span class="sc" id="favFilter" style="background:transparent;border:1px solid var(--or);color:var(--or);cursor:pointer">★ Favoris</span><div class="fd"></div><div style="display:flex;align-items:center;gap:7px"><span class="fl">Ref</span><input type="text" class="ri" id="search" placeholder="ex. B402" style="width:80px;letter-spacing:.06em;"></div></div>
 <div class="tb"><div class="rc"><strong id="cnt">-</strong> bureau<span id="ps"></span> disponible<span id="ps2"></span></div><span class="hint">Cliquer sur une carte pour la sélectionner</span><div class="view-seg" id="viewToggle" role="group" aria-label="Mode d'affichage"><button type="button" id="vtList" title="Liste" aria-label="Affichage liste"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button><button type="button" id="vtGrid" title="Grille" aria-label="Affichage grille"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button></div><button class="filter-fab" id="filterFab" onclick="openFilterDrawer()"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<div class="filter-fab-dot" id="filterFabDot"></div></button></div>
 <div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
 <div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com"></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div></div><div id="twExtras"></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1" checked><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3"><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
-<div class="pipeline-overlay" id="pipelineOverlay"><div class="pipeline-modal"><div class="pipeline-hdr"><h3>Pipeline propositions</h3><button class="mclose" id="pipClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="pipBody"></div><div style="padding:12px 20px;border-top:1px solid var(--cf);text-align:right"><button class="pip-btn" id="pipClear" style="color:#c0392b;border-color:#c0392b">Tout effacer</button></div></div></div>
 <button class="present-exit" id="presentExit">&#10005; Quitter</button>
 <div class="cmp-overlay" id="cmpOverlay"><div class="cmp-modal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="font-size:15px;font-weight:600">Comparaison</h3><button class="mclose" id="cmpClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="cmpBody"></div></div></div>
 <div class="hist-overlay" id="histOverlay"><div class="hist-modal"><div style="padding:16px 20px;border-bottom:1px solid var(--cf);display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:15px;font-weight:600">Historique</h3><button class="mclose" id="histClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="histBody"></div></div></div>
@@ -3335,79 +3345,6 @@ function generateProposalLink(){
   return url;
 }
 
-/* ============================================================
-   PHASE 3-F15: Pipeline (mini-CRM)
-============================================================ */
-(function(){
-  var pipBtn=document.getElementById('pipBtn');
-  var pipOv=document.getElementById('pipelineOverlay');
-  var pipClose=document.getElementById('pipClose');
-  var pipBody=document.getElementById('pipBody');
-  var pipClear=document.getElementById('pipClear');
-  if(!pipBtn||!pipOv)return;
-
-  function getHistory(){return JSON.parse(localStorage.getItem('tb_proposal_history')||'[]')}
-  function getStatuses(){return JSON.parse(localStorage.getItem('tb_pipeline_status')||'{}')}
-  function saveStatuses(s){localStorage.setItem('tb_pipeline_status',JSON.stringify(s))}
-
-  function renderPipeline(){
-    var hist=getHistory();var statuses=getStatuses();
-    if(!hist.length){pipBody.innerHTML='<p style="padding:30px;text-align:center;color:var(--gc)">Aucune proposition envoy\u00e9e</p>';return}
-    pipBody.innerHTML=hist.map(function(h,i){
-      var d=new Date(h.date);
-      var ds=d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-      var status=statuses[i]||'sent';
-      var statusLabel={sent:'Envoy\u00e9',visited:'Visit\u00e9',signed:'Sign\u00e9'}[status]||'Envoy\u00e9';
-      var client=(h.client&&h.client.soc)||((h.client&&h.client.prenom)||'')+(h.client&&h.client.nom?' '+h.client.nom:'');
-      if(!client)client='Sans nom';
-      return '<div class="pip-item" data-idx="'+i+'">'
-        +'<div><div class="pip-client">'+client+'</div><div class="pip-meta">'+ds+' \u2014 '+h.refs.length+' bureau'+(h.refs.length>1?'x':'')+' \u2014 '+(h.total?fmt(h.total)+' \u20ac':'')+'</div></div>'
-        +'<span class="pip-status '+status+'">'+statusLabel+'</span>'
-        +'<div class="pip-actions">'
-          +'<button class="pip-btn pip-cycle" data-idx="'+i+'" title="Changer le statut">\u21bb</button>'
-          +'<button class="pip-btn pip-restore" data-idx="'+i+'" title="Restaurer la s\u00e9lection">\u21a9</button>'
-          +'<button class="pip-btn pip-link" data-idx="'+i+'" title="Copier le lien">\ud83d\udd17</button>'
-        +'</div></div>';
-    }).join('');
-
-    pipBody.querySelectorAll('.pip-cycle').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var idx=parseInt(this.dataset.idx);
-        var statuses=getStatuses();
-        var cur=statuses[idx]||'sent';
-        var next={sent:'visited',visited:'signed',signed:'sent'}[cur];
-        statuses[idx]=next;saveStatuses(statuses);renderPipeline();
-      });
-    });
-    pipBody.querySelectorAll('.pip-restore').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var idx=parseInt(this.dataset.idx);
-        var hist=getHistory();var entry=hist[idx];if(!entry)return;
-        clearSel();entry.refs.forEach(function(r){var b=DATA.find(function(d){return d.ref===r});if(b)toggleSel(r)});
-        pipOv.classList.remove('on');showToast('S\u00e9lection restaur\u00e9e');
-      });
-    });
-    pipBody.querySelectorAll('.pip-link').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var idx=parseInt(this.dataset.idx);
-        var hist=getHistory();var entry=hist[idx];if(!entry)return;
-        var url=window.location.origin+window.location.pathname+'#sel='+entry.refs.join(',');
-        if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){showToast('Lien copi\u00e9')})}
-        else{prompt('Lien:',url)}
-      });
-    });
-  }
-
-  pipBtn.addEventListener('click',function(){renderPipeline();pipOv.classList.add('on')});
-  pipClose.addEventListener('click',function(){pipOv.classList.remove('on')});
-  pipOv.addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')});
-  pipClear.addEventListener('click',function(){
-    if(!confirm('Effacer tout l\'historique ?'))return;
-    localStorage.removeItem('tb_proposal_history');
-    localStorage.removeItem('tb_pipeline_status');
-    renderPipeline();showToast('Historique effac\u00e9');
-  });
-})();
 
 /* F13: PWA */
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){})}
