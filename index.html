@@ -199,7 +199,8 @@ body.dark .badge-large{background:rgba(74,154,122,.12);color:#5cb88a;border-colo
 .disc-inp input::-webkit-outer-spin-button,.disc-inp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .disc-inp span{color:var(--or);font-weight:700;margin-left:2px}
 .spacer{flex:1}
-.finp{border:1px solid var(--cf);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);background:var(--blanc);outline:none;transition:border .18s}
+.finp{width:100%;min-width:0;border:1px solid var(--cf);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);background:var(--blanc);outline:none;transition:border .18s}
+.frow2 .fg{min-width:0}
 .finp:focus{border-color:var(--or)}
 .finp::placeholder{color:var(--gc);opacity:.6}
 .moffs{display:flex;flex-direction:column;gap:9px;margin-top:7px}
@@ -447,8 +448,19 @@ footer{background:var(--encre);position:relative;overflow:hidden}
   .mcol-l .fg-grow{flex:none}
   .fg-grow textarea{resize:vertical;min-height:120px}
   .mcol-r{overflow:visible}
-  .mftr{padding:14px 18px}
-  .frow2{grid-template-columns:1fr}
+  /* Footer modal mobile : 2 rangées nettes (utilitaires puis Annuler + Envoyer) */
+  .mftr{padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));gap:6px;flex-wrap:wrap}
+  .mftr .spacer,.mftr .smsg{display:none}
+  .mftr #histBtn,.mftr #modalRefreshBtn,.mftr .btn-txt{order:1;flex:1 1 auto;justify-content:center;padding:9px 6px;font-size:10px;white-space:nowrap;letter-spacing:.03em}
+  .mftr .btn-txt svg{display:none}
+  .mftr #bcnl{order:2;flex:1 1 30%;justify-content:center;padding:12px}
+  .mftr .bsnd{order:3;flex:1 1 58%;justify-content:center;min-height:48px}
+  .frow2{grid-template-columns:1fr 1fr;gap:10px}
+  /* Cibles tactiles plus confortables dans le modal */
+  .tier{min-height:50px;padding:8px 4px}
+  .tw-qty button{width:30px;height:30px}
+  .disc-inp{padding:7px 14px}
+  .opt-pool .pill{padding:8px 12px}
   footer .fbody{padding:24px 16px 20px;grid-template-columns:1fr;gap:24px}
   footer .fbot{padding:10px 16px;flex-direction:column;gap:8px}
   .fbot-center{flex-wrap:wrap;justify-content:center}
@@ -456,7 +468,7 @@ footer{background:var(--encre);position:relative;overflow:hidden}
   .moverlay{align-items:flex-end;padding:0}
   .bsnd .bsnd-label{display:none}
   .bsnd::after{content:'Envoyer';font-size:11px}
-  .modal{max-width:100%;border-radius:12px 12px 0 0;max-height:90vh}
+  .modal{max-width:100%;border-radius:12px 12px 0 0;max-height:92vh}
   .txt-overlay{align-items:flex-end;padding:0}
   .txt-modal{max-width:100%;border-radius:12px 12px 0 0;max-height:85vh}
   .txt-modal-body textarea{min-height:200px;font-size:11px;padding:12px}
