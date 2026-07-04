@@ -88,8 +88,11 @@ jobs:
                   tl = tl_raw.strip().upper() in ('TRUE','VRAI','1','OUI','YES')
                   if not tl: continue
               # Si colonne TL absente du Sheet → tout inclure (compatibilité)
-              if is_available:
-                  dispo_val = 'future' if date_norm else 'immediate'
+              # Une date de libération renseignée => bientôt disponible (prioritaire sur DISPO)
+              if date_norm:
+                  dispo_val = 'future'
+              elif is_available:
+                  dispo_val = 'immediate'
               else:
                   dispo_val = 'occupied'
               offices.append({
