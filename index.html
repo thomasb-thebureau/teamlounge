@@ -2531,6 +2531,11 @@ function resetSession() {
     if (ltth) ltth.style.transform  = 'translateX(0)';
     if (ll)   ll.textContent = 'FR';
   }
+  /* Reset langue de page (toggle d'en-tête) vers FR + purge la persistance */
+  PAGE_LANG = 'fr';
+  try { localStorage.removeItem('tb_page_lang'); } catch(e){}
+  var _lth = document.getElementById('langToggleHeader');
+  if (_lth) _lth.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === 'fr'); });
   /* Close modal if open */
   closeModal();
   /* Close email overlay if open */
