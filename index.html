@@ -1012,7 +1012,7 @@ function makeCard(b) {
   var isOccupied = b.dispo==='occupied';
   var knownKey='tb_seen_'+b.ref; var isNew=!isOccupied&&!localStorage.getItem(knownKey); if(!isOccupied&&isNew) localStorage.setItem(knownKey,Date.now());
   var d = disc();
-  var remEl2 = document.getElementById('remiseInput'); var remise2 = remEl2?Math.min(50,Math.max(0,parseFloat(remEl2.value)||0))/100:0; var price = b.prix*(1-d)*(1-remise2);
+  var remEl2 = document.getElementById('remiseInput'); var remise2 = remEl2?Math.min(50,Math.max(0,parseFloat(remEl2.value)||0))/100:0; var price = b.prix*(1-d-remise2);
   var save = Math.round((b.prix-price)*12);
   var isSel = !!SEL[b.ref];
   var isImm = b.dispo==='immediate';
@@ -1297,7 +1297,7 @@ function openModal() {
   getSortedSelData().forEach(function(b) {
     var remEl2 = document.getElementById('remiseInput'); var remise2 = remEl2?Math.min(50,Math.max(0,parseFloat(remEl2.value)||0))/100:0;
     var _itinQ = b.isItin ? (b.itinQty||1) : 1;
-    var price = b.prix*_itinQ*(1-d)*(1-remise2);
+    var price = b.prix*_itinQ*(1-d-remise2);
     var row = document.createElement('div');
     row.className = 'mrow'; row.dataset.ref = b.ref;
     var info = document.createElement('div');
@@ -1425,8 +1425,8 @@ function updateModalTotal() {
   }
   var optMode = (typeof OPT_MODE!=='undefined' && OPT_MODE);
   if (grouped && !optMode) {
-    var tot = selData.reduce(function(s,b){ return s + b.prix*(1-d)*(1-remise); }, 0);
-    if (SEL[ITIN_REF]) tot += ITIN_PRIX*(SEL[ITIN_REF].itinQty||1)*(1-d)*(1-remise);
+    var tot = selData.reduce(function(s,b){ return s + b.prix*(1-d-remise); }, 0);
+    if (SEL[ITIN_REF]) tot += ITIN_PRIX*(SEL[ITIN_REF].itinQty||1)*(1-d-remise);
     if (typeof getTwTotal==='function') tot += getTwTotal();
     if (typeof getExtrasTotal==='function') tot += getExtrasTotal();
     var baseM = selData.reduce(function(s,b){ return s + b.prix*(1-remise); }, 0);
@@ -1457,9 +1457,9 @@ function getTierList(remise) {
   var p = function(d){ return '−' + (Math.round(d*1000)/10) + ' %'; };
   return [
     { i:0, label:'Mensuel', d:remise, sub:(remise>0 ? 'remise '+Math.round(remise*100)+' %' : '3 mois min.') },
-    { i:1, label:'12 mois', d:1-(1-0.05)*(1-remise), sub:p(1-(1-0.05)*(1-remise)) },
-    { i:2, label:'24 mois', d:1-(1-0.10)*(1-remise), sub:p(1-(1-0.10)*(1-remise)) },
-    { i:3, label:'36 mois', d:1-(1-0.15)*(1-remise), sub:p(1-(1-0.15)*(1-remise)) }
+    { i:1, label:'12 mois', d:(0.05+remise), sub:p((0.05+remise)) },
+    { i:2, label:'24 mois', d:(0.10+remise), sub:p((0.10+remise)) },
+    { i:3, label:'36 mois', d:(0.15+remise), sub:p((0.15+remise)) }
   ];
 }
 
@@ -1704,8 +1704,8 @@ function buildPlainText(data) {
   var remisePt = remElPt ? Math.min(25, Math.max(0, parseFloat(remElPt.value)||0)) / 100 : 0;
   var remLabelPt = remisePt > 0 ? (isEN ? ' (incl. '+Math.round(remisePt*100)+'% discount)' : ' (remise '+Math.round(remisePt*100)+'% incluse)') : '';
   var paliers = isEN
-    ? [{label:'Monthly (3 months minimum)'+remLabelPt,d:remisePt},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remisePt)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remisePt)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remisePt)}]
-    : [{label:'Mensuel (3 mois minimum)'+remLabelPt,d:remisePt},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remisePt)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remisePt)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-remisePt))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remisePt)}];
+    ? [{label:'Monthly (3 months minimum)'+remLabelPt,d:remisePt},{label:'12 months -'+(Math.round(((0.05+remisePt))*1000)/10)+'\u00a0%',d:(0.05+remisePt)},{label:'24 months -'+(Math.round(((0.10+remisePt))*1000)/10)+'\u00a0%',d:(0.10+remisePt)},{label:'36 months -'+(Math.round(((0.15+remisePt))*1000)/10)+'\u00a0%',d:(0.15+remisePt)}]
+    : [{label:'Mensuel (3 mois minimum)'+remLabelPt,d:remisePt},{label:'12 mois -'+(Math.round(((0.05+remisePt))*1000)/10)+'\u00a0%',d:(0.05+remisePt)},{label:'24 mois -'+(Math.round(((0.10+remisePt))*1000)/10)+'\u00a0%',d:(0.10+remisePt)},{label:'36 mois -'+(Math.round(((0.15+remisePt))*1000)/10)+'\u00a0%',d:(0.15+remisePt)}];
   var prenomElPt = document.getElementById('fp'), nomElPt = document.getElementById('fn'), socElPt = document.getElementById('fs');
   var _prenPt = prenomElPt ? prenomElPt.value.trim() : '';
   var _nomPt  = nomElPt  ? nomElPt.value.trim()  : '';
@@ -1913,8 +1913,8 @@ document.getElementById('bsnd').addEventListener('click', function() {
   var remise = remEl ? Math.min(25, Math.max(0, parseFloat(remEl.value)||0)) / 100 : 0;
   var remLabel = remise > 0 ? (isEN ? ' (incl. ' + Math.round(remise*100) + '% discount)' : ' (remise ' + Math.round(remise*100) + '% incluse)') : '';
   var paliers = isEN
-    ? [{label:'Monthly (3 months minimum)'+remLabel,d:remise},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise)}]
-    : [{label:'Mensuel (3 mois minimum)'+remLabel,d:remise},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise)}];
+    ? [{label:'Monthly (3 months minimum)'+remLabel,d:remise},{label:'12 months -'+(Math.round(((0.05+remise))*1000)/10)+'\u00a0%',d:(0.05+remise)},{label:'24 months -'+(Math.round(((0.10+remise))*1000)/10)+'\u00a0%',d:(0.10+remise)},{label:'36 months -'+(Math.round(((0.15+remise))*1000)/10)+'\u00a0%',d:(0.15+remise)}]
+    : [{label:'Mensuel (3 mois minimum)'+remLabel,d:remise},{label:'12 mois -'+(Math.round(((0.05+remise))*1000)/10)+'\u00a0%',d:(0.05+remise)},{label:'24 mois -'+(Math.round(((0.10+remise))*1000)/10)+'\u00a0%',d:(0.10+remise)},{label:'36 mois -'+(Math.round(((0.15+remise))*1000)/10)+'\u00a0%',d:(0.15+remise)}];
   var sujet = isEN
     ? ('The Bureau \u2014 Office proposal'+(soc?' for '+soc:(prenom||nom?' for '+(prenom?prenom+' ':'')+nom:'')))
     : ('The Bureau \u2014 Proposition de bureaux'+(soc?' pour '+soc:(prenom||nom?' pour '+(prenom?prenom+' ':'')+nom:'')));
@@ -1934,8 +1934,8 @@ function buildCard(b) {
     var remise_c = remEl_c ? Math.min(25, Math.max(0, parseFloat(remEl_c.value)||0)) / 100 : 0;
     var remLabel_c = remise_c > 0 ? (isEN ? ' (incl. '+Math.round(remise_c*100)+'% discount)' : ' (remise '+Math.round(remise_c*100)+'% incluse)') : '';
     var paliers = isEN
-      ? [{label:'Monthly (3 months minimum)'+remLabel_c,d:remise_c},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise_c)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise_c)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise_c)}]
-      : [{label:'Mensuel (3 mois minimum)'+remLabel_c,d:remise_c},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-remise_c)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-remise_c)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-remise_c))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-remise_c)}];
+      ? [{label:'Monthly (3 months minimum)'+remLabel_c,d:remise_c},{label:'12 months -'+(Math.round(((0.05+remise_c))*1000)/10)+'\u00a0%',d:(0.05+remise_c)},{label:'24 months -'+(Math.round(((0.10+remise_c))*1000)/10)+'\u00a0%',d:(0.10+remise_c)},{label:'36 months -'+(Math.round(((0.15+remise_c))*1000)/10)+'\u00a0%',d:(0.15+remise_c)}]
+      : [{label:'Mensuel (3 mois minimum)'+remLabel_c,d:remise_c},{label:'12 mois -'+(Math.round(((0.05+remise_c))*1000)/10)+'\u00a0%',d:(0.05+remise_c)},{label:'24 mois -'+(Math.round(((0.10+remise_c))*1000)/10)+'\u00a0%',d:(0.10+remise_c)},{label:'36 mois -'+(Math.round(((0.15+remise_c))*1000)/10)+'\u00a0%',d:(0.15+remise_c)}];
     var dispo_color = b.dispo==='immediate' ? '#1E4035' : '#c07830';
     var dispo_label = b.dispo==='immediate'
       ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
@@ -1989,8 +1989,8 @@ function buildEmail(data, showTotal) {
     var _remise = _remEl ? Math.min(25, Math.max(0, parseFloat(_remEl.value)||0)) / 100 : 0;
     var _remLabel = _remise > 0 ? (isEN ? ' (incl. '+Math.round(_remise*100)+'% discount)' : ' (remise '+Math.round(_remise*100)+'% incluse)') : '';
     var paliers = isEN
-      ? [{label:'Monthly (3 months minimum)'+_remLabel,d:_remise},{label:'12 months -'+(Math.round((1-(1-0.05)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-_remise)},{label:'24 months -'+(Math.round((1-(1-0.10)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-_remise)},{label:'36 months -'+(Math.round((1-(1-0.15)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-_remise)}]
-      : [{label:'Mensuel (3 mois minimum)'+_remLabel,d:_remise},{label:'12 mois -'+(Math.round((1-(1-0.05)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.05)*(1-_remise)},{label:'24 mois -'+(Math.round((1-(1-0.10)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.10)*(1-_remise)},{label:'36 mois -'+(Math.round((1-(1-0.15)*(1-_remise))*1000)/10)+'\u00a0%',d:1-(1-0.15)*(1-_remise)}];
+      ? [{label:'Monthly (3 months minimum)'+_remLabel,d:_remise},{label:'12 months -'+(Math.round(((0.05+_remise))*1000)/10)+'\u00a0%',d:(0.05+_remise)},{label:'24 months -'+(Math.round(((0.10+_remise))*1000)/10)+'\u00a0%',d:(0.10+_remise)},{label:'36 months -'+(Math.round(((0.15+_remise))*1000)/10)+'\u00a0%',d:(0.15+_remise)}]
+      : [{label:'Mensuel (3 mois minimum)'+_remLabel,d:_remise},{label:'12 mois -'+(Math.round(((0.05+_remise))*1000)/10)+'\u00a0%',d:(0.05+_remise)},{label:'24 mois -'+(Math.round(((0.10+_remise))*1000)/10)+'\u00a0%',d:(0.10+_remise)},{label:'36 mois -'+(Math.round(((0.15+_remise))*1000)/10)+'\u00a0%',d:(0.15+_remise)}];
     var cards = ''; data.forEach(function(b){ cards += buildCard(b); });
     var nbLabel   = isEN?('Your selection \u00b7 '+data.length+' office'+(data.length>1?'s':'')):('Votre s\u00e9lection \u00b7 '+data.length+' bureau'+(data.length>1?'x':''));
     var introText = isEN?'Following our discussions, please find below our selection of available offices at The Bureau.':'Suite \u00e0 nos \u00e9changes, veuillez trouver ci-dessous notre s\u00e9lection de bureaux disponibles au sein de The Bureau.';
@@ -2838,7 +2838,7 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   var remise=_remEl?Math.min(25,Math.max(0,parseFloat(_remEl.value)||0))/100:0;
   var vatLabel=isEN?'excl. VAT/month':'H.T./mois';
   var dt=getDefaultTier();
-  var paliers=[{d:remise},{d:1-(1-0.05)*(1-remise)},{d:1-(1-0.10)*(1-remise)},{d:1-(1-0.15)*(1-remise)}];
+  var paliers=[{d:remise},{d:(0.05+remise)},{d:(0.10+remise)},{d:(0.15+remise)}];
   var mainLabels=isEN?['Monthly','12 months','24 months','36 months']:['3 mois','12 mois','24 mois','36 mois'];
   function optTotalAt(d){
     return opt.bureaux.reduce(function(s,b){
@@ -3338,9 +3338,9 @@ function exportPDF(){
   var remise=remEl?Math.min(25,Math.max(0,parseFloat(remEl.value)||0))/100:0;
   var allTiers=[
     {key:'mensuel',label:T.monthly,d:remise},
-    {key:'12m',label:isEN?'12 months':'12 mois',d:1-(1-0.05)*(1-remise)},
-    {key:'24m',label:isEN?'24 months':'24 mois',d:1-(1-0.10)*(1-remise)},
-    {key:'36m',label:isEN?'36 months':'36 mois',d:1-(1-0.15)*(1-remise)}
+    {key:'12m',label:isEN?'12 months':'12 mois',d:(0.05+remise)},
+    {key:'24m',label:isEN?'24 months':'24 mois',d:(0.10+remise)},
+    {key:'36m',label:isEN?'36 months':'36 mois',d:(0.15+remise)}
   ];
   var activeTiers = allTiers.filter(function(_,i){ return _selTiers.indexOf(i)>-1; });
   if(activeTiers.length===0) activeTiers=[allTiers[0]];
@@ -3835,7 +3835,7 @@ function openHistory(){var hist=JSON.parse(localStorage.getItem('tb_proposal_his
   var offs=refs.map(function(r){return DATA.find(function(b){return b.ref===r})||SEL[r]}).filter(Boolean);
   var remEl=document.getElementById('remiseInput');
   var remise=remEl?Math.min(25,Math.max(0,parseFloat(remEl.value)||0))/100:0;
-  var d12=1-(1-0.05)*(1-remise), d24=1-(1-0.10)*(1-remise), d36=1-(1-0.15)*(1-remise);
+  var d12=(0.05+remise), d24=(0.10+remise), d36=(0.15+remise);
   var hdr=['Ref','Site','Adresse','Etage','Surface m2','Postes','Prix mensuel','12 mois -'+Math.round(d12*1000)/10+'%','24 mois -'+Math.round(d24*1000)/10+'%','36 mois -'+Math.round(d36*1000)/10+'%','Dispo','Date'];
   var rows=[hdr.join(';')];
   rows.push(['THE BUREAU - SELECTION DE BUREAUX','','','','','','','','','','',''].join(';'));
