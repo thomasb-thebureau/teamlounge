@@ -2893,12 +2893,15 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   }
   var _selTiersO=getSelectedTiers();
   var ftParts=[];
+  var _remPct=document.getElementById('remiseInput');
+  var _remV=_remPct?Math.min(25,Math.max(0,parseFloat(_remPct.value)||0))/100:0;
   _selTiersO.forEach(function(pi){
     var tot=optTotalAt(paliers[pi].d);
+    var pct=pi===0?(_remV>0?(isEN?' incl. '+Math.round(_remV*100)+'%':' remise '+Math.round(_remV*100)+'%'):''):' −'+(Math.round(paliers[pi].d*1000)/10)+' %';
     if(pi===dt){
-      ftParts.push('<span style="background:#B09438;color:#fff;border-radius:50px;padding:2px 9px;font-weight:700;white-space:nowrap">'+mainLabels[pi]+' '+fmt(tot)+' €</span>');
+      ftParts.push('<span style="background:#B09438;color:#fff;border-radius:50px;padding:2px 9px;font-weight:700;white-space:nowrap">'+mainLabels[pi]+pct+' '+fmt(tot)+' €</span>');
     } else {
-      ftParts.push(mainLabels[pi]+' <b style="color:#1E4035;font-weight:700">'+fmt(tot)+' €</b>');
+      ftParts.push(mainLabels[pi]+'<span style="color:#7A6015;font-weight:600">'+pct+'</span> <b style="color:#1E4035;font-weight:700">'+fmt(tot)+' €</b>');
     }
   });
   h+='<tr><td style="background:#f3efe6;padding:9px 16px;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;color:#5a5248;line-height:1.7">'+ftParts.join(' &nbsp;·&nbsp; ')+'</td></tr>';
@@ -3491,7 +3494,11 @@ function exportPDF(){
   }
   function optFooter(optT){
     var e='';
-    activeTiers.forEach(function(t){ var hl=t.key===_defKey, idx=_tierIdxOf[t.key]; e+='<div class="e'+(hl?' hl':'')+'"><span class="lab">'+_shortLabels[idx]+'</span><b>'+fmt(optT[t.key])+' €</b></div>'; });
+    activeTiers.forEach(function(t){
+      var hl=t.key===_defKey, idx=_tierIdxOf[t.key];
+      var sub=idx===0?(remise>0?(isEN?'incl. '+Math.round(remise*100)+'%':'remise '+Math.round(remise*100)+'%'):''):'−'+(Math.round(t.d*1000)/10)+' %';
+      e+='<div class="e'+(hl?' hl':'')+'"><span class="lab">'+_shortLabels[idx]+(sub?' '+sub:'')+'</span><b>'+fmt(optT[t.key])+' €</b></div>';
+    });
     return '<div class="opt-ft">'+e+'</div>';
   }
   var eyebrow=isEN?'Personalised proposal':'Proposition personnalisée';
