@@ -3354,9 +3354,10 @@ function exportPDF(){
   if(!durs.some(function(t){return t.key===hiKey;})) hiKey=durs[durs.length-1].key;
   var hiT = allTiers.filter(function(t){return t.key===hiKey;})[0];
   var hiCoef = hiT.coef;
-  var hiLabelShort = (isEN?'excl. VAT/mo · ':'H.T./mois · ')+hiT.label;
-  var hiLabelHTML = (isEN?'excl. VAT/mo':'H.T./mois')+' · <span style="color:'+SLATE+';">'+hiT.label+'</span>';
-  var hiLabelLight = (isEN?'excl. VAT/mo · ':'H.T./mois · ')+hiT.label;
+  var hiDur = (hiT.k?(isEN?'commitment ':'engagement '):'')+hiT.label;
+  var hiLabelShort = (isEN?'excl. VAT/mo · ':'H.T./mois · ')+hiDur;
+  var hiLabelHTML = (isEN?'excl. VAT/mo':'H.T./mois')+' · <span style="color:'+SLATE+';">'+hiDur+'</span>';
+  var hiLabelLight = (isEN?'excl. VAT/mo':'H.T./mois')+' · '+hiDur;
   var pillText = (isEN?'Displayed rate · ':'Tarif affiché · ')+hiT.label;
   /* ===== Helpers ===== */
   var etStr=function(e){return e===0?(isEN?'GF':'RDC'):e===1?(isEN?'1st':'1er'):(isEN?e+'th':e+'e')};
@@ -3462,37 +3463,37 @@ function exportPDF(){
       return { opt:opt, i:i, offs:offs, label:(_isCustom?opt.label:''),
         refs:refsStr(offs), seats:sumSeats(offs), m2:sumM2(offs), reco:(reco===i+1) };
     });
-    /* Bandeau recommandation */
-    if(reco){
-      var R=optData[reco-1];
-      h+='<div class="kt" style="display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:20px; padding:14px 18px; margin-bottom:16px; background:'+SLATE+'; border-left:3px solid '+GOLD+';">';
-      h+='<div style="display:flex; align-items:center; gap:10px;"><span style="color:'+GOLDLT+'; font-size:16px; line-height:1;">★</span><span style="font-size:9px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:'+GOLDLT+';">'+(isEN?'Our recommendation':'Notre recommandation')+'</span></div>';
-      h+='<div style="display:flex; align-items:center; gap:14px;"><span style="background:'+GOLD+'; color:'+WHITE+'; font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:5px 10px; white-space:nowrap;">Option '+reco+'</span><div>'+(R.label?('<div style="font-size:15px; font-weight:600; letter-spacing:-0.01em; color:'+IVORY+';">'+esc(R.label)+'</div>'):'')+'<div style="font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,239,229,0.6); margin-top:2px;">'+esc(R.refs)+'</div></div></div>';
-      h+='<div style="text-align:right; white-space:nowrap;"><span style="font-weight:700; font-size:20px; color:'+GOLDLT+'; letter-spacing:-0.01em;">'+fmt(optTotalAt(R.opt,hiCoef))+'</span> <span style="font-size:10px; color:'+GOLDLT+';">€</span><div style="font-size:8px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,239,229,0.6);">'+hiLabelLight+'</div></div></div>';
-    }
-    /* Tableau comparatif */
-    h+='<table style="width:100%; border-collapse:collapse; margin-bottom:8px;"><thead><tr style="background:'+IVORY+'; color:'+GOLDAA+'; font-size:8.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; border-bottom:1px solid '+GOLD+';"><th style="text-align:left; padding:9px 12px; width:64px;">Option</th><th style="text-align:left; padding:9px 12px;">'+(isEN?'Configuration':'Configuration')+'</th><th style="text-align:center; padding:9px 8px; width:52px;">'+(isEN?'Desks':'Postes')+'</th><th style="text-align:center; padding:9px 8px; width:52px;">m²</th>';
-    durs.forEach(function(d){ var on=d.key===hiKey; h+='<th style="text-align:right; padding:9px 14px; width:118px; border-left:0.5px solid rgba(15,15,15,0.08); background:'+(on?GOLD:'transparent')+'; color:'+(on?WHITE:GOLDAA)+';">'+d.label.toUpperCase()+'<span style="display:block; opacity:0.75; font-weight:500; letter-spacing:0.08em; margin-top:1px;">'+d.sub+'</span></th>'; });
-    h+='</tr></thead><tbody>';
+    /* (Bandeau recommandation supprimé — la reco est marquée en jade dans le comparatif) */
+    /* Comparatif — grille de divs (html2canvas rend mal les bordures d'un <table>) */
+    var cmpCols='64px minmax(0,1fr) 52px 52px '+durs.map(function(){return '118px';}).join(' ');
+    h+='<div style="margin-bottom:8px;">';
+    h+='<div style="display:grid; grid-template-columns:'+cmpCols+'; border-left:3px solid transparent; border-bottom:1px solid '+GOLD+'; background:'+IVORY+'; color:'+GOLDAA+'; font-size:8.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;"><div style="padding:9px 12px;">Option</div><div style="padding:9px 12px;">Configuration</div><div style="padding:9px 8px; text-align:center;">'+(isEN?'Desks':'Postes')+'</div><div style="padding:9px 8px; text-align:center;">m²</div>';
+    durs.forEach(function(d){ var on=d.key===hiKey; h+='<div style="padding:9px 14px; text-align:right; border-left:0.5px solid rgba(15,15,15,0.08); background:'+(on?GOLD:'transparent')+'; color:'+(on?WHITE:GOLDAA)+';">'+d.label.toUpperCase()+'<span style="display:block; opacity:0.75; font-weight:500; letter-spacing:0.08em; margin-top:1px;">'+d.sub+'</span></div>'; });
+    h+='</div>';
     optData.forEach(function(O){
-      var rowBg=O.reco?IVORY:(O.i%2?RELIEF:WHITE), shadow=O.reco?'inset 3px 0 0 '+GOLD:'none';
-      h+='<tr style="background:'+rowBg+'; box-shadow:'+shadow+';"><td style="padding:9px 12px; white-space:nowrap; border-bottom:1px solid rgba(15,15,15,0.16);"><span style="display:inline-block; background:'+GOLD+'; color:'+WHITE+'; font-size:9px; font-weight:700; letter-spacing:0.06em; padding:3px 8px;">Option '+(O.i+1)+'</span>'+(O.reco?'<span style="color:'+GOLD+'; font-size:12px; margin-left:6px;">★</span>':'')+'</td>';
-      h+='<td style="padding:9px 12px; border-bottom:1px solid rgba(15,15,15,0.16);">'+(O.label?'<div style="font-weight:600; font-size:11.5px;">'+esc(O.label)+'</div>':'')+'<div style="font-size:9.5px; color:rgba(15,15,15,0.55);">'+esc(O.refs)+'</div></td>';
-      h+='<td style="padding:9px 8px; text-align:center; font-family:Spectral,serif; font-size:13px; border-bottom:1px solid rgba(15,15,15,0.16);">'+O.seats+'</td><td style="padding:9px 8px; text-align:center; font-family:Spectral,serif; font-size:13px; border-bottom:1px solid rgba(15,15,15,0.16);">'+O.m2+'</td>';
-      durs.forEach(function(d){ var on=d.key===hiKey; h+='<td style="padding:9px 14px; text-align:right; border-left:0.5px solid rgba(15,15,15,0.08); border-bottom:1px solid rgba(15,15,15,0.16); background:'+(on?IVORY:'transparent')+'; color:'+(on?SLATE:INK)+'; font-weight:'+(on?700:400)+'; font-size:'+(on?15:12.5)+'px; white-space:nowrap;">'+fmt(optTotalAt(O.opt,d.coef))+' <span style="font-size:9px; color:'+GOLD+';">€</span></td>'; });
-      h+='</tr>';
+      var isR=O.reco;
+      var rowBg=isR?SLATE:(O.i%2?RELIEF:WHITE);
+      var txtMain=isR?IVORY:INK, txtRef=isR?'rgba(245,239,229,0.6)':'rgba(15,15,15,0.55)';
+      h+='<div style="display:grid; grid-template-columns:'+cmpCols+'; background:'+rowBg+'; border-left:3px solid '+(isR?GOLD:'transparent')+'; border-bottom:1px solid '+(isR?'rgba(245,239,229,0.18)':'rgba(15,15,15,0.16)')+';">';
+      h+='<div style="display:flex; align-items:center; padding:9px 12px; white-space:nowrap;"><span style="display:inline-block; background:'+GOLD+'; color:'+WHITE+'; font-size:9px; font-weight:700; letter-spacing:0.06em; padding:3px 8px;">Option '+(O.i+1)+'</span>'+(isR?'<span style="color:'+GOLDLT+'; font-size:12px; margin-left:6px;">★</span>':'')+'</div>';
+      h+='<div style="display:flex; flex-direction:column; justify-content:center; padding:9px 12px;">'+(isR?'<div style="font-size:8px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:'+GOLDLT+'; margin-bottom:2px;">★ '+(isEN?'Our recommendation':'Notre recommandation')+'</div>':'')+(O.label?'<div style="font-weight:600; font-size:11.5px; color:'+txtMain+';">'+esc(O.label)+'</div>':'')+'<div style="font-size:9.5px; color:'+txtRef+';">'+esc(O.refs)+'</div></div>';
+      h+='<div style="display:flex; align-items:center; justify-content:center; padding:9px 8px; font-family:Spectral,serif; font-size:13px; color:'+txtMain+';">'+O.seats+'</div><div style="display:flex; align-items:center; justify-content:center; padding:9px 8px; font-family:Spectral,serif; font-size:13px; color:'+txtMain+';">'+O.m2+'</div>';
+      durs.forEach(function(d){ var on=d.key===hiKey; var cBg=isR?'transparent':(on?IVORY:'transparent'); var cCol=isR?(on?GOLDLT:IVORY):(on?SLATE:INK); var bl=isR?'rgba(245,239,229,0.12)':'rgba(15,15,15,0.08)'; var eu=isR?GOLDLT:GOLD; h+='<div style="display:flex; align-items:center; justify-content:flex-end; padding:9px 14px; border-left:0.5px solid '+bl+'; background:'+cBg+'; color:'+cCol+'; font-weight:'+(on?700:400)+'; font-size:'+(on?15:12.5)+'px; white-space:nowrap;">'+fmt(optTotalAt(O.opt,d.coef))+' <span style="font-size:9px; color:'+eu+'; margin-left:2px;">€</span></div>'; });
+      h+='</div>';
     });
-    h+='</tbody></table>';
+    h+='</div>';
     h+='<div style="display:flex; align-items:center; gap:8px; margin:0 0 26px; font-size:8.5px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:'+GOLDAA+';"><span style="display:block; width:10px; height:10px; background:'+GOLD+';"></span>'+pillText.toUpperCase()+'</div>';
     h+='<div style="display:flex; align-items:center; gap:10px; margin:0 0 10px;"><span style="display:block; width:28px; height:1px; background:'+GOLD+';"></span><span style="font-size:10px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:'+SLATE+';">'+(isEN?'Office detail':'Détail des bureaux')+'</span></div>';
     /* Blocs option */
     h+='<div style="display:flex; flex-direction:column; gap:18px;">';
     optData.forEach(function(O){
-      var frame=O.reco?('1px solid '+GOLD):('0.5px solid rgba(176,148,56,0.45)');
+      var isR=O.reco;
+      var frame=isR?('1px solid '+GOLD):('0.5px solid rgba(176,148,56,0.45)');
       h+='<div class="opt-block" style="border:'+frame+'; border-left:3px solid '+GOLD+'; background:'+WHITE+';">';
       var others=durs.filter(function(d){return d.key!==hiKey;}).map(function(d){return d.label+' '+fmt(optTotalAt(O.opt,d.coef))+' €';}).join(' · ');
-      h+='<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; background:'+IVORY+'; border-bottom:1px solid '+GOLD+';"><div style="display:flex; align-items:center; gap:14px;"><span style="background:'+GOLD+'; color:'+WHITE+'; font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:5px 10px;">Option '+(O.i+1)+'</span>'+(O.label?'<span style="font-size:17px; letter-spacing:-0.01em; font-weight:600;">'+esc(O.label)+'</span>':'')+(O.reco?'<span style="color:'+GOLD+'; font-size:14px;">★</span><span style="font-size:8.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:'+GOLDAA+';">'+(isEN?'Recommended':'Recommandé')+'</span>':'')+'<span style="font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(15,15,15,0.5);">'+esc(O.refs)+'</span></div>';
-      h+='<div style="text-align:right; white-space:nowrap;"><span style="font-weight:700; font-size:24px; line-height:1; letter-spacing:-0.01em; color:'+SLATE+';">'+fmt(optTotalAt(O.opt,hiCoef))+'</span> <span style="font-size:11px; color:'+GOLD+';">€</span><span style="font-size:8px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(15,15,15,0.5); margin-left:8px;">'+hiLabelHTML+'</span><div style="font-size:9px; font-weight:300; color:rgba(15,15,15,0.6); margin-top:3px;">'+others+'</div></div></div>';
+      var hdBg=isR?SLATE:IVORY, hdLbl=isR?IVORY:INK, hdRef=isR?'rgba(245,239,229,0.6)':'rgba(15,15,15,0.5)', hdPrice=isR?GOLDLT:SLATE, hdEuro=isR?GOLDLT:GOLD, hdSub=isR?'rgba(245,239,229,0.6)':'rgba(15,15,15,0.5)', hdOth=isR?'rgba(245,239,229,0.55)':'rgba(15,15,15,0.6)', hdLine=isR?hiLabelLight:hiLabelHTML;
+      h+='<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; background:'+hdBg+'; border-bottom:1px solid '+GOLD+';"><div style="display:flex; align-items:center; gap:14px;"><span style="background:'+GOLD+'; color:'+WHITE+'; font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:5px 10px;">Option '+(O.i+1)+'</span>'+(O.label?'<span style="font-size:17px; letter-spacing:-0.01em; font-weight:600; color:'+hdLbl+';">'+esc(O.label)+'</span>':'')+(isR?'<span style="color:'+GOLDLT+'; font-size:14px;">★</span><span style="font-size:8.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:'+GOLDLT+';">'+(isEN?'Recommended':'Recommandé')+'</span>':'')+'<span style="font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:'+hdRef+';">'+esc(O.refs)+'</span></div>';
+      h+='<div style="text-align:right; white-space:nowrap;"><span style="font-weight:700; font-size:24px; line-height:1; letter-spacing:-0.01em; color:'+hdPrice+';">'+fmt(optTotalAt(O.opt,hiCoef))+'</span> <span style="font-size:11px; color:'+hdEuro+';">€</span><span style="font-size:8px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:'+hdSub+'; margin-left:8px;">'+hdLine+'</span><div style="font-size:9px; font-weight:300; color:'+hdOth+'; margin-top:3px;">'+others+'</div></div></div>';
       h+='<div style="display:grid; grid-template-columns:'+ROWM+'; align-items:center; padding:8px 16px; background:'+WHITE+'; color:'+GOLDAA+'; font-size:8px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; border-bottom:0.5px solid '+SEP+';"><div>'+(isEN?'Ref.':'Réf.')+'</div><div>'+(isEN?'Office':'Bureau')+'</div><div style="text-align:center;">'+(isEN?'Floor':'Étage')+'</div><div style="text-align:center;">m²</div><div style="text-align:center;">'+(isEN?'Desks':'Postes')+'</div><div>'+(isEN?'Avail.':'Dispo.')+'</div></div>';
       O.offs.forEach(function(b){ h+=officeRow(b,false); });
       h+=addonRows(O.opt.tw||0, O.opt.extras, false);
