@@ -1923,7 +1923,7 @@ function renderPropPanel(){
   var amtEl=document.getElementById('propAmt'); if(amtEl) amtEl.innerHTML=fmt(tot)+' <span class="eu">€</span>';
   var tierEl=document.getElementById('propTier'); if(tierEl) tierEl.textContent=engShortL(ST.eng);
   var savEl=document.getElementById('propSav');
-  if(savEl){ var savYr=Math.round((baseM-tot)*12); savEl.innerHTML = savYr>0 ? tlang('soit −'+fmt(savYr)+' € / an vs mensuel<br>télétravail non remisé','i.e. −'+fmt(savYr)+' € / yr vs monthly<br>remote not discounted') : tlang('Engagement 3 mois minimum','3-month minimum commitment'); }
+  if(savEl){ var savYr=Math.round((baseM-tot)*12); savEl.innerHTML = savYr>0 ? tlang('soit −'+fmt(savYr)+' € / an vs mensuel','i.e. −'+fmt(savYr)+' € / yr vs monthly') : tlang('Engagement 3 mois minimum','3-month minimum commitment'); }
   var totalRefs=OPTIONS.reduce(function(s,op){ return s+((op.refs&&op.refs.length)?op.refs.length:0); },0);
   var send=document.getElementById('propSend'), pdf=document.getElementById('propPdf');
   if(send) send.disabled=!totalRefs; if(pdf) pdf.disabled=!totalRefs;
