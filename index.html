@@ -1397,15 +1397,15 @@ function makeItinCard() {
   var div = document.createElement('div');
   div.className = 'ncard itin-ncard' + (isSel?' sel':'');
   div.dataset.ref = ITIN_REF;
-  var engShort = ST.eng==='mensuel'?'Mensuel':(ST.eng==='12m'?'12 mois':(ST.eng==='24m'?'24 mois':'36 mois'));
+  var engShort = engShortL(ST.eng);
 
   div.innerHTML =
-    '<div class="nc-band"><div class="nc-reflt"><span class="nc-ref nc-ref-word">Itinérant</span></div>'+
-      '<div class="nc-right"><div class="nc-site">Nomade</div><div class="nc-floor">Tous nos sites</div></div></div>'+
+    '<div class="nc-band"><div class="nc-reflt"><span class="nc-ref nc-ref-word">'+tlang('Itinérant','Nomad')+'</span></div>'+
+      '<div class="nc-right"><div class="nc-site">'+tlang('Nomade','Nomad')+'</div><div class="nc-floor">'+tlang('Tous nos sites','All our sites')+'</div></div></div>'+
     '<div class="nc-body">'+
-      '<div class="nc-row1"><div class="nc-tags"><span class="nc-match" style="color:#D4B870">Placement libre</span></div><span class="nc-dispo" style="color:#D4B870">Disponible</span></div>'+
-      '<div class="nc-desc">Accès en placement libre aux espaces partagés et services The Bureau. Accès à la journée aux autres sites. Formule all-incluse.</div>'+
-      '<div class="nc-foot"><div class="nc-stat nc-stat-2l"><span>Accès 24/7</span><span>Global Collective</span></div><div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">H.T./mois/pers · '+engShort+'</div></div></div>'+
+      '<div class="nc-row1"><div class="nc-tags"><span class="nc-match" style="color:#D4B870">'+tlang('Placement libre','Free seating')+'</span></div><span class="nc-dispo" style="color:#D4B870">'+tlang('Disponible','Available')+'</span></div>'+
+      '<div class="nc-desc">'+tlang('Accès en placement libre aux espaces partagés et services The Bureau. Accès à la journée aux autres sites. Formule all-incluse.','Free-seating access to The Bureau shared spaces and services. Day access to our other sites. All-inclusive plan.')+'</div>'+
+      '<div class="nc-foot"><div class="nc-stat nc-stat-2l"><span>'+tlang('Accès 24/7','24/7 access')+'</span><span>Global Collective</span></div><div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">'+tlang('H.T./mois/pers','excl.VAT/mo/pers')+' · '+engShort+'</div></div></div>'+
     '</div>';
 
   div.addEventListener('click', function() {
@@ -1439,12 +1439,12 @@ function makeCoresCard() {
     : 'H.T./mois/poste — engagement '+ST.eng+' <span class="echip">-'+Math.round(d*100)+'%</span>';
   var rackHtml = d>0 ? '<span class="rack">'+base+' €</span>' : '';
   var savHtml  = (d>0 && isSel) ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="#153027"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>Économie : '+fmt(save)+' € / an</div>' : '';
-  var availHtml = '<span class="cores-avail'+(avail>0?'':' full')+'">'+(avail>0?('<span class="cores-dot"></span>'+avail+' disponible'+(avail>1?'s':'')):'Complet')+'</span>';
+  var availHtml = '<span class="cores-avail'+(avail>0?'':' full')+'">'+(avail>0?('<span class="cores-dot"></span>'+avail+' '+tlang('disponible'+(avail>1?'s':''),'available')):tlang('Complet','Full'))+'</span>';
 
-  var ddLabel = isSel ? coresRefsLabel(selRefs) : 'Choisir vos postes';
+  var ddLabel = isSel ? coresRefsLabel(selRefs) : tlang('Choisir vos postes','Choose your desks');
   var menuItems = list.map(function(b){
     var checked = selRefs.indexOf(b.ref)>=0;
-    return '<div class="cores-opt'+(checked?' on':'')+'" data-ref="'+esc(b.ref)+'"><span class="cores-cbx">'+(checked?'✓':'')+'</span>Poste '+coresNo(b.ref)+'</div>';
+    return '<div class="cores-opt'+(checked?' on':'')+'" data-ref="'+esc(b.ref)+'"><span class="cores-cbx">'+(checked?'✓':'')+'</span>'+tlang('Poste','Desk')+' '+coresNo(b.ref)+'</div>';
   }).join('');
   var ddHtml = avail>0
     ? '<div class="cores-dd'+(CORES_MENU_OPEN?' open':'')+'">'
@@ -1456,16 +1456,16 @@ function makeCoresCard() {
   var div = document.createElement('div');
   div.className = 'ncard cores-ncard' + (isSel?' sel':'') + (avail<=0?' full':'');
   div.dataset.ref = CORES_REF;
-  var engShortC = ST.eng==='mensuel'?'Mensuel':(ST.eng==='12m'?'12 mois':(ST.eng==='24m'?'24 mois':'36 mois'));
+  var engShortC = engShortL(ST.eng);
 
   div.innerHTML =
-    '<div class="nc-band"><div class="nc-reflt"><span class="nc-ref nc-ref-word">Co-Résident</span></div>'+
-      '<div class="nc-right"><div class="nc-site">The Bureau I</div><div class="nc-floor">4ᵉ étage</div></div></div>'+
+    '<div class="nc-band"><div class="nc-reflt"><span class="nc-ref nc-ref-word">'+tlang('Co-Résident','Co-Resident')+'</span></div>'+
+      '<div class="nc-right"><div class="nc-site">The Bureau I</div><div class="nc-floor">'+floorLblL(4)+'</div></div></div>'+
     '<div class="nc-body">'+
       '<div class="nc-row1"><div class="nc-tags"></div>'+availHtml+'</div>'+
-      '<div class="nc-desc">Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.</div>'+
+      '<div class="nc-desc">'+tlang('Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.','A dedicated desk plus access to The Bureau shared spaces and services. Business address and storage unit included. 24/7 access. All-inclusive plan.')+'</div>'+
       ddHtml+
-      '<div class="nc-foot"><div class="nc-stat nc-stat-2l"><span>Accès 24/7</span><span>Poste dédié</span></div><div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">H.T./mois/poste · '+engShortC+'</div></div></div>'+
+      '<div class="nc-foot"><div class="nc-stat nc-stat-2l"><span>'+tlang('Accès 24/7','24/7 access')+'</span><span>'+tlang('Poste dédié','Dedicated desk')+'</span></div><div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">'+tlang('H.T./mois/poste','excl.VAT/mo/desk')+' · '+engShortC+'</div></div></div>'+
     '</div>';
 
   /* Menu déroulant : sélection d'un ou plusieurs postes parmi les disponibles */
@@ -1541,7 +1541,7 @@ function makeCard(b) {
   /* newBadge now inline in .cref */
 
   /* Étage en toutes lettres */
-  var floorLabel = b.etage===0?'RDC':(b.etage===1?'1ᵉʳ étage':b.etage+'ᵉ étage');
+  var floorLabel = floorLblL(b.etage);
   var siteLabel = b.label || ({I:'The Bureau I',II:'The Bureau II',III:'The Bureau III',IV:'The Bureau IV'}[b.site]||'The Bureau');
 
   /* Tag Correspond / Proche / Hors cible (selon le filtre postes) */
@@ -1551,8 +1551,8 @@ function makeCard(b) {
   var _hi = (_nxEl && _nxEl.value!=='')?parseInt(_nxEl.value):null;
   if (_lo!==null || _hi!==null) {
     var L=_lo!==null?_lo:0, H=_hi!==null?_hi:999, mt, mc;
-    if (b.cap>=L && b.cap<=H) { mt='Correspond'; mc='#1E4035'; }
-    else { var dd=Math.min(Math.abs(b.cap-L),Math.abs(b.cap-H)); if(dd<=4){mt='Proche';mc='#8A6A18';} else {mt='Hors cible';mc='rgba(15,15,15,.56)';} }
+    if (b.cap>=L && b.cap<=H) { mt=tlang('Correspond','Match'); mc='#1E4035'; }
+    else { var dd=Math.min(Math.abs(b.cap-L),Math.abs(b.cap-H)); if(dd<=4){mt=tlang('Proche','Close');mc='#8A6A18';} else {mt=tlang('Hors cible','Off target');mc='rgba(15,15,15,.56)';} }
     matchHtml = '<span class="nc-match" style="color:'+mc+'">'+mt+'</span>';
   }
 
@@ -1563,10 +1563,10 @@ function makeCard(b) {
   }
 
   var dispoColor = isOccupied?'#9A5A1C':(isImm?'#1E4035':'rgba(15,15,15,.62)');
-  var dispoTxt = isOccupied?('Occupé'+(b.date?' · libre '+dtLbl(b.date):'')):(isImm?'Disponible':'Dès le '+dtLbl(b.date));
-  var newBadge = (isNew&&!isOccupied)?'<span class="nc-badge-new">Nouveau</span>':'';
-  var occBadge = isOccupied?'<span class="nc-badge-occ">Occupé</span>':'';
-  var engShort = ST.eng==='mensuel'?'Mensuel':(ST.eng==='12m'?'12 mois':(ST.eng==='24m'?'24 mois':'36 mois'));
+  var dispoTxt = isOccupied?(tlang('Occupé','Occupied')+(b.date?' · '+tlang('libre','free')+' '+dtLbl(b.date):'')):(isImm?tlang('Disponible','Available'):tlang('Dès le ','From ')+dtLbl(b.date));
+  var newBadge = (isNew&&!isOccupied)?'<span class="nc-badge-new">'+tlang('Nouveau','New')+'</span>':'';
+  var occBadge = isOccupied?'<span class="nc-badge-occ">'+tlang('Occupé','Occupied')+'</span>':'';
+  var engShort = engShortL(ST.eng);
 
   div.innerHTML =
     '<div class="nc-band">'+
@@ -1577,8 +1577,8 @@ function makeCard(b) {
       '<div class="nc-row1"><div class="nc-tags">'+occBadge+newBadge+matchHtml+'</div><span class="nc-dispo" style="color:'+dispoColor+'">'+dispoTxt+'</span></div>'+
       '<div class="nc-desc">'+esc(cleanDesc(b.desc))+'</div>'+
       '<div class="nc-foot">'+
-        '<div class="nc-stat"><b>'+b.cap+'</b> poste'+(b.cap>1?'s':'')+(b.surface?' · '+(b.surface%1===0?b.surface:b.surface.toLocaleString('fr-FR'))+' m²':'')+'</div>'+
-        '<div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">H.T./mois · '+engShort+'</div></div>'+
+        '<div class="nc-stat"><b>'+b.cap+'</b> '+tlang('poste'+(b.cap>1?'s':''),'desk'+(b.cap>1?'s':''))+(b.surface?' · '+(b.surface%1===0?b.surface:b.surface.toLocaleString('fr-FR'))+' m²':'')+'</div>'+
+        '<div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">'+tlang('H.T./mois','excl.VAT/mo')+' · '+engShort+'</div></div>'+
       '</div>'+
     '</div>';
 
@@ -1682,13 +1682,13 @@ function render() {
   grid.appendChild(frag);
   var visibleCount = filtered.filter(function(b){ return b.dispo!=='occupied'; }).length;
   document.getElementById('cnt').textContent = visibleCount;
-  document.getElementById('ps').textContent = visibleCount>1?'x':'';
-  document.getElementById('ps2').textContent = visibleCount>1?'s':'';
+  document.getElementById('ps').textContent = visibleCount>1?tlang('x','s'):'';
+  document.getElementById('ps2').textContent = (visibleCount>1 && tlang('fr','en')==='fr')?'s':'';
   /* Update occupied button label */
   var occBtn2 = document.getElementById('occBtn');
   if (occBtn2) {
     var occTotal = DATA.filter(function(b){ return b.dispo==='occupied' && !isCoresRow(b); }).length;
-    occBtn2.lastChild.textContent = ' Occupés' + (occTotal > 0 ? ' (' + occTotal + ')' : '');
+    occBtn2.lastChild.textContent = ' ' + tlang('Occupés','Occupied') + (occTotal > 0 ? ' (' + occTotal + ')' : '');
   }
   updateSelBar();
   renderActiveFilters();
@@ -1866,31 +1866,31 @@ function renderPropPanel(){
   /* En-tête de l'option active : nom éditable + supprimer */
   var oh=document.getElementById('propOpthead');
   if(oh){
-    oh.innerHTML='<input class="prop-optname" id="propOptName" autocomplete="off"><button class="prop-optdel" id="propOptDel">Supprimer</button>';
+    oh.innerHTML='<input class="prop-optname" id="propOptName" autocomplete="off"><button class="prop-optdel" id="propOptDel">'+tlang('Supprimer','Remove')+'</button>';
     var inp=document.getElementById('propOptName'); if(inp){ inp.value=o.label||('Option '+optLetter(PROP_ACTIVE)); inp.addEventListener('input',function(){ o.label=this.value; renderOptionTabs(dCoef); }); }
     var del=document.getElementById('propOptDel'); if(del) del.addEventListener('click', removeActiveOption);
   }
   var selData=DATA.filter(function(b){ return !!SEL[b.ref]; }); injectVirt(selData);
   var ordered=[]; (o.refs||[]).forEach(function(r){ var b=selData.find(function(x){return x.ref===r;}); if(b)ordered.push(b); });
-  var cntEl=document.getElementById('propCount'); if(cntEl) cntEl.textContent = ordered.length?(ordered.length+' bureau'+(ordered.length>1?'x':'')):'';
+  var cntEl=document.getElementById('propCount'); if(cntEl) cntEl.textContent = ordered.length?(ordered.length+' '+tlang('bureau'+(ordered.length>1?'x':''),'office'+(ordered.length>1?'s':''))):'';
   var tw=o.tw||0;
   var html='';
   if(ordered.length===0){
-    html='<div class="prop-empty">Cliquez sur des bureaux du catalogue pour composer cette option.</div>';
+    html='<div class="prop-empty">'+tlang('Cliquez sur des bureaux du catalogue pour composer cette option.','Click offices in the catalogue to build this option.')+'</div>';
   }
   ordered.forEach(function(b){
     var q=b.isItin?(o.itinQty||1):1;
     var price=Math.round(b.prix*(1-d))*q;
     var isCo=isCoresRow(b);
-    var ref=isCo?('Poste '+coresNo(b.ref)):(b.isItin?(b.virtLabel||b.ref):esc(b.ref));
-    var name=isCo?'Co-Résident':(b.isItin?(b.virtLabel||''):esc(b.label||''));
+    var ref=isCo?(tlang('Poste','Desk')+' '+coresNo(b.ref)):(b.isItin?(b.virtLabel||b.ref):esc(b.ref));
+    var name=isCo?tlang('Co-Résident','Co-Resident'):(b.isItin?(b.virtLabel||''):esc(b.label||''));
     var meta;
-    if(isCo) meta=etLbl(b.etage)+(b.surface?' · '+b.surface+' m²':'')+' · The Bureau I';
-    else if(b.isItin) meta=q+' abonnement'+(q>1?'s':'');
-    else meta=etLbl(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' poste'+(b.cap>1?'s':'');
+    if(isCo) meta=floorLblL(b.etage)+(b.surface?' · '+b.surface+' m²':'')+' · The Bureau I';
+    else if(b.isItin) meta=q+' '+tlang('abonnement'+(q>1?'s':''),'subscription'+(q>1?'s':''));
+    else meta=floorLblL(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' '+tlang('poste'+(b.cap>1?'s':''),'desk'+(b.cap>1?'s':''));
     html+='<div class="prow"><span class="prow-ref">'+ref+'</span><div class="prow-info"><div class="prow-name">'+name+'</div><div class="prow-meta">'+meta+'</div></div><span class="prow-price">'+fmt(price)+'<span class="eu">€</span></span><button class="prow-del" data-ref="'+esc(b.ref)+'" data-cores="'+(isCo?1:0)+'" title="Retirer">×</button></div>';
   });
-  html+='<div class="prow tw"><span class="prow-ref tw-ref">Télétr.</span><div class="prow-info"><div class="prow-name">Offre Télétravail</div><div class="prow-meta">170 € H.T./mois/pers.</div></div><div class="prow-tw"><button class="ptw-btn" data-tw="-">−</button><span class="ptw-val">'+tw+'</span><button class="ptw-btn" data-tw="+">+</button></div><span class="prow-price">'+(tw>0?(fmt(tw*170)+'<span class="eu">€</span>'):'<span class="prow-dash">—</span>')+'</span></div>';
+  html+='<div class="prow tw"><span class="prow-ref tw-ref">'+tlang('Télétr.','Remote')+'</span><div class="prow-info"><div class="prow-name">'+tlang('Offre Télétravail','Remote-work add-on')+'</div><div class="prow-meta">170 € '+tlang('H.T./mois/pers.','excl.VAT/mo/pers.')+'</div></div><div class="prow-tw"><button class="ptw-btn" data-tw="-">−</button><span class="ptw-val">'+tw+'</span><button class="ptw-btn" data-tw="+">+</button></div><span class="prow-price">'+(tw>0?(fmt(tw*170)+'<span class="eu">€</span>'):'<span class="prow-dash">—</span>')+'</span></div>';
   body.innerHTML=html;
   body.querySelectorAll('.prow-del').forEach(function(btn){
     btn.addEventListener('click',function(){ var r=btn.dataset.ref; if(btn.dataset.cores==='1'){ toggleCoresPoste(r); } else { toggleSel(r); } });
@@ -1901,9 +1901,9 @@ function renderPropPanel(){
   var tot=optionTotalAt(o, dCoef);
   var baseM=optionTotalAt(o, remise);
   var amtEl=document.getElementById('propAmt'); if(amtEl) amtEl.innerHTML=fmt(tot)+' <span class="eu">€</span>';
-  var tierEl=document.getElementById('propTier'); if(tierEl) tierEl.textContent=(ST.eng==='mensuel'?'Mensuel':(ST.eng==='12m'?'12 mois':(ST.eng==='24m'?'24 mois':'36 mois')));
+  var tierEl=document.getElementById('propTier'); if(tierEl) tierEl.textContent=engShortL(ST.eng);
   var savEl=document.getElementById('propSav');
-  if(savEl){ var savYr=Math.round((baseM-tot)*12); savEl.textContent = savYr>0 ? ('soit −'+fmt(savYr)+' € / an vs mensuel · télétravail non remisé') : 'Engagement 3 mois minimum'; }
+  if(savEl){ var savYr=Math.round((baseM-tot)*12); savEl.textContent = savYr>0 ? tlang('soit −'+fmt(savYr)+' € / an vs mensuel · télétravail non remisé','i.e. −'+fmt(savYr)+' € / yr vs monthly · remote not discounted') : tlang('Engagement 3 mois minimum','3-month minimum commitment'); }
   var totalRefs=OPTIONS.reduce(function(s,op){ return s+((op.refs&&op.refs.length)?op.refs.length:0); },0);
   var send=document.getElementById('propSend'), pdf=document.getElementById('propPdf');
   if(send) send.disabled=!totalRefs; if(pdf) pdf.disabled=!totalRefs;
@@ -2378,6 +2378,17 @@ function updateInlinePreview(){
 }
 function scheduleInlinePreview(){ if (_ipTimer) clearTimeout(_ipTimer); _ipTimer = setTimeout(updateInlinePreview, 350); }
 
+/* ===== i18n UI (FR/EN) ===== */
+function tlang(fr,en){ return (typeof PAGE_LANG!=='undefined' && PAGE_LANG==='en') ? en : fr; }
+function floorLblL(e){
+  if(tlang('fr','en')==='en'){ if(e===0) return 'Ground floor'; var s=['th','st','nd','rd'],v=e%100; return e+(s[(v-20)%10]||s[v]||s[0])+' floor'; }
+  return e===0?'RDC':(e===1?'1ᵉʳ étage':e+'ᵉ étage');
+}
+function engShortL(eng){
+  var m={mensuel:['Mensuel','Monthly'],'12m':['12 mois','12 months'],'24m':['24 mois','24 months'],'36m':['36 mois','36 months']};
+  var p=m[eng]||m.mensuel; return tlang(p[0],p[1]);
+}
+
 /* ===== Nouveau modal d'envoi (2 colonnes : formulaire | aperçu email) ===== */
 function emailPreviewHTML(isEN){
   var data = getEmailPreviewData();
@@ -2461,6 +2472,49 @@ function sendModalSubmit(){
   closeSendModal();
   /* réutilise tout le pipeline d'envoi existant (overlay email, Copier/Gmail/PDF) */
   var bsnd=document.getElementById('bsnd'); if(bsnd) bsnd.click();
+}
+
+/* ===== Traduction de l'UI statique (rail, catalogue, panneau, header) ===== */
+function _setTxt(sel,fr,en){ var el=(typeof sel==='string')?document.querySelector(sel):sel; if(el) el.textContent=tlang(fr,en); }
+function _setPh(sel,fr,en){ var el=document.querySelector(sel); if(el) el.setAttribute('placeholder',tlang(fr,en)); }
+function _setFirstText(el,fr,en){ if(!el) return; for(var i=0;i<el.childNodes.length;i++){ if(el.childNodes[i].nodeType===3 && el.childNodes[i].textContent.trim()){ el.childNodes[i].textContent=tlang(fr,en); return; } } }
+function applySiteLang(){
+  document.documentElement.lang=tlang('fr','en');
+  /* Header */
+  var rb=document.getElementById('resetBtn'); if(rb) _setFirstText(rb,' Réinitialiser',' Reset');
+  var logoTag=document.querySelector('.logo-tag'); /* TEAM LOUNGE — inchangé */
+  /* Rail */
+  var labs=document.querySelectorAll('.rail .rail-lbl');
+  var L=[['Adresse','Address'],['Postes','Desks'],['Disponibilité','Availability'],['Référence','Reference']];
+  labs.forEach(function(el,i){ if(L[i]) el.textContent=tlang(L[i][0],L[i][1]); });
+  _setFirstText(document.querySelector('.sc-all'),'Toutes','All');
+  _setTxt('#capBtns .cb[data-cap="all"]','Tous','All');
+  _setTxt('#df .sb[data-dispo="all"]','Toutes','All');
+  _setTxt('#df .sb[data-dispo="immediate"]','Immédiate','Immediate');
+  _setTxt('#df .sb[data-dispo="future"]','À venir','Upcoming');
+  var occb=document.getElementById('occBtn'); if(occb) _setFirstText(occb,' Occupés',' Occupied');
+  _setPh('#search','ex. B402 · ⌘K','e.g. B402 · ⌘K');
+  /* Catalogue */
+  var st=document.querySelectorAll('#srtBtns .sortb');
+  var S=[['Correspondance','Match'],['Prix','Price'],['Surface','Area'],['Disponibilité','Availability']];
+  st.forEach(function(el,i){ if(S[i]) el.textContent=tlang(S[i][0],S[i][1]); });
+  var mfb=document.getElementById('mobFiltersBtn'); if(mfb) _setFirstText(mfb,'Filtres','Filters');
+  _setTxt('#dataWarn','⚠ Données de secours · hors ligne','⚠ Fallback data · offline');
+  var ct=document.querySelector('.cat-title'); if(ct){ ct.innerHTML=tlang('<strong id="cnt">-</strong> bureau<span id="ps"></span> <em>disponible<span id="ps2"></span></em>','<strong id="cnt">-</strong> office<span id="ps"></span> <em>available<span id="ps2"></span></em>'); }
+  var empt=document.querySelector('#empty h3'); if(empt) empt.textContent=tlang('Aucun bureau ne correspond à vos critères.','No office matches your criteria.');
+  /* Panneau */
+  _setTxt('.prop-eye','Proposition','Proposal');
+  _setPh('#propClientName','Prénom Nom','First name Last name');
+  _setPh('#propClientComp','Société','Company');
+  _setTxt('.prop-need-lbl','Postes souhaités','Desired desks');
+  _setPh('#needMin','min','min'); _setPh('#needMax','max','max');
+  _setTxt('.prop-eng-lbl','Engagement','Commitment');
+  var engB=document.querySelectorAll('#ef .sb');
+  var E=[['Mensuel','Monthly','3 mois min.','3 months min'],['12 mois','12 months','−5 %','−5 %'],['24 mois','24 months','−10 %','−10 %'],['36 mois','36 months','−15 %','−15 %']];
+  engB.forEach(function(btn,i){ if(!E[i])return; _setFirstText(btn,E[i][0],E[i][1]); var sm=btn.querySelector('small'); if(sm) sm.textContent=tlang(E[i][2],E[i][3]); });
+  var totLbl=document.querySelector('.prop-tot-lbl'); if(totLbl){ var sp=totLbl.querySelector('#propTier'); totLbl.childNodes[0].textContent=tlang('Total H.T. / mois · ','Total excl.VAT / mo · '); }
+  var ps=document.getElementById('propSend'); if(ps) ps.textContent=tlang('Envoyer au client →','Send to client →');
+  var pp=document.getElementById('propPdf'); if(pp) pp.textContent=tlang('Aperçu & téléchargement PDF','Preview & download PDF');
 }
 (function(){
   var t = document.getElementById('ipToggle'); if (!t) return;
@@ -3313,7 +3367,7 @@ function askReset(){
   var ov=document.getElementById('resetConfirmOv');
   if(!ov){
     ov=document.createElement('div'); ov.id='resetConfirmOv'; ov.className='rc-ov';
-    ov.innerHTML='<div class="rc-card"><div class="rc-eye"></div><h3 class="rc-title">Réinitialiser la <b>proposition</b> ?</h3><p class="rc-txt" id="rcTxt"></p><div class="rc-actions"><button class="rc-keep" id="rcKeep">Conserver</button><button class="rc-reset" id="rcReset">Réinitialiser</button></div></div>';
+    ov.innerHTML='<div class="rc-card"><div class="rc-eye"></div><h3 class="rc-title">'+tlang('Réinitialiser la <b>proposition</b> ?','Reset the <b>proposal</b>?')+'</h3><p class="rc-txt" id="rcTxt"></p><div class="rc-actions"><button class="rc-keep" id="rcKeep">'+tlang('Conserver','Keep')+'</button><button class="rc-reset" id="rcReset">'+tlang('Réinitialiser','Reset')+'</button></div></div>';
     document.body.appendChild(ov);
     document.getElementById('rcKeep').addEventListener('click', closeResetConfirm);
     document.getElementById('rcReset').addEventListener('click', resetProposition);
@@ -3323,8 +3377,8 @@ function askReset(){
   var opts=(typeof OPT_MODE!=='undefined'&&OPT_MODE&&typeof OPTIONS!=='undefined')?OPTIONS.filter(function(o){return o.refs&&o.refs.length;}).length:0;
   var parts=[];
   if(opts) parts.push(opts+' option'+(opts>1?'s':''));
-  parts.push(n+' bureau'+(n>1?'x':''));
-  document.getElementById('rcTxt').textContent=parts.join(', ')+(client?' et les informations de ce client':'')+' seront effacés. Les filtres sont conservés.';
+  parts.push(n+' '+tlang('bureau'+(n>1?'x':''),'office'+(n>1?'s':'')));
+  document.getElementById('rcTxt').textContent=parts.join(', ')+tlang((client?' et les informations de ce client':'')+' seront effacés. Les filtres sont conservés.',(client?' and this client’s details':'')+' will be cleared. Filters are kept.');
   ov.style.display='flex';
   return false;
 }
@@ -3823,7 +3877,7 @@ function updateSyncLabel(){
   var el=document.getElementById('stxt'); var pill=document.getElementById('syncPill');
   if(!el||!__tlSyncAt||(pill&&pill.classList.contains('offline'))) return;
   var m=Math.floor((Date.now()-__tlSyncAt)/60000);
-  el.textContent = m<1 ? 'Synchronisé à l’instant' : 'Synchronisé il y a '+m+' min';
+  el.textContent = m<1 ? tlang('Synchronisé à l’instant','Synced just now') : tlang('Synchronisé il y a '+m+' min','Synced '+m+' min ago');
 }
 function setStatus(type,txt) {
   var dot = document.getElementById('sdot');
@@ -3836,7 +3890,7 @@ function setStatus(type,txt) {
 }
 (function(){ setInterval(updateSyncLabel, 30000); })();
 function fetchData(cb) {
-  setStatus('loading', 'Chargement\u2026');
+  setStatus('loading', tlang('Chargement\u2026','Loading\u2026'));
   var xhr = new XMLHttpRequest();
   var done = false;
   var timer = setTimeout(function() {
@@ -4502,11 +4556,16 @@ var PAGE_LANG = localStorage.getItem('tb_page_lang') || 'fr';
       lt.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.lang===PAGE_LANG)});
       /* Sync EP_LANG used by emails/PDF */
       EP_LANG=PAGE_LANG;
-      showToast(PAGE_LANG==='en'?'Language: English':'Langue : Francais');
+      if(typeof applySiteLang==='function') applySiteLang();
+      if(typeof render==='function') render();
+      if(typeof renderPropPanel==='function') renderPropPanel();
+      if(typeof updateSelBar==='function') updateSelBar();
+      showToast(PAGE_LANG==='en'?'Language: English':'Langue : Français');
     });
   });
   /* Init EP_LANG from page lang */
   EP_LANG=PAGE_LANG;
+  if(PAGE_LANG==='en' && typeof applySiteLang==='function'){ applySiteLang(); if(typeof render==='function') render(); if(typeof renderPropPanel==='function') renderPropPanel(); }
 })();
 
 /* PDF button in modal */
