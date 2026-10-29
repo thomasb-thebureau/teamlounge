@@ -537,6 +537,21 @@ footer{background:var(--encre);position:relative;overflow:hidden}
 .itin-card.sel .chk svg{display:block!important}
 .itin-badge{display:inline-flex;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#0F0F0F;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;padding:2px 8px;background:var(--or2);border-radius:50px;margin-left:8px;vertical-align:middle}
 .itin-chip{background:rgba(176,148,56,0.15)!important;border-color:rgba(176,148,56,0.4)!important;color:#B09438!important}
+.cores-card{border:2px solid rgba(176,148,56,.45)!important;border-top:4px solid var(--or2)!important;background:linear-gradient(160deg,rgba(176,148,56,0.14),rgba(138,106,24,0.24))!important;color:#0F0F0F}
+.cores-card .cref{color:#5c4610!important}
+.cores-card .csite{color:#8A6A18!important}
+.cores-card .cdesc{color:rgba(15,15,15,0.72)!important}
+.cores-card .pb{border-top:1px solid rgba(176,148,56,0.3)!important}
+.cores-card .pm{color:#0F0F0F!important}
+.cores-card .psub{color:rgba(15,15,15,0.6)!important}
+.cores-card .rack{color:rgba(15,15,15,0.4)!important;text-decoration:line-through}
+.cores-card .sav{color:#1E4035!important}
+.cores-card .chk{border-color:rgba(138,106,24,0.55)!important}
+.cores-card.sel{border-color:var(--or2)!important;border-top:4px solid var(--or2)!important;background:linear-gradient(160deg,rgba(176,148,56,0.28),rgba(138,106,24,0.40))!important;box-shadow:0 0 0 2px rgba(176,148,56,0.28)!important}
+.cores-card.sel .chk{background:var(--or2)!important;border-color:var(--or2)!important}
+.cores-card.sel .chk svg{display:block!important}
+.cores-badge{display:inline-flex;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#FAFAFA;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;padding:2px 8px;background:var(--vert);border-radius:50px;margin-left:8px;vertical-align:middle}
+.cores-chip{background:rgba(176,148,56,0.16)!important;border-color:rgba(176,148,56,0.42)!important;color:#8A6A18!important}
 .itin-lbl{color:rgba(176,148,56,0.6)!important}
 .itin-sel{background:#0F0F0F!important;color:#FAFAFA!important;border-color:rgba(176,148,56,0.3)!important}
 .itin-chk-lbl{color:rgba(245,239,229,0.75)!important}
@@ -886,6 +901,19 @@ var ITIN_SITE   = null;
 var ITIN_REF    = 'ITIN';
 var ITIN_PRIX   = 499;
 var ITIN_ADDONS = {domi:false, casier:false};
+/* Co-Résident — poste dédié, The Bureau I (TB1) uniquement */
+var CORES_REF   = 'CORES';
+var CORES_PRIX  = 725;
+var CORES_SITE  = 'I';
+var CORES_ADR   = '28, Cours Albert 1er, 75008 Paris';
+/* Produits « virtuels » (hors DATA) à réinjecter dans les sélections */
+var VIRT_REFS   = [ITIN_REF, CORES_REF];
+function injectVirt(arr){
+  VIRT_REFS.forEach(function(r){
+    if (SEL[r] && !arr.find(function(b){ return b.ref===r; })) arr.unshift(SEL[r]);
+  });
+  return arr;
+}
 var EP_LANG = 'fr'; /* current preview language */
 var OPT_MODE = false;       /* Options mode active */
 var OPTIONS = [];           /* [{id, label, refs:[], tw, extras:{}}] */
@@ -978,11 +1006,12 @@ function makeItinCard() {
     if (!SEL[ITIN_REF]) {
       SEL[ITIN_REF] = {
         ref:ITIN_REF, site:null, label:'Itinérant', adresse:'',
-        prix: ITIN_PRIX, itinQty:1,
+        prix: ITIN_PRIX, base: ITIN_PRIX, itinQty:1,
         cap:1, etage:0, surface:null, dispo:'immediate', date:null,
         desc:'Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7. Formule all-incluse.',
         descEN:'Flexible access to shared spaces and The Bureau services. 24/7 access. All-inclusive.',
-        isItin: true
+        isItin: true,
+        virtLabel:'Itinérant', virtMeta:'Placement libre · tous nos sites', virtUnit:'abonnement', virtTag:'ITIN'
       };
       SEL_ORDER.push(ITIN_REF);
     } else {
@@ -996,11 +1025,70 @@ function makeItinCard() {
   return div;
 }
 
-function setItinAbo(qty) {
-  if (!SEL[ITIN_REF]) return;
-  SEL[ITIN_REF].itinQty = Math.max(1, Math.min(20, qty||1));
+function makeCoresCard() {
+  var d = disc();
+  var isSel = !!SEL[CORES_REF];
+  var base  = CORES_PRIX;
+  var price = Math.round(CORES_PRIX*(1-d));
+  var save  = d > 0 ? Math.round((CORES_PRIX - price) * 12) : 0;
+  var engLbl = d===0
+    ? 'H.T./mois/poste — tarif de référence'
+    : 'H.T./mois/poste — engagement '+ST.eng+' <span class="echip">-'+Math.round(d*100)+'%</span>';
+  var rackHtml = d>0 ? '<span class="rack">'+base+' €</span>' : '';
+  var savHtml  = d>0 ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="#153027"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>Économie : '+fmt(save)+' € / an</div>' : '';
+
+  var div = document.createElement('div');
+  div.className = 'card cores-card' + (isSel?' sel':'');
+  div.dataset.ref = CORES_REF;
+
+  div.innerHTML =
+    '<div class="chk"><svg viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1"/></svg></div>'+
+    '<div class="ctop">'+
+      '<div>'+
+        '<div class="cref">Co-Résident <span class="cores-badge">The Bureau I</span></div>'+
+        '<div class="csite">Poste dédié · 28 Cours Albert 1er</div>'+
+      '</div>'+
+    '</div>'+
+    '<p class="cdesc">Un poste de travail dédié à The Bureau I, dans nos espaces partagés. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.</p>'+
+    '<div class="chips">'+
+      '<span class="chip cores-chip">Poste dédié</span>'+
+      '<span class="chip cores-chip">Accès 24/7</span>'+
+      '<span class="chip cores-chip">Domiciliation incluse</span>'+
+    '</div>'+
+    '<div class="pb">'+
+      '<div class="pr"><div class="pm"><sup>€</sup>'+fmt(price)+'</div>'+rackHtml+'</div>'+
+      '<div class="psub">'+engLbl+'</div>'+savHtml+
+    '</div>';
+
+  div.addEventListener('click', function() {
+    if (!SEL[CORES_REF]) {
+      SEL[CORES_REF] = {
+        ref:CORES_REF, site:CORES_SITE, label:'Co-Résident', adresse:CORES_ADR,
+        prix: CORES_PRIX, base: CORES_PRIX, itinQty:1,
+        cap:1, etage:0, surface:null, dispo:'immediate', date:null,
+        desc:'Poste de travail dédié à The Bureau I. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.',
+        descEN:'Dedicated workstation at The Bureau I. Business address & storage included. 24/7 access. All-inclusive.',
+        isItin: true, isCores: true,
+        virtLabel:'Co-Résident', virtMeta:'Poste dédié · The Bureau I', virtUnit:'poste dédié', virtTag:'CO-RÉS', pdfRef:'Co-Rés.', pdfName:'Co-Résident'
+      };
+      SEL_ORDER.push(CORES_REF);
+    } else {
+      delete SEL[CORES_REF];
+      SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==CORES_REF; });
+    }
+    var old2 = document.querySelector('.cores-card');
+    if (old2) old2.parentNode.replaceChild(makeCoresCard(), old2);
+    updateSelBar(); updateModalTotal();
+  });
+  return div;
+}
+
+function setVirtAbo(ref, qty) {
+  if (!SEL[ref]) return;
+  SEL[ref].itinQty = Math.max(1, Math.min(20, qty||1));
   if (typeof openModal==='function') openModal();
 }
+function setItinAbo(qty) { setVirtAbo(ITIN_REF, qty); }
 function setItinQty(optId, qty) {
   var opt = OPTIONS.find(function(o){ return o.id===optId; });
   if (!opt) return;
@@ -1149,6 +1237,8 @@ function render() {
   var frag = document.createDocumentFragment();
   /* Itinérant: visible si le filtre postes accepte 1 */
   if (cmin<=1 && cmax>=1) frag.appendChild(makeItinCard());
+  /* Co-Résident: TB1 uniquement — visible si The Bureau I est affiché et filtre postes accepte 1 */
+  if (cmin<=1 && cmax>=1 && (allSites || ST.sites.I)) frag.appendChild(makeCoresCard());
   if (filtered.length===0) {
     empty.innerHTML = '<h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p>';
     empty.classList.add('on');
@@ -1250,9 +1340,10 @@ function updateSelBar() {
   bar.classList.add('on');
   var d = disc();
   var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
-  if (SEL[ITIN_REF] && !selData.find(function(b){ return b.ref===ITIN_REF; })) selData.unshift(SEL[ITIN_REF]);
+  injectVirt(selData);
   var tot = selData.reduce(function(s,b){
-    return s + (b.isItin ? Math.round(ITIN_PRIX*(1-d))+(b.prix-ITIN_PRIX) : b.prix*(1-d));
+    var bse = b.base||ITIN_PRIX;
+    return s + (b.isItin ? Math.round(bse*(1-d))+(b.prix-bse) : b.prix*(1-d));
   },0);
   document.getElementById('scnt').textContent = refs.length;
   document.getElementById('sps').textContent = refs.length>1?'x':'';
@@ -1263,7 +1354,7 @@ function updateSelBar() {
   selData.slice(0,5).forEach(function(b) {
     var sp = document.createElement('span');
     sp.className = 'sc2';
-    sp.textContent = b.ref===ITIN_REF ? 'Itinérant' : b.ref;
+    sp.textContent = b.isItin ? (b.virtLabel||'Itinérant') : b.ref;
     sp.addEventListener('click', function(e){ e.stopPropagation(); toggleSel(b.ref); });
     chips.appendChild(sp);
   });
@@ -1280,13 +1371,13 @@ function updateSelBar() {
 ============================================================ */
 function openModal() {
   var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
-  if (SEL[ITIN_REF] && !selData.find(function(b){ return b.ref===ITIN_REF; })) selData.unshift(SEL[ITIN_REF]);
+  injectVirt(selData);
   if (selData.length===0) return;
   if (!document.getElementById('mov').classList.contains('on')) _modalReturnFocus = document.activeElement;
   if (typeof renderTwExtras==='function') renderTwExtras();
   function getSortedSelData() {
     var d = DATA.filter(function(b){ return !!SEL[b.ref]; });
-    if (SEL[ITIN_REF] && !d.find(function(b){ return b.ref===ITIN_REF; })) d.unshift(SEL[ITIN_REF]);
+    injectVirt(d);
     if (MODAL_SORT==='nom') return d.sort(function(a,b){ return a.ref.localeCompare(b.ref); });
     if (MODAL_SORT==='surface') return d.sort(function(a,b){ return (a.surface||0)-(b.surface||0); });
     if (MODAL_SORT==='prix') return d.sort(function(a,b){ return a.prix-b.prix; });
@@ -1305,7 +1396,7 @@ function openModal() {
     var info = document.createElement('div');
     info.className = 'minfo';
     if (b.isItin) {
-      info.innerHTML = '<span class="refbadge">Itinérant</span><span class="mmeta">Placement libre · tous nos sites · '+_itinQ+' abonnement'+(_itinQ>1?'s':'')+'</span>';
+      info.innerHTML = '<span class="refbadge">'+(b.virtLabel||'Itinérant')+'</span><span class="mmeta">'+(b.virtMeta||'Placement libre · tous nos sites')+' · '+_itinQ+' '+(b.virtUnit||'abonnement')+(_itinQ>1?'s':'')+'</span>';
     } else {
       info.innerHTML = '<span class="refbadge">'+esc(b.ref)+'</span><span class="mmeta">'+etLbl(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' poste'+(b.cap>1?'s':'')+'</span>';
     }
@@ -1316,9 +1407,9 @@ function openModal() {
       stp.className = 'tw-qty';
       stp.innerHTML = '<button type="button" aria-label="Moins">−</button><input type="number" min="1" max="20" value="'+_itinQ+'"><button type="button" aria-label="Plus">+</button>';
       var sb = stp.querySelectorAll('button');
-      sb[0].addEventListener('click', function(e){ e.stopPropagation(); setItinAbo(_itinQ-1); });
-      sb[1].addEventListener('click', function(e){ e.stopPropagation(); setItinAbo(_itinQ+1); });
-      stp.querySelector('input').addEventListener('change', function(){ setItinAbo(parseInt(this.value)||1); });
+      sb[0].addEventListener('click', function(e){ e.stopPropagation(); setVirtAbo(b.ref, _itinQ-1); });
+      sb[1].addEventListener('click', function(e){ e.stopPropagation(); setVirtAbo(b.ref, _itinQ+1); });
+      stp.querySelector('input').addEventListener('change', function(){ setVirtAbo(b.ref, parseInt(this.value)||1); });
       right.appendChild(stp);
     }
     var pe = document.createElement('div');
@@ -1428,11 +1519,11 @@ function updateModalTotal() {
   var optMode = (typeof OPT_MODE!=='undefined' && OPT_MODE);
   if (grouped && !optMode) {
     var tot = selData.reduce(function(s,b){ return s + b.prix*(1-d-remise); }, 0);
-    if (SEL[ITIN_REF]) tot += ITIN_PRIX*(SEL[ITIN_REF].itinQty||1)*(1-d-remise);
+    VIRT_REFS.forEach(function(r){ if (SEL[r]) tot += SEL[r].prix*(SEL[r].itinQty||1)*(1-d-remise); });
     if (typeof getTwTotal==='function') tot += getTwTotal();
     if (typeof getExtrasTotal==='function') tot += getExtrasTotal();
     var baseM = selData.reduce(function(s,b){ return s + b.prix*(1-remise); }, 0);
-    if (SEL[ITIN_REF]) baseM += ITIN_PRIX*(SEL[ITIN_REF].itinQty||1)*(1-remise);
+    VIRT_REFS.forEach(function(r){ if (SEL[r]) baseM += SEL[r].prix*(SEL[r].itinQty||1)*(1-remise); });
     if (typeof getTwTotal==='function') baseM += getTwTotal();
     if (typeof getExtrasTotal==='function') baseM += getExtrasTotal();
     var savYr = Math.round((baseM - tot) * 12);
@@ -1472,7 +1563,7 @@ function renderRowTiers(grouped, remise) {
   var defs = getTierList(remise);
   document.querySelectorAll('#moffs .mrow').forEach(function(row){
     var ref = row.dataset.ref;
-    var b = (ref===ITIN_REF) ? SEL[ITIN_REF] : DATA.find(function(x){ return x.ref===ref; });
+    var b = (VIRT_REFS.indexOf(ref)>=0) ? SEL[ref] : DATA.find(function(x){ return x.ref===ref; });
     var priceEl = row.querySelector('.mprice');
     var existing = row.querySelector('.mrow-tiers');
     if (existing) existing.parentNode.removeChild(existing);
@@ -1503,7 +1594,7 @@ function renderModalTiers(selData, remise) {
   var defs = getTierList(remise);
   var tierAmt = function(d){
     var a = selData.reduce(function(s,b){ var q=b.isItin?(b.itinQty||1):1; return s + Math.round(b.prix*(1-d))*q; }, 0);
-    if (SEL[ITIN_REF]) a += Math.round(ITIN_PRIX*(1-d)) * (SEL[ITIN_REF].itinQty||1);
+    VIRT_REFS.forEach(function(r){ if (SEL[r]) a += Math.round(SEL[r].prix*(1-d)) * (SEL[r].itinQty||1); });
     return a + twFlat;
   };
   var mensuelAmt = tierAmt(remise);
@@ -1577,7 +1668,7 @@ document.getElementById('bprop').addEventListener('click', openModal);
 var _ipTimer = null;
 function getEmailPreviewData(){
   var d = DATA.filter(function(b){ return !!SEL[b.ref]; });
-  if (SEL[ITIN_REF] && !d.find(function(b){ return b.ref===ITIN_REF; })) d.unshift(SEL[ITIN_REF]);
+  injectVirt(d);
   if (MODAL_SORT==='nom')     return d.sort(function(a,b){ return a.ref.localeCompare(b.ref); });
   if (MODAL_SORT==='surface') return d.sort(function(a,b){ return (a.surface||0)-(b.surface||0); });
   if (MODAL_SORT==='prix')    return d.sort(function(a,b){ return a.prix-b.prix; });
@@ -1653,7 +1744,7 @@ function updateInlinePreview(){
     if(!b.isItin){ meta.push(etLbl(b.etage)); if(b.surface)meta.push(b.surface.toLocaleString('fr-FR')+' m²'); meta.push(b.cap+' '+(isEN?'desks':'postes')); }
     else meta.push(q+' '+(isEN?'subscription(s)':'abonnement(s)'));
     h+='<table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid '+C.line+';border-radius:12px;margin-bottom:9px"><tr>'
-      +'<td width="70" style="padding:12px 0 12px 14px" valign="middle"><span style="display:inline-block;background:'+C.jade+';color:'+C.cr+';border-radius:50px;padding:5px 11px;font-weight:700;font-size:11px">'+(b.isItin?'ITIN':esc(b.ref))+'</span></td>'
+      +'<td width="70" style="padding:12px 0 12px 14px" valign="middle"><span style="display:inline-block;background:'+C.jade+';color:'+C.cr+';border-radius:50px;padding:5px 11px;font-weight:700;font-size:11px">'+(b.isItin?(b.virtTag||'ITIN'):esc(b.ref))+'</span></td>'
       +'<td style="padding:12px" valign="middle"><div style="font-size:13px;font-weight:700">'+esc(b.label||'')+'</div><div style="font-size:11px;color:'+C.gr+';margin-top:2px">'+meta.join(' · ')+'</div></td>'
       +'<td align="right" style="padding:12px 14px 12px 0;white-space:nowrap" valign="middle"><div style="font-size:16px;font-weight:700">'+eur(price)+'</div><div style="font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:'+C.gr+'">'+(isEN?'excl. VAT/mo':'H.T./mois')+'</div></td>'
       +'</tr></table>';
@@ -1892,7 +1983,7 @@ document.getElementById('bsnd').addEventListener('click', function() {
   /* Respect modal sort order in the email */
   function getSortedForEmail() {
     var d = DATA.filter(function(b){ return !!SEL[b.ref]; });
-    if (SEL[ITIN_REF] && !d.find(function(b){ return b.ref===ITIN_REF; })) d.unshift(SEL[ITIN_REF]);
+    injectVirt(d);
     if (MODAL_SORT==='nom')     return d.sort(function(a,b){ return a.ref.localeCompare(b.ref); });
     if (MODAL_SORT==='surface') return d.sort(function(a,b){ return (a.surface||0)-(b.surface||0); });
     if (MODAL_SORT==='prix')    return d.sort(function(a,b){ return a.prix-b.prix; });
@@ -1954,15 +2045,16 @@ function buildCard(b) {
 
     var dt = getDefaultTier();
     var p = paliers[dt] || paliers[0];
-    var _itinAddons = b.isItin ? (b.prix - ITIN_PRIX) : 0;
-    var price = b.isItin ? Math.round(ITIN_PRIX*(1-p.d))+_itinAddons : Math.round(b.prix*(1-p.d));
+    var _bse = b.base||ITIN_PRIX;
+    var _itinAddons = b.isItin ? (b.prix - _bse) : 0;
+    var price = b.isItin ? Math.round(_bse*(1-p.d))+_itinAddons : Math.round(b.prix*(1-p.d));
     var metaParts = [];
     if (!b.isItin) metaParts.push(etageLabel);
     if (b.surface) metaParts.push(b.surface.toLocaleString('fr-FR')+' m²');
     metaParts.push(postes);
-    if (b.isItin && b.itinQty && b.itinQty>1) metaParts.push(b.itinQty+' abonnements');
+    if (b.isItin && b.itinQty && b.itinQty>1) metaParts.push(b.itinQty+' '+(b.virtUnit||'abonnement')+'s');
     var meta = metaParts.join(' · ');
-    var refTxt = b.isItin?'ITIN':b.ref;
+    var refTxt = b.isItin?(b.virtTag||'ITIN'):b.ref;
     return '<tr><td style="padding:0 0 10px">'
       +'<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e9e1d2;border-radius:12px">'
       +'<tr>'
@@ -2444,7 +2536,7 @@ function buildEmail(data, showTotal) {
       var newCiv = prenom ? (prenom + (nom ? ' ' + nom : '')) : (newIsEN ? 'Sir/Madam' : 'Madame, Monsieur');
       /* Re-fetch selData fresh (includes itin) */
       var freshData = DATA.filter(function(b){ return !!SEL[b.ref]; });
-      if (SEL[ITIN_REF] && !freshData.find(function(b){ return b.ref===ITIN_REF; })) freshData.unshift(SEL[ITIN_REF]);
+      injectVirt(freshData);
       var newHtml = buildOptionsEmail(freshData, newIsEN, newCiv, soc, customMsg, LOGO_B64, CHEV_B64);
       liveOv.querySelector('#epBody2').innerHTML = newHtml;
     });
@@ -2623,7 +2715,7 @@ function renderOptPanel() {
   var el = document.getElementById('optList');
   if (!el) return;
   var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
-  if (SEL[ITIN_REF] && !selData.find(function(b){ return b.ref===ITIN_REF; })) selData.unshift(SEL[ITIN_REF]);
+  injectVirt(selData);
   var _remEl = document.getElementById('remiseInput');
   var _remOpt = _remEl ? Math.min(25,Math.max(0,parseFloat(_remEl.value)||0))/100 : 0;
   var _selTiersOpt = (typeof getSelectedTiers==='function') ? getSelectedTiers() : [0,1,2,3];
@@ -2853,7 +2945,7 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   var mainLabels=isEN?['Monthly','12 months','24 months','36 months']:['3 mois','12 mois','24 mois','36 mois'];
   function optTotalAt(d){
     return opt.bureaux.reduce(function(s,b){
-      if(b.isItin){var q=b.itinQty||1,add=b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0;return s+Math.round(ITIN_PRIX*(1-d))*q+add;}
+      if(b.isItin){var q=b.itinQty||1,add=b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0;return s+Math.round((b.base||ITIN_PRIX)*(1-d))*q+add;}
       return s+Math.round(b.prix*(1-d));
     },0)+((opt.tw||0)*170)+optExtrasTotal(opt);
   }
@@ -2871,11 +2963,11 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   h+='<tr><td style="background:#ffffff;padding:6px 16px">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">';
   opt.bureaux.forEach(function(b,bi){
-    var price=b.isItin?Math.round(ITIN_PRIX*(1-paliers[dt].d))*(b.itinQty||1)+(b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0):Math.round(b.prix*(1-paliers[dt].d));
+    var price=b.isItin?Math.round((b.base||ITIN_PRIX)*(1-paliers[dt].d))*(b.itinQty||1)+(b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0):Math.round(b.prix*(1-paliers[dt].d));
     var etageLabel=isEN?(b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor'):etLbl(b.etage);
-    var metaParts=[]; if(!b.isItin)metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); if(b.isItin&&b.itinQty&&b.itinQty>1)metaParts.push(b.itinQty+' abonnements');
+    var metaParts=[]; if(!b.isItin)metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); if(b.isItin&&b.itinQty&&b.itinQty>1)metaParts.push(b.itinQty+' '+(b.virtUnit||'abonnement')+'s');
     var meta=metaParts.join(' · ');
-    var refTxt=b.isItin?'ITIN':b.ref;
+    var refTxt=b.isItin?(b.virtTag||'ITIN'):b.ref;
     var bb=bi<opt.bureaux.length-1?'border-bottom:1px solid #f1ede4;':'';
     h+='<tr><td style="'+bb+'padding:9px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
     h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10.5px;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>';
@@ -3261,9 +3353,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var refs = Object.keys(SEL);
     if (refs.length === 0) return;
     var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
-    if (SEL[ITIN_REF]) {
-      var itinData = SEL[ITIN_REF];
-      if (!selData.find(function(b){ return b.ref===ITIN_REF; })) selData.unshift(itinData);
+    {
+      injectVirt(selData);
     }
     txtEditor.value = buildPlainText(selData);
     txtOverlay.classList.add('on');
@@ -3331,7 +3422,7 @@ function exportPDF(){
   var SEP='rgba(15,15,15,0.12)', SEP16='rgba(15,15,15,0.16)';
   /* ===== Données sélection ===== */
   var selData = DATA.filter(function(b){ return !!SEL[b.ref]; });
-  if(SEL[ITIN_REF]){var it=SEL[ITIN_REF];if(!selData.find(function(b){return b.ref===ITIN_REF}))selData.unshift(it)}
+  injectVirt(selData);
   if(selData.length===0){showToast(isEN?'Select offices':'Sélectionnez des bureaux');return}
   var validOpts = (typeof OPT_MODE!=='undefined'&&OPT_MODE&&typeof OPTIONS!=='undefined'&&OPTIONS) ? OPTIONS.filter(function(o){return o.refs&&o.refs.length>0;}) : [];
   var isMulti = validOpts.length > 1;
@@ -3404,7 +3495,7 @@ function exportPDF(){
   function flatTotalAt(coef){ return selData.reduce(function(s,b){var q=b.isItin?(b.itinQty||1):1;return s+Math.round(b.prix*coef)*q;},0)+_flatAddon; }
   function sumSeats(offs){ return offs.reduce(function(s,b){return s+(b.isItin?0:(b.cap||0));},0); }
   function sumM2(offs){ var v=offs.reduce(function(s,b){return s+(b.surface||0);},0); return v?v.toLocaleString('fr-FR',{maximumFractionDigits:1}):'—'; }
-  function refsStr(offs){ return offs.map(function(b){return b.isItin?(isEN?'Nomad':'Itin.'):b.ref;}).join(' + '); }
+  function refsStr(offs){ return offs.map(function(b){return b.isItin?(b.pdfRef||(isEN?'Nomad':'Itin.')):b.ref;}).join(' + '); }
   var clean=function(b){ return esc(cleanDesc((isEN&&b.descEN?b.descEN:b.desc)||'')); };
   var addrOf=function(b){ return (!b.isItin&&b.adresse)?esc(b.adresse):''; };
   var EUR='<span style="font-size:9px; color:'+GOLD+';"> €</span>';
@@ -3422,8 +3513,8 @@ function exportPDF(){
   var ROWS='92px minmax(0,1fr) 56px 56px 56px 150px 110px';
   /* ===== Office row ===== */
   function officeRow(b, withPrice){
-    var ref=b.isItin?(isEN?'Nomad':'Itin.'):esc(b.ref);
-    var nm=b.isItin?(isEN?'Nomad office':'Itinérant'):esc(b.label||'');
+    var ref=b.isItin?(b.pdfRef||(isEN?'Nomad':'Itin.')):esc(b.ref);
+    var nm=b.isItin?(b.pdfName||(isEN?'Nomad office':'Itinérant')):esc(b.label||'');
     var addr=addrOf(b), desc=b.isItin?'':clean(b);
     var floor=b.isItin?'—':etStr(b.etage);
     var m2=b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—');
@@ -3531,7 +3622,7 @@ function exportPDF(){
     CARTE.forEach(function(k){ h+='<div style="display:flex; justify-content:space-between; gap:10px; border-bottom:0.5px solid rgba(15,15,15,0.10); padding-bottom:4px;"><span style="font-weight:300; font-size:10px;">'+k[0]+'</span><span style="font-size:10px; font-weight:600; color:'+SLATE+'; white-space:nowrap;">'+k[1]+'</span></div>'; });
     h+='</div><div style="font-size:8.5px; color:rgba(15,15,15,0.5); margin-top:8px; font-weight:300;">'+(isEN?'Billed on use, with or without subscription. Prices excl. VAT.':'Facturé à l’usage, avec ou sans abonnement. Prix hors taxes.')+'</div></div></div>';
     /* Rangée 2 : conditions + accès */
-    var usedB=[]; selData.forEach(function(b){ if(!b.isItin && b.site && usedB.indexOf(b.site)<0) usedB.push(b.site); });
+    var usedB=[]; selData.forEach(function(b){ if(b.site && !(b.isItin && !b.isCores) && usedB.indexOf(b.site)<0) usedB.push(b.site); });
     if(usedB.length===0) usedB=['I'];
     var addrByB={}; selData.forEach(function(b){ if(b.site && b.adresse && !addrByB[b.site]) addrByB[b.site]=b.adresse; });
     h+='<div class="kt" style="display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:2px; margin-top:2px;">';
@@ -3708,7 +3799,7 @@ var PAGE_LANG = localStorage.getItem('tb_page_lang') || 'fr';
   var lastClicked=null;
   var origToggle=window.toggleSel;
   window.toggleSel=function(ref){
-    var cards=Array.from(document.querySelectorAll('.card:not(.itin-card)'));
+    var cards=Array.from(document.querySelectorAll('.card:not(.itin-card):not(.cores-card)'));
     var refs=cards.map(function(c){return c.querySelector('.cref')?c.querySelector('.cref').textContent.replace(/NOUVEAU/g,'').trim():''});
     if(window._shiftHeld&&lastClicked){
       var i1=refs.indexOf(lastClicked), i2=refs.indexOf(ref);
