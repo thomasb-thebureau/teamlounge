@@ -1159,7 +1159,8 @@ body.dark .um-role{color:rgba(245,239,229,.55)}
 .send-modal{width:min(1120px,96vw);height:min(900px,94vh);background:var(--blanc,#FAFAFA);border-radius:4px;box-shadow:0 30px 80px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(15,15,15,.08)}
 .sm-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--cf,#ece6da);background:#fff;flex-shrink:0}
 .sm-eye{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--or2,#8A6A18);font-weight:800}
-.sm-title{font-size:26px;font-weight:300;color:#0F0F0F;margin:3px 0 22px}.sm-title b{font-weight:800}
+.sm-title{font-size:26px;font-weight:300;color:#0F0F0F;margin:3px 0 22px}.sm-title b{font-weight:800;color:#8A6A18}
+body.dark .sm-title b{color:#D4B870}
 .sm-head-r{display:flex;align-items:center;gap:12px}
 .sm-lang{display:inline-flex;gap:4px}
 .sm-lang button{border:0.5px solid rgba(15,15,15,.2);background:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;padding:8px 16px;cursor:pointer;color:rgba(15,15,15,.55);border-radius:2px;transition:all .18s}
@@ -3890,13 +3891,15 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   var _tespTitle=isEN?'EVERYTHING ON SITE':'TOUT EST SUR PLACE';
   var _tespL=isEN?['24/7 access, shared spaces, patio, gym.','Pantries, concierge, events programme.']:['Accès 24/7, espaces communs, patio, sport.','Tisaneries, conciergerie, programmation.'];
   var _tespR=isEN?['Business address, phone, printing included.','All-inclusive: utilities, cleaning, AC.']:['Domiciliation, téléphonie, impression incluses.','All-Inclusive : charges, ménage, climatisation.'];
-  var _tespNote=isEN?'Full details (inclusions &amp; contractual conditions) in the attached PDF proposal.':'Le détail complet (inclusions &amp; conditions contractuelles) figure dans la proposition PDF jointe.';
+  var _tespNote=isEN?'Full inclusions detailed in the attached PDF proposal.':'Le détail complet des inclusions figure dans la proposition PDF jointe.';
   var _tespItem=function(t){return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:6px"><tr><td width="14" valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#B09438;font-weight:700;line-height:1.45">&mdash;</td><td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11.5px;color:#5a5248;line-height:1.45">'+t+'</td></tr></table>';};
   h+='<tr><td style="background:#ffffff;padding:4px 36px 26px"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5EFE5;border-radius:4px"><tr><td style="padding:18px 22px">';
   h+='<p style="margin:0 0 12px;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+_tespTitle+'</p>';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="50%" valign="top" style="padding-right:12px">'+_tespL.map(_tespItem).join('')+'</td><td width="50%" valign="top" style="padding-left:12px">'+_tespR.map(_tespItem).join('')+'</td></tr></table>';
   h+='<p style="margin:10px 0 0;font-size:10.5px;color:rgba(15,15,15,.5);font-style:italic;font-family:Plus Jakarta Sans,Arial,sans-serif">'+_tespNote+'</p>';
   h+='</td></tr></table></td></tr>';
+  /* Conditions contractuelles */
+  h+=buildCondEmail(isEN);
 
   /* Pied jade — expéditeur (chevrons or) à gauche · The Bureau Paris à droite */
   var _snd2=getCurrentSender();
@@ -3945,38 +3948,48 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   h+='</tr></table></td></tr>';
   h+='<tr><td style="background:#ffffff;padding:6px 16px">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">';
+  var _nBur=opt.bureaux.length;
   opt.bureaux.forEach(function(b,bi){
     var price=b.isItin?Math.round((b.base||ITIN_PRIX)*(1-paliers[dt].d))*(b.itinQty||1)+(b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0):Math.round(b.prix*(1-paliers[dt].d));
     var etageLabel=isEN?(b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor'):etLbl(b.etage);
     var _qv=b.itinQty||1; var metaParts=[];
     if(b.isItin){ metaParts.push(_qv+(isEN?(' subscription'+(_qv>1?'s':'')):(_qv>1?' abonnements':' abonnement'))); }
-    else { metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); }
-    var meta=metaParts.join(' · ');
+    else { metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); }
+    var meta=metaParts.join(' · ');
     var _isCo2=isCoresRow(b);
-    var refTxt=_isCo2?('Poste '+coresNo(b.ref)):(b.isItin?(b.virtTag||'ITIN'):b.ref);
-    var bb=bi<opt.bureaux.length-1?'border-bottom:1px solid #f1ede4;':'';
-    h+='<tr><td style="'+bb+'padding:9px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10.5px;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>';
-    h+='<td valign="middle" style="padding:0 10px 0 0"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#0F0F0F">'+(_isCo2?(isEN?'Co-Resident':'Co-Résident'):b.label)+((!b.isItin&&b.adresse)?' <span style="font-size:10px;font-weight:500;color:#7A6015">· '+b.adresse+'</span>':'')+'</div><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10.5px;color:#5a5248;margin-top:1px">'+meta+'</div></td>';
-    h+='<td align="right" valign="middle" style="white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:600;color:#0F0F0F">'+fmt(price)+'<sup style="color:#B09438;font-size:9px"> €</sup></td>';
-    h+='</tr></table></td></tr>';
+    var refTxt=_isCo2?('P'+coresNo(b.ref)):(b.isItin?'ITIN':b.ref);
+    var _addr=(!b.isItin&&b.adresse)?b.adresse:'';
+    var _nameTxt=_isCo2?(isEN?'Co-Resident':'Co-Résident'):(b.isItin?(b.virtLabel||(isEN?'Nomad':'Itinérant')):b.label);
+    var _desc=(!b.isItin&&b.desc)?cleanDesc(b.desc):'';
+    var _dispoTxt='',_dispoCol='#5a5248';
+    if(!b.isItin){ var _imm=b.dispo==='immediate'; _dispoTxt=_imm?(isEN?'Immediate':'Immédiate'):(b.date?((isEN?'From ':'Dès le ')+dtLbl(b.date)):''); _dispoCol=_imm?'#1E4035':'#5a5248'; }
+    var bb=bi<opt.bureaux.length-1?'border-bottom:0.5px solid #ece4d3;':'';
+    h+='<tr><td style="'+bb+'padding:12px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+    h+='<td width="64" valign="top"><span style="display:inline-block;width:52px;text-align:center;background:#1E4035;color:#F5EFE5;border-radius:2px;padding:5px 2px;font-size:10px;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>';
+    h+='<td valign="top" style="padding:0 12px 0 0"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#0F0F0F;line-height:1.35">'+_nameTxt+(_addr?' <span style="font-size:10px;font-weight:500;color:#8A6A18">· '+_addr+'</span>':'')+'</div>'+(_desc?'<div style="font-family:Georgia,serif;font-style:italic;font-size:11px;color:#5a5248;margin-top:2px;line-height:1.45">'+esc(_desc)+'</div>':'')+'</td>';
+    h+='<td align="right" valign="top" style="white-space:nowrap">';
+    if(_nBur>1) h+='<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#0F0F0F">'+fmt(price)+'<sup style="color:#B09438;font-size:9px"> €</sup></div>';
+    h+='<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;color:#5a5248;margin-top:'+(_nBur>1?'3px':'0')+'">'+meta+'</div>';
+    if(_dispoTxt) h+='<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;color:'+_dispoCol+';font-weight:600;margin-top:2px">'+_dispoTxt+'</div>';
+    h+='</td></tr></table></td></tr>';
   });
   h+='</table></td></tr>';
   if(opt.tw && opt.tw>0){
     var _twPriceOpt=opt.tw*170;
-    h+='<tr><td style="padding:2px 16px 8px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-    h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;white-space:nowrap">'+(isEN?'Telework':'Télétravail')+'</span></td>';
-    h+='<td valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</td>';
-    h+='<td align="right" valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(_twPriceOpt)+' €</td>';
+    h+='<tr><td style="padding:4px 16px 10px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+    h+='<td width="64" valign="top"><span style="display:inline-block;width:52px;text-align:center;background:rgba(176,148,56,.18);color:#8A6A18;border-radius:2px;padding:5px 2px;font-size:9px;font-weight:700;text-transform:uppercase;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+(isEN?'Remote':'Télé.')+'</span></td>';
+    h+='<td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;font-weight:700;color:#0F0F0F">'+(isEN?'Telework add-on':'Offre Télétravail')+'<div style="font-size:10px;font-weight:500;color:#5a5248;margin-top:1px">'+opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.')+'</div></td>';
+    h+='<td align="right" valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#8A6A18;white-space:nowrap">'+fmt(_twPriceOpt)+'<sup style="font-size:9px"> €</sup></td>';
     h+='</tr></table></td></tr>';
   }
   if(opt.extras){
+    var _exAb={domi:'Domi.',parking:'Park.',ev:'P.élec',moto:'Moto',casier:'Casier',velo:'Vélo',signal:'Signa.'};
     ADDONS.forEach(function(a){
       var q=opt.extras[a.k]||0; if(q<=0) return;
-      h+='<tr><td style="padding:2px 16px 8px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-      h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;white-space:nowrap">'+(isEN?a.en:a.fr)+'</span></td>';
-      h+='<td valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#0F0F0F">'+q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr)+'</td>';
-      h+='<td align="right" valign="middle" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#1E4035;white-space:nowrap">+ '+fmt(q*a.p)+' €</td>';
+      h+='<tr><td style="padding:4px 16px 10px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+      h+='<td width="64" valign="top"><span style="display:inline-block;width:52px;text-align:center;background:rgba(176,148,56,.18);color:#8A6A18;border-radius:2px;padding:5px 2px;font-size:9px;font-weight:700;text-transform:uppercase;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+(_exAb[a.k]||a.fr.slice(0,5))+'</span></td>';
+      h+='<td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;font-weight:700;color:#0F0F0F">'+(isEN?a.en:a.fr)+'<div style="font-size:10px;font-weight:500;color:#5a5248;margin-top:1px">'+q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr)+'</div></td>';
+      h+='<td align="right" valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;color:#8A6A18;white-space:nowrap">'+fmt(q*a.p)+'<sup style="font-size:9px"> €</sup></td>';
       h+='</tr></table></td></tr>';
     });
   }
