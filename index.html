@@ -552,6 +552,24 @@ footer{background:var(--encre);position:relative;overflow:hidden}
 .cores-card.sel .chk svg{display:block!important}
 .cores-badge{display:inline-flex;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#FAFAFA;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;padding:2px 8px;background:var(--vert);border-radius:50px;margin-left:8px;vertical-align:middle}
 .cores-chip{background:rgba(176,148,56,0.16)!important;border-color:rgba(176,148,56,0.42)!important;color:#8A6A18!important}
+.cores-card .ctop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.cores-avail{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.03em;color:#1E4035;white-space:nowrap;flex-shrink:0}
+.cores-avail .cores-dot{width:7px;height:7px;border-radius:50%;background:#2e7d4f;box-shadow:0 0 0 3px rgba(46,125,79,.18)}
+.cores-avail.full{color:#8A6A18}
+.cores-card.full{opacity:.7}
+.cores-card.full .chk{display:none}
+.cores-dd{position:relative;margin:12px 0 2px}
+.cores-dd-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.55);border:1px solid rgba(138,106,24,.45);border-radius:8px;padding:9px 12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;color:#5c4610;cursor:pointer}
+.cores-dd-btn svg{transition:transform .2s;color:#8A6A18}
+.cores-dd.open .cores-dd-btn svg{transform:rotate(180deg)}
+.cores-menu{display:none;margin-top:6px;background:#fff;border:1px solid rgba(138,106,24,.35);border-radius:8px;overflow:hidden;max-height:168px;overflow-y:auto}
+.cores-dd.open .cores-menu{display:block}
+.cores-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;font-size:12px;font-weight:600;color:#0F0F0F;cursor:pointer;border-top:1px solid rgba(15,15,15,.06)}
+.cores-opt:first-child{border-top:none}
+.cores-opt:hover{background:rgba(176,148,56,.10)}
+.cores-opt.on{background:rgba(176,148,56,.16);color:#5c4610}
+.cores-cbx{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1.5px solid rgba(138,106,24,.5);border-radius:4px;font-size:11px;color:#fff;flex-shrink:0}
+.cores-opt.on .cores-cbx{background:var(--or2);border-color:var(--or2)}
 .itin-lbl{color:rgba(176,148,56,0.6)!important}
 .itin-sel{background:#0F0F0F!important;color:#FAFAFA!important;border-color:rgba(176,148,56,0.3)!important}
 .itin-chk-lbl{color:rgba(245,239,229,0.75)!important}
@@ -914,6 +932,26 @@ function injectVirt(arr){
   });
   return arr;
 }
+/* Détection des postes Co-Résident dans l'inventaire (lignes « Co-résident NNN.NN » à TB I) */
+function isCoresRow(b){ return !!b && /co-?r[ée]sident/i.test(b.ref||''); }
+/* N° de poste lisible depuis la réf (« Co-résident 414.07 » → « 7 ») */
+function coresNo(ref){ var m=(ref||'').match(/(\d+)\s*$/); return m?String(parseInt(m[1],10)):String(ref||''); }
+/* Postes Co-Résident disponibles (DISPO=TRUE → immediate), triés par n° */
+function coresList(){
+  return (typeof DATA!=='undefined'?DATA:[])
+    .filter(function(b){ return isCoresRow(b) && b.dispo==='immediate'; })
+    .sort(function(a,b){ return (parseInt(coresNo(a.ref))||0)-(parseInt(coresNo(b.ref))||0); });
+}
+function coresAvail(){ return coresList().length; }
+/* Libellé « Poste 3 » / « Postes 3, 4, 5 » à partir des réfs sélectionnées */
+function coresPostesLabel(b, useEN){
+  var refs = (b && b.coresRefs) ? b.coresRefs : [];
+  if(!refs.length) return '';
+  var nos = refs.map(coresNo).sort(function(x,y){ return (parseInt(x)||0)-(parseInt(y)||0); });
+  var pfx = useEN ? (nos.length>1?'Desks ':'Desk ') : (nos.length>1?'Postes ':'Poste ');
+  return pfx+nos.join(', ');
+}
+var CORES_MENU_OPEN = false;
 var EP_LANG = 'fr'; /* current preview language */
 var OPT_MODE = false;       /* Options mode active */
 var OPTIONS = [];           /* [{id, label, refs:[], tw, extras:{}}] */
@@ -1025,20 +1063,83 @@ function makeItinCard() {
   return div;
 }
 
+function coresSelObj(refs) {
+  refs = refs || [];
+  return {
+    ref:CORES_REF, site:CORES_SITE, label:'Co-Résident', adresse:CORES_ADR,
+    prix: CORES_PRIX, base: CORES_PRIX, itinQty: refs.length||1, coresRefs: refs,
+    cap:1, etage:4, surface:3, dispo:'immediate', date:null,
+    desc:'Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.',
+    descEN:'A dedicated workstation with access to our shared spaces and The Bureau services. Business address & storage included. 24/7 access. All-inclusive.',
+    isItin: true, isCores: true,
+    virtLabel:'Co-Résident', virtMeta:'Poste dédié · The Bureau I', virtUnit:'poste dédié', virtTag:'CO-RÉS', pdfRef:'Co-Rés.', pdfName:'Co-Résident'
+  };
+}
+function refreshCoresCard() {
+  var old2 = document.querySelector('.cores-card');
+  if (old2) old2.parentNode.replaceChild(makeCoresCard(), old2);
+  updateSelBar(); updateModalTotal();
+}
+function coresSelectedRefs(){ var s=SEL[CORES_REF]; return (s&&s.coresRefs)?s.coresRefs:[]; }
+function toggleCoresPoste(ref){
+  var availRefs = coresList().map(function(b){ return b.ref; });
+  var cur = coresSelectedRefs().slice();
+  var i = cur.indexOf(ref);
+  if (i>=0) cur.splice(i,1); else cur.push(ref);
+  cur = cur.filter(function(r){ return availRefs.indexOf(r)>=0; })
+           .sort(function(a,b){ return (parseInt(coresNo(a))||0)-(parseInt(coresNo(b))||0); });
+  if (cur.length===0) {
+    delete SEL[CORES_REF];
+    SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==CORES_REF; });
+  } else if (SEL[CORES_REF]) {
+    SEL[CORES_REF].coresRefs = cur; SEL[CORES_REF].itinQty = cur.length;
+  } else {
+    SEL[CORES_REF] = coresSelObj(cur); SEL_ORDER.push(CORES_REF);
+  }
+  refreshCoresCard();
+}
+
 function makeCoresCard() {
   var d = disc();
-  var isSel = !!SEL[CORES_REF];
+  var list = coresList();
+  var avail = list.length;
+  var sel = SEL[CORES_REF];
+  /* Réconcilie la sélection avec l'inventaire courant (postes devenus indispo) */
+  if (sel) {
+    var availRefs = list.map(function(b){ return b.ref; });
+    var kept = (sel.coresRefs||[]).filter(function(r){ return availRefs.indexOf(r)>=0; });
+    if (kept.length !== (sel.coresRefs||[]).length) {
+      if (kept.length===0) { delete SEL[CORES_REF]; SEL_ORDER=SEL_ORDER.filter(function(r){return r!==CORES_REF;}); sel=null; }
+      else { sel.coresRefs=kept; sel.itinQty=kept.length; }
+    }
+  }
+  var selRefs = coresSelectedRefs();
+  var qty = selRefs.length;
+  var isSel = qty>0;
   var base  = CORES_PRIX;
   var price = Math.round(CORES_PRIX*(1-d));
-  var save  = d > 0 ? Math.round((CORES_PRIX - price) * 12) : 0;
+  var save  = (d>0 && isSel) ? Math.round((CORES_PRIX - price) * 12) * qty : 0;
   var engLbl = d===0
     ? 'H.T./mois/poste — tarif de référence'
     : 'H.T./mois/poste — engagement '+ST.eng+' <span class="echip">-'+Math.round(d*100)+'%</span>';
   var rackHtml = d>0 ? '<span class="rack">'+base+' €</span>' : '';
-  var savHtml  = d>0 ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="#153027"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>Économie : '+fmt(save)+' € / an</div>' : '';
+  var savHtml  = (d>0 && isSel) ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="#153027"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>Économie : '+fmt(save)+' € / an</div>' : '';
+  var availHtml = '<span class="cores-avail'+(avail>0?'':' full')+'">'+(avail>0?('<span class="cores-dot"></span>'+avail+' disponible'+(avail>1?'s':'')):'Complet')+'</span>';
+
+  var ddLabel = isSel ? coresPostesLabel(sel) : 'Choisir vos postes';
+  var menuItems = list.map(function(b){
+    var checked = selRefs.indexOf(b.ref)>=0;
+    return '<div class="cores-opt'+(checked?' on':'')+'" data-ref="'+esc(b.ref)+'"><span class="cores-cbx">'+(checked?'✓':'')+'</span>Poste '+coresNo(b.ref)+'</div>';
+  }).join('');
+  var ddHtml = avail>0
+    ? '<div class="cores-dd'+(CORES_MENU_OPEN?' open':'')+'">'
+      + '<button type="button" class="cores-dd-btn"><span>'+ddLabel+'</span><svg viewBox="0 0 10 6" width="10" height="6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>'
+      + '<div class="cores-menu">'+menuItems+'</div>'
+      + '</div>'
+    : '';
 
   var div = document.createElement('div');
-  div.className = 'card cores-card' + (isSel?' sel':'');
+  div.className = 'card cores-card' + (isSel?' sel':'') + (avail<=0?' full':'');
   div.dataset.ref = CORES_REF;
 
   div.innerHTML =
@@ -1048,6 +1149,7 @@ function makeCoresCard() {
         '<div class="cref">Co-Résident <span class="cores-badge">The Bureau I</span></div>'+
         '<div class="csite">Poste dédié · 28 Cours Albert 1er</div>'+
       '</div>'+
+      availHtml+
     '</div>'+
     '<p class="cdesc">Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.</p>'+
     '<div class="chips">'+
@@ -1055,37 +1157,25 @@ function makeCoresCard() {
       '<span class="chip cores-chip">Accès 24/7</span>'+
       '<span class="chip cores-chip">Domiciliation incluse</span>'+
     '</div>'+
+    ddHtml+
     '<div class="pb">'+
       '<div class="pr"><div class="pm"><sup>€</sup>'+fmt(price)+'</div>'+rackHtml+'</div>'+
       '<div class="psub">'+engLbl+'</div>'+savHtml+
     '</div>';
 
-  div.addEventListener('click', function() {
-    if (!SEL[CORES_REF]) {
-      SEL[CORES_REF] = {
-        ref:CORES_REF, site:CORES_SITE, label:'Co-Résident', adresse:CORES_ADR,
-        prix: CORES_PRIX, base: CORES_PRIX, itinQty:1,
-        cap:1, etage:0, surface:null, dispo:'immediate', date:null,
-        desc:'Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.',
-        descEN:'A dedicated workstation with access to our shared spaces and The Bureau services. Business address & storage included. 24/7 access. All-inclusive.',
-        isItin: true, isCores: true,
-        virtLabel:'Co-Résident', virtMeta:'Poste dédié · The Bureau I', virtUnit:'poste dédié', virtTag:'CO-RÉS', pdfRef:'Co-Rés.', pdfName:'Co-Résident'
-      };
-      SEL_ORDER.push(CORES_REF);
-    } else {
-      delete SEL[CORES_REF];
-      SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==CORES_REF; });
-    }
-    var old2 = document.querySelector('.cores-card');
-    if (old2) old2.parentNode.replaceChild(makeCoresCard(), old2);
-    updateSelBar(); updateModalTotal();
+  /* Menu déroulant : sélection d'un ou plusieurs postes parmi les disponibles */
+  var ddBtn = div.querySelector('.cores-dd-btn');
+  if (ddBtn) ddBtn.addEventListener('click', function(e){ e.stopPropagation(); CORES_MENU_OPEN=!CORES_MENU_OPEN; refreshCoresCard(); });
+  div.querySelectorAll('.cores-opt').forEach(function(op){
+    op.addEventListener('click', function(e){ e.stopPropagation(); toggleCoresPoste(op.dataset.ref); });
   });
   return div;
 }
 
 function setVirtAbo(ref, qty) {
   if (!SEL[ref]) return;
-  SEL[ref].itinQty = Math.max(1, Math.min(20, qty||1));
+  var max = (ref===CORES_REF && typeof coresAvail==='function') ? Math.max(1, coresAvail()) : 20;
+  SEL[ref].itinQty = Math.max(1, Math.min(max, qty||1));
   if (typeof openModal==='function') openModal();
 }
 function setItinAbo(qty) { setVirtAbo(ITIN_REF, qty); }
@@ -1220,6 +1310,7 @@ function render() {
   var cmax = ST.cmax!==''?parseInt(ST.cmax):Infinity;
   var allSites = !!ST.sites.all;
   var filtered = DATA.filter(function(b) {
+    if (isCoresRow(b)) return false; /* postes Co-Résident agrégés dans la carte dorée */
     if (b.dispo==='occupied' && !ST.showOccupied) return false;
     if (!allSites&&!ST.sites[b.site]) return false;
     if (b.cap<cmin||b.cap>cmax) return false;
@@ -1343,7 +1434,7 @@ function updateSelBar() {
   injectVirt(selData);
   var tot = selData.reduce(function(s,b){
     var bse = b.base||ITIN_PRIX;
-    return s + (b.isItin ? Math.round(bse*(1-d))+(b.prix-bse) : b.prix*(1-d));
+    return s + (b.isItin ? (Math.round(bse*(1-d))+(b.prix-bse))*(b.itinQty||1) : b.prix*(1-d));
   },0);
   document.getElementById('scnt').textContent = refs.length;
   document.getElementById('sps').textContent = refs.length>1?'x':'';
@@ -1395,14 +1486,17 @@ function openModal() {
     row.className = 'mrow'; row.dataset.ref = b.ref;
     var info = document.createElement('div');
     info.className = 'minfo';
-    if (b.isItin) {
+    if (b.isCores) {
+      var _cMeta = (typeof coresPostesLabel==='function'?coresPostesLabel(b):'')+' · '+etLbl(b.etage)+' · '+b.surface+' m² · The Bureau I';
+      info.innerHTML = '<span class="refbadge">'+(b.virtLabel||'Co-Résident')+'</span><span class="mmeta">'+_cMeta+'</span>';
+    } else if (b.isItin) {
       info.innerHTML = '<span class="refbadge">'+(b.virtLabel||'Itinérant')+'</span><span class="mmeta">'+(b.virtMeta||'Placement libre · tous nos sites')+' · '+_itinQ+' '+(b.virtUnit||'abonnement')+(_itinQ>1?'s':'')+'</span>';
     } else {
       info.innerHTML = '<span class="refbadge">'+esc(b.ref)+'</span><span class="mmeta">'+etLbl(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' poste'+(b.cap>1?'s':'')+'</span>';
     }
     var right = document.createElement('div');
     right.style.cssText = 'display:flex;align-items:center;gap:8px';
-    if (b.isItin) {
+    if (b.isItin && !b.isCores) {
       var stp = document.createElement('div');
       stp.className = 'tw-qty';
       stp.innerHTML = '<button type="button" aria-label="Moins">−</button><input type="number" min="1" max="20" value="'+_itinQ+'"><button type="button" aria-label="Plus">+</button>';
@@ -1821,11 +1915,21 @@ function buildPlainText(data) {
     var etageLabel = isEN
       ? (b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor')
       : etLbl(b.etage);
-    t += '  \u25cf  ' + b.ref + '  \u2014  ' + etageLabel + nl;
-    t += '     ' + b.adresse + nl;
-    if (b.surface) t += '     ' + b.surface.toLocaleString('fr-FR') + '\u00a0m\u00b2  \u00b7  ';
-    else t += '     ';
-    t += b.cap + (isEN ? ' desk' + (b.cap>1?'s':'') : ' poste' + (b.cap>1?'s':'')) + nl;
+    var _qpt = b.itinQty||1;
+    var _refPT = b.isItin ? (b.virtLabel||b.ref) : b.ref;
+    if (b.isItin && !b.isCores) {
+      t += '  \u25cf  ' + _refPT + nl;
+      t += '     ' + _qpt + (isEN?(' subscription'+(_qpt>1?'s':'')):(_qpt>1?' abonnements':' abonnement')) + nl;
+    } else {
+      t += '  \u25cf  ' + _refPT + '  \u2014  ' + etageLabel + nl;
+      if (b.adresse) t += '     ' + b.adresse + nl;
+      if (b.surface) t += '     ' + b.surface.toLocaleString('fr-FR') + '\u00a0m\u00b2  \u00b7  ';
+      else t += '     ';
+      var _postesPT = b.isCores ? _qpt : b.cap;
+      t += _postesPT + (isEN ? ' desk' + (_postesPT>1?'s':'') : ' poste' + (_postesPT>1?'s':''));
+      if (b.isCores) { var _clpt=coresPostesLabel(b,isEN); if(_clpt) t += '  \u00b7  '+_clpt; }
+      t += nl;
+    }
     t += '     ' + (b.dispo==='immediate'
       ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
       : (isEN?'From ':'A partir du ') + dtLbl(b.date, isEN)) + nl;
@@ -1834,7 +1938,7 @@ function buildPlainText(data) {
     var _selTiersT = getSelectedTiers();
     paliers.forEach(function(p, pi) {
       if (_selTiersT.indexOf(pi) === -1) return;
-      var price = Math.round(b.prix*(1-p.d));
+      var price = Math.round(b.prix*(1-p.d)) * (b.itinQty||1);
       t += '     ' + p.label + ' : ' + fmt(price) + ' \u20ac' + (isEN?' excl. VAT/month':' H.T./mois') + nl;
     });
     if (idx < data.length-1) t += nl + '\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7' + nl + nl;
@@ -1853,7 +1957,7 @@ function buildPlainText(data) {
     t += sep + nl + nl;
     paliers.forEach(function(p, pi) {
       if (_selTiersT.indexOf(pi) === -1) return;
-      var tot = data.reduce(function(acc,b){ return acc+Math.round(b.prix*(1-p.d)); },0);
+      var tot = data.reduce(function(acc,b){ return acc+Math.round(b.prix*(1-p.d))*(b.itinQty||1); },0);
       t += '  ' + p.label + ' : ' + fmt(tot) + ' \u20ac' + (isEN?' / month':' / mois') + nl;
     });
     t += nl;
@@ -2048,11 +2152,20 @@ function buildCard(b) {
     var _bse = b.base||ITIN_PRIX;
     var _itinAddons = b.isItin ? (b.prix - _bse) : 0;
     var price = b.isItin ? Math.round(_bse*(1-p.d))+_itinAddons : Math.round(b.prix*(1-p.d));
+    var qv = b.itinQty||1;
     var metaParts = [];
-    if (!b.isItin) metaParts.push(etageLabel);
-    if (b.surface) metaParts.push(b.surface.toLocaleString('fr-FR')+' m²');
-    metaParts.push(postes);
-    if (b.isItin && b.itinQty && b.itinQty>1) metaParts.push(b.itinQty+' '+(b.virtUnit||'abonnement')+'s');
+    if (b.isCores) {
+      metaParts.push(etageLabel);
+      if (b.surface) metaParts.push(b.surface.toLocaleString('fr-FR')+' m²');
+      metaParts.push(qv + (isEN?(' desk'+(qv>1?'s':'')):(qv>1?' postes':' poste')));
+      var _clb = coresPostesLabel(b, isEN); if (_clb) metaParts.push(_clb);
+    } else if (b.isItin) {
+      metaParts.push(qv + (isEN?(' subscription'+(qv>1?'s':'')):(qv>1?' abonnements':' abonnement')));
+    } else {
+      metaParts.push(etageLabel);
+      if (b.surface) metaParts.push(b.surface.toLocaleString('fr-FR')+' m²');
+      metaParts.push(postes);
+    }
     var meta = metaParts.join(' · ');
     var refTxt = b.isItin?(b.virtTag||'ITIN'):b.ref;
     return '<tr><td style="padding:0 0 10px">'
@@ -2965,7 +3078,10 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   opt.bureaux.forEach(function(b,bi){
     var price=b.isItin?Math.round((b.base||ITIN_PRIX)*(1-paliers[dt].d))*(b.itinQty||1)+(b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0):Math.round(b.prix*(1-paliers[dt].d));
     var etageLabel=isEN?(b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor'):etLbl(b.etage);
-    var metaParts=[]; if(!b.isItin)metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); if(b.isItin&&b.itinQty&&b.itinQty>1)metaParts.push(b.itinQty+' '+(b.virtUnit||'abonnement')+'s');
+    var _qv=b.itinQty||1; var metaParts=[];
+    if(b.isCores){ metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(_qv+(isEN?(' desk'+(_qv>1?'s':'')):(_qv>1?' postes':' poste'))); var _cl2=coresPostesLabel(b,isEN); if(_cl2)metaParts.push(_cl2); }
+    else if(b.isItin){ metaParts.push(_qv+(isEN?(' subscription'+(_qv>1?'s':'')):(_qv>1?' abonnements':' abonnement'))); }
+    else { metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); }
     var meta=metaParts.join(' · ');
     var refTxt=b.isItin?(b.virtTag||'ITIN'):b.ref;
     var bb=bi<opt.bureaux.length-1?'border-bottom:1px solid #f1ede4;':'';
@@ -3515,10 +3631,15 @@ function exportPDF(){
   function officeRow(b, withPrice){
     var ref=b.isItin?(b.pdfRef||(isEN?'Nomad':'Itin.')):esc(b.ref);
     var nm=b.isItin?(b.pdfName||(isEN?'Nomad office':'Itinérant')):esc(b.label||'');
-    var addr=addrOf(b), desc=b.isItin?'':clean(b);
-    var floor=b.isItin?'—':etStr(b.etage);
-    var m2=b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—');
-    var seats=b.isItin?'—':b.cap;
+    var addr=addrOf(b);
+    var qv=b.itinQty||1;
+    var desc;
+    if(b.isCores) desc=coresPostesLabel(b,isEN);
+    else if(b.isItin) desc=qv+' '+(isEN?('subscription'+(qv>1?'s':'')):('abonnement'+(qv>1?'s':'')));
+    else desc=clean(b);
+    var floor=b.isCores?etStr(b.etage):(b.isItin?'—':etStr(b.etage));
+    var m2=b.isCores?(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—'):(b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—'));
+    var seats=b.isItin?qv:b.cap;
     var s='<div style="display:grid; grid-template-columns:'+(withPrice?ROWS:ROWM)+'; align-items:center; padding:12px 16px; border-top:0.5px solid '+SEP+';">';
     s+='<div><span style="display:inline-block; background:'+SLATE+'; color:'+IVORY+'; font-size:9.5px; font-weight:700; letter-spacing:0.04em; padding:5px 10px; text-align:center; min-width:34px; white-space:nowrap; border-radius:12px;">'+ref+'</span></div>';
     s+='<div style="padding-right:12px;"><div><span style="font-weight:700; font-size:12px;">'+nm+'</span>'+(addr?' <span style="color:'+GOLDAA+'; font-size:10.5px;">· '+addr+'</span>':'')+'</div>'+(desc?'<div style="font-family:Spectral,serif; font-style:italic; font-weight:300; font-size:12px; color:rgba(15,15,15,0.75);">'+desc+'</div>':'')+'</div>';
