@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team Lounge — Système de design unifié (proposition)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0F0F0F; --jade:#1E4035; --slate:#1E4035; --ivory:#F5EFE5; --white:#FAFAFA;
+  --gold:#B09438; --goldaa:#8A6A18; --goldlt:#D4B870; --gris:#5a5248; --sep:rgba(15,15,15,.12);
+  --jk:'Plus Jakarta Sans',Arial,sans-serif; --sp:'Spectral',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e9e6df;font-family:var(--jk);color:var(--ink);line-height:1.5;padding:40px 20px}
+.wrap{max-width:1180px;margin:0 auto}
+.doc-head{margin-bottom:34px}
+.doc-eye{font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--goldaa);display:flex;align-items:center;gap:10px}
+.doc-eye::before{content:'';width:30px;height:1px;background:var(--gold)}
+.doc-title{font-size:34px;font-weight:200;letter-spacing:-.02em;margin-top:8px}
+.doc-title b{font-weight:800}
+.doc-sub{font-family:var(--sp);font-style:italic;font-size:15px;color:var(--gris);margin-top:8px;max-width:760px}
+section{background:#fff;border:0.5px solid var(--sep);margin-bottom:22px;padding:28px 30px}
+.sec-eye{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.sec-eye::before{content:'';width:28px;height:1px;background:var(--gold)}
+.sec-eye span.n{color:var(--goldaa)}
+/* colors */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sw{border:0.5px solid var(--sep)}
+.sw .chip{height:64px}
+.sw .meta{padding:9px 11px}
+.sw .nm{font-size:11px;font-weight:700}
+.sw .hex{font-size:10px;color:var(--gris);font-family:var(--sp)}
+/* type */
+.type-row{display:flex;align-items:baseline;gap:18px;padding:12px 0;border-bottom:0.5px dashed var(--sep)}
+.type-row:last-child{border-bottom:0}
+.type-tag{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--goldaa);width:160px;flex-shrink:0}
+/* components */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.comp h4{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gris);margin-bottom:12px}
+.badge-jade{display:inline-block;background:var(--jade);color:var(--ivory);font-size:10px;font-weight:700;padding:5px 0;width:52px;text-align:center;border-radius:2px;font-family:var(--jk)}
+.badge-gold{display:inline-block;background:rgba(176,148,56,.18);color:var(--goldaa);font-size:9px;font-weight:700;padding:5px 0;width:52px;text-align:center;border-radius:2px;text-transform:uppercase;font-family:var(--jk)}
+.badge-opt{display:inline-block;background:var(--gold);color:#fff;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:2px}
+.btn-gold{display:inline-block;background:var(--gold);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:13px 26px;border-radius:2px;border:0;cursor:default}
+.btn-ink{display:inline-block;background:var(--ink);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:13px 26px;border-radius:2px;border:0;cursor:default}
+.btn-ghost{display:inline-block;background:none;color:var(--ink);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:11px 20px;border:0.5px solid rgba(15,15,15,.3);border-radius:2px;cursor:default}
+.comp-note{font-size:11px;color:var(--gris);margin-top:10px;line-height:1.6}
+.comp-note b{color:var(--ink)}
+.row-ex{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+/* two-up mockups */
+.mocks{display:grid;grid-template-columns:1fr;gap:22px}
+.mock-label{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--goldaa);margin-bottom:12px}
+.stage{background:#e4e0d8;padding:26px;display:flex;justify-content:center;overflow:auto}
+/* ===== EMAIL mock (600) ===== */
+.em{width:600px;max-width:100%;background:var(--white);box-shadow:0 10px 40px rgba(0,0,0,.12)}
+.em-head{background:#fff;border-bottom:1px solid var(--gold);padding:22px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.em-logo{display:flex;align-items:center;gap:14px}
+.em-logo .lg{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.em-logo .lg .dot{color:var(--gold)}
+.em-logo .bar{width:1px;height:38px;background:rgba(15,15,15,.16)}
+.em-logo .sub-e{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--goldaa)}
+.em-logo .sub-t{font-size:16px;font-weight:300}
+.em-logo .sub-t b{font-weight:800}
+.em-date{font-family:var(--sp);font-size:16px;color:var(--ink)}
+.em-body{padding:24px 30px}
+.em-hi{font-size:21px;font-weight:300}
+.em-hi b{font-weight:700}
+.em-hi .soc{font-size:14px;color:var(--gris)}
+.em-intro{font-family:var(--sp);font-style:italic;font-size:14px;color:var(--gris);margin-top:8px;line-height:1.6}
+.em-eye{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--goldaa);display:flex;align-items:center;gap:8px;margin:26px 0 12px}
+.em-eye::before{content:'';width:16px;height:2px;background:var(--gold)}
+.em-eye .r{margin-left:auto;color:var(--gris);font-weight:600;letter-spacing:.1em}
+/* comparatif */
+.cmp{width:100%;border-collapse:collapse;border-bottom:1px solid var(--gold)}
+.cmp th{background:var(--ivory);color:var(--goldaa);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:9px 10px;text-align:right;white-space:nowrap}
+.cmp th.l{text-align:left}
+.cmp th.on{background:var(--gold);color:#fff}
+.cmp th .s{display:block;opacity:.8;font-weight:500;margin-top:1px}
+.cmp td{padding:11px 10px;text-align:right;font-size:12.5px;border-top:0.5px solid rgba(15,15,15,.1);white-space:nowrap}
+.cmp td.l{text-align:left}
+.cmp td.on{background:#fbf5e6;font-weight:700;color:var(--jade)}
+.cmp .optb{background:var(--gold);color:#fff;font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:2px}
+.cmp .cfg{font-size:10px;color:var(--gris);margin-left:8px}
+.cmp .eu{font-size:8px;color:var(--gold)}
+/* option block */
+.ob{border:0.5px solid rgba(176,148,56,.45);border-left:3px solid var(--gold);margin-top:16px}
+.ob.reco{border:1px solid var(--gold);border-left:3px solid var(--gold)}
+.ob-h{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ivory);border-bottom:1px solid var(--gold);padding:13px 16px}
+.ob.reco .ob-h{background:var(--jade)}
+.ob-h .l{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ob-h .nm{font-size:16px;font-weight:600}
+.ob.reco .ob-h .nm{color:var(--ivory)}
+.ob-h .star{font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--goldlt)}
+.ob-h .tot{text-align:right;white-space:nowrap}
+.ob-h .tot .big{font-size:22px;font-weight:700;color:var(--jade)}
+.ob.reco .ob-h .tot .big{color:var(--goldlt)}
+.ob-h .tot .big .eu{font-size:11px;color:var(--gold)}
+.ob-h .tot .pal{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gris)}
+.ob.reco .ob-h .tot .pal{color:rgba(245,239,229,.7)}
+.ob-h .tot .oth{font-size:9px;font-weight:300;color:var(--gris);margin-top:3px}
+.ob.reco .ob-h .tot .oth{color:rgba(245,239,229,.6)}
+.odt{width:100%;border-collapse:collapse;background:#fff}
+.odt th{font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--goldaa);padding:9px 6px 9px 0;text-align:left}
+.odt th.c{text-align:center}
+.odt td{border-top:0.5px solid var(--sep);padding:11px 6px 11px 0;vertical-align:top;font-size:12px}
+.odt td.c{text-align:center;font-family:var(--sp);font-size:13px}
+.odt .ref{display:inline-block;background:var(--jade);color:var(--ivory);font-size:9.5px;font-weight:700;padding:5px 0;width:48px;text-align:center;border-radius:2px}
+.odt .ref.g{background:rgba(176,148,56,.18);color:var(--goldaa);text-transform:uppercase;font-size:8.5px}
+.odt .onm{font-size:12px;font-weight:700}
+.odt .oad{color:var(--goldaa);font-size:10px;font-weight:500}
+.odt .ode{font-family:var(--sp);font-style:italic;font-size:11.5px;color:rgba(15,15,15,.72);margin-top:2px}
+.odt .disp{font-size:10px;font-weight:300}
+.em-cta{text-align:center;padding:26px 0 6px}
+.em-cta .b{display:inline-block;background:var(--ink);color:#fff;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:14px 32px;border-radius:2px}
+.em-cta .r{font-size:11px;color:var(--gris);margin-top:10px}
+.em-box{background:var(--ivory);padding:18px 20px;margin-top:22px}
+.em-box .cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;margin-top:4px}
+.em-box .it{display:grid;grid-template-columns:12px 1fr;gap:8px;font-size:11.5px;color:var(--gris)}
+.em-box .it .d{color:var(--gold);font-weight:700}
+.em-box .note{font-family:var(--sp);font-style:italic;font-size:10.5px;color:rgba(15,15,15,.5);margin-top:10px}
+.em-cond{padding:18px 30px;border-top:0.5px solid var(--sep)}
+.em-cond .cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-top:4px}
+.em-foot{background:var(--jade);color:var(--ivory);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 30px;border-top:2px solid var(--gold)}
+.em-foot .snd{display:flex;align-items:center;gap:14px}
+.em-foot .chev{color:var(--goldlt);font-size:22px;letter-spacing:-4px}
+.em-foot .nm{font-size:13px;font-weight:700}
+.em-foot .nm .fn{font-weight:300;color:var(--goldlt)}
+.em-foot .ct{font-size:11.5px;color:rgba(245,239,229,.78);margin-top:3px}
+.em-foot .ct a{color:var(--goldlt);text-decoration:none}
+.em-foot .zip{text-align:right}
+.em-foot .zip .z1{font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,239,229,.7)}
+.em-foot .zip .z2{font-family:var(--sp);font-size:15px;color:var(--goldlt);margin-top:2px}
+/* PDF mock (landscape, scaled) */
+.pdf{width:960px;max-width:100%;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.12);padding:26px 30px}
+.pdf-head{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--gold);padding-bottom:16px}
+.pdf-cmp{width:100%;border-collapse:collapse;margin-top:18px}
+.pdf small{font-size:11px}
+.cap{font-size:11px;color:var(--gris);font-family:var(--sp);font-style:italic;margin-top:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--gris);margin-top:14px}
+.legend b{color:var(--ink)}
+.diff{background:var(--ivory);border-left:3px solid var(--gold);padding:14px 18px;margin-top:14px;font-size:12.5px;line-height:1.7}
+.diff b{color:var(--goldaa)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="doc-head">
+    <div class="doc-eye">The Bureau · Team Lounge</div>
+    <div class="doc-title">Système de design <b>unifié</b></div>
+    <div class="doc-sub">Proposition de charte de bout en bout : interface → email → PDF partagent les mêmes couleurs, la même typographie et les mêmes composants (angles droits, pastilles carrées, accents or). À valider avant implémentation.</div>
+  </div>
+
+  <!-- 1. COULEURS -->
+  <section>
+    <div class="sec-eye"><span class="n">01</span> · Couleurs</div>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#1E4035"></div><div class="meta"><div class="nm">Jade</div><div class="hex">#1E4035 · surfaces sombres, pied</div></div></div>
+      <div class="sw"><div class="chip" style="background:#0F0F0F"></div><div class="meta"><div class="nm">Encre</div><div class="hex">#0F0F0F · texte, CTA secondaire</div></div></div>
+      <div class="sw"><div class="chip" style="background:#B09438"></div><div class="meta"><div class="nm">Or</div><div class="hex">#B09438 · badges, CTA, filets</div></div></div>
+      <div class="sw"><div class="chip" style="background:#8A6A18"></div><div class="meta"><div class="nm">Or AA</div><div class="hex">#8A6A18 · or en TEXTE sur clair</div></div></div>
+      <div class="sw"><div class="chip" style="background:#D4B870"></div><div class="meta"><div class="nm">Or clair</div><div class="hex">#D4B870 · or sur fond jade</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F5EFE5"></div><div class="meta"><div class="nm">Ivoire</div><div class="hex">#F5EFE5 · en-têtes, encarts</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FAFAFA;border-bottom:0.5px solid #ddd"></div><div class="meta"><div class="nm">Blanc</div><div class="hex">#FAFAFA · fond</div></div></div>
+      <div class="sw"><div class="chip" style="background:#5a5248"></div><div class="meta"><div class="nm">Gris</div><div class="hex">#5a5248 · texte secondaire</div></div></div>
+    </div>
+  </section>
+
+  <!-- 2. TYPO -->
+  <section>
+    <div class="sec-eye"><span class="n">02</span> · Typographie</div>
+    <div class="type-row"><div class="type-tag">Titre · Jakarta 200/800</div><div style="font-size:30px;font-weight:200;letter-spacing:-.02em">Sélection <b style="font-weight:800;color:#8A6A18">bureaux</b></div></div>
+    <div class="type-row"><div class="type-tag">Eyebrow · 700 .2em</div><div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A6A18">Proposition personnalisée</div></div>
+    <div class="type-row"><div class="type-tag">Corps · Jakarta 400</div><div style="font-size:13px">Suite à nos échanges, voici une sélection de bureaux.</div></div>
+    <div class="type-row"><div class="type-tag">Description · Spectral italic</div><div style="font-family:var(--sp);font-style:italic;font-size:14px;color:#5a5248">Bureau calme et lumineux, plein Sud, vue quai de Seine.</div></div>
+    <div class="type-row"><div class="type-tag">Chiffres · Spectral</div><div style="font-family:var(--sp);font-size:20px">3ᵉ · 26,5 m² · 10 postes &nbsp; <b style="font-weight:700">6 879 €</b></div></div>
+  </section>
+
+  <!-- 3. COMPOSANTS -->
+  <section>
+    <div class="sec-eye"><span class="n">03</span> · Composants partagés</div>
+    <div class="comp-grid">
+      <div class="comp">
+        <h4>Pastilles de référence</h4>
+        <div class="row-ex"><span class="badge-jade">A304</span><span class="badge-jade">P12</span><span class="badge-jade">ITIN</span><span class="badge-gold">TÉLÉ.</span><span class="badge-gold">PARK.</span></div>
+        <div class="comp-note"><b>Carrées (radius 2px), largeur fixe 52px.</b> Jade pour les bureaux, or clair pour les options/services. <b>Identiques</b> dans l'interface, l'email et le PDF (aujourd'hui le PDF utilise des pastilles arrondies → à aligner).</div>
+      </div>
+      <div class="comp">
+        <h4>Boutons</h4>
+        <div class="row-ex"><span class="btn-gold">Envoyer →</span><span class="btn-ink">Réserver une visite →</span><span class="btn-ghost">PDF seul</span></div>
+        <div class="comp-note">Angles droits. <b>Or</b> = action principale (envoyer). <b>Encre</b> = CTA client (réserver). <b>Contour</b> = secondaire.</div>
+      </div>
+      <div class="comp">
+        <h4>Pastille d'option</h4>
+        <div class="row-ex"><span class="badge-opt">Option 1</span><span class="badge-opt" style="background:#1E4035">Option 2</span><span style="font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8A6A18">★ Recommandé</span></div>
+        <div class="comp-note">L'option <b>recommandée</b> se marque dans l'interface (nouvelle étoile dans le bandeau droit) et se reporte automatiquement sur l'email et le PDF (en-tête jade + ★).</div>
+      </div>
+      <div class="comp">
+        <h4>Ligne de tableau (bureau)</h4>
+        <table class="odt" style="width:100%"><tr><td style="border:0"><span class="ref">A304</span></td><td style="border:0"><div class="onm">The Bureau I <span class="oad">· 28, Cours Albert Iᵉʳ</span></div><div class="ode">Bureau calme et lumineux.</div></td><td class="c" style="border:0">3ᵉ</td><td class="c" style="border:0">26,5</td><td class="c" style="border:0">10</td><td style="border:0"><span class="disp">Immédiate</span></td></tr></table>
+        <div class="comp-note">Colonnes <b>Réf · Bureau · Étage · m² · Postes · Dispo</b> — mêmes colonnes dans l'email et le PDF.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 & 5. MOCKUPS -->
+  <section>
+    <div class="sec-eye"><span class="n">04</span> · Maquette EMAIL (600 px, client)</div>
+    <div class="stage">
+      <div class="em">
+        <div class="em-head">
+          <div class="em-logo"><span class="lg">The Bureau<span class="dot">.</span></span><span class="bar"></span><span><span class="sub-e">Proposition personnalisée</span><br><span class="sub-t">Sélection <b>bureaux</b></span></span></div>
+          <div class="em-date">29/10/2026</div>
+        </div>
+        <div class="em-body">
+          <div class="em-hi">Bonjour <b>Marie</b> <span class="soc">· Acme Studio</span></div>
+          <div class="em-intro">Suite à nos échanges, voici deux configurations possibles selon vos priorités. Chacune est indépendante — dites-moi celle qui vous convient le mieux.</div>
+
+          <div class="em-eye">Comparatif des options <span class="r">H.T. / mois</span></div>
+          <table class="cmp">
+            <tr><th class="l">Option</th><th>Mensuel<span class="s">3 mois min.</span></th><th>12 mois<span class="s">−5 %</span></th><th class="on">24 mois<span class="s">−10 %</span></th><th>36 mois<span class="s">−15 %</span></th></tr>
+            <tr><td class="l"><span class="optb">Option 1</span><span class="cfg">A304 · A213 · Télétravail ×2</span></td><td>11 579 <span class="eu">€</span></td><td>11 017 <span class="eu">€</span></td><td class="on">10 455 €</td><td>9 893 <span class="eu">€</span></td></tr>
+            <tr><td class="l"><span class="optb">Option 2</span><span class="cfg">A000</span></td><td>17 750 <span class="eu">€</span></td><td>16 863 <span class="eu">€</span></td><td class="on">15 975 €</td><td>15 088 <span class="eu">€</span></td></tr>
+          </table>
+
+          <div class="em-eye" style="margin-top:22px">Détail des bureaux</div>
+
+          <div class="ob reco">
+            <div class="ob-h">
+              <div class="l"><span class="badge-opt">Option 1</span><span class="nm">Compacte</span><span class="star">★ Recommandé</span></div>
+              <div class="tot"><span class="big">10 455<span class="eu"> €</span></span> <span class="pal">24 mois</span><div class="oth">Mensuel 11 579 € · 12 mois 11 017 € · 36 mois 9 893 €</div></div>
+            </div>
+            <table class="odt">
+              <tr><th>Réf.</th><th>Bureau</th><th class="c">Étage</th><th class="c">m²</th><th class="c">Postes</th><th>Dispo.</th></tr>
+              <tr><td><span class="ref">A304</span></td><td><div class="onm">The Bureau I <span class="oad">· 28, Cours Albert Iᵉʳ, 75008</span></div><div class="ode">Bureau calme et lumineux, plein Sud, vue quai de Seine et tour Eiffel.</div></td><td class="c">3ᵉ</td><td class="c">26,5</td><td class="c">10</td><td><span class="disp">Immédiate</span></td></tr>
+              <tr><td><span class="ref">A213</span></td><td><div class="onm">The Bureau I <span class="oad">· 28, Cours Albert Iᵉʳ, 75008</span></div><div class="ode">Belle vue sur le Patio.</div></td><td class="c">2ᵉ</td><td class="c">90</td><td class="c">28</td><td><span class="disp">Dès le 1 nov.</span></td></tr>
+              <tr><td><span class="ref g">Télé.</span></td><td><div class="onm">Offre Télétravail <span style="font-family:var(--sp);font-style:italic;font-weight:300;color:#5a5248;font-size:11.5px">2 × 170 € H.T./mois/pers.</span></div></td><td class="c" style="color:#999">—</td><td class="c" style="color:#999">—</td><td class="c">2</td><td><span class="disp">Immédiate</span></td></tr>
+            </table>
+          </div>
+
+          <div class="ob">
+            <div class="ob-h">
+              <div class="l"><span class="badge-opt">Option 2</span><span class="nm">Grand plateau</span></div>
+              <div class="tot"><span class="big">15 975<span class="eu"> €</span></span> <span class="pal">24 mois</span><div class="oth">Mensuel 17 750 € · 12 mois 16 863 € · 36 mois 15 088 €</div></div>
+            </div>
+            <table class="odt">
+              <tr><th>Réf.</th><th>Bureau</th><th class="c">Étage</th><th class="c">m²</th><th class="c">Postes</th><th>Dispo.</th></tr>
+              <tr><td><span class="ref">A000</span></td><td><div class="onm">The Bureau I <span class="oad">· 28, Cours Albert Iᵉʳ, 75008</span></div><div class="ode">Grand plateau composé de 2 espaces. Belle vue sur le Patio.</div></td><td class="c">RDC</td><td class="c">90</td><td class="c">28</td><td><span class="disp">Immédiate</span></td></tr>
+            </table>
+          </div>
+
+          <div class="em-cta"><span class="b">Réserver une visite →</span><div class="r">ou répondez simplement à cet email</div></div>
+
+          <div class="em-box">
+            <div class="em-eye" style="margin:0 0 10px">Tout est sur place</div>
+            <div class="cols">
+              <div class="it"><span class="d">—</span><span>Accès 24/7, espaces communs, patio, sport.</span></div>
+              <div class="it"><span class="d">—</span><span>Domiciliation, téléphonie, impression incluses.</span></div>
+              <div class="it"><span class="d">—</span><span>Tisaneries, conciergerie, programmation.</span></div>
+              <div class="it"><span class="d">—</span><span>All-Inclusive : charges, ménage, climatisation.</span></div>
+            </div>
+            <div class="note">Le détail complet figure dans la proposition PDF jointe.</div>
+          </div>
+        </div>
+
+        <div class="em-cond">
+          <div class="em-eye" style="margin:0 0 10px">Conditions contractuelles</div>
+          <div class="cols">
+            <div class="it"><span class="d">—</span><span>3 mois minimum, puis renouvellement de 3 mois.</span></div>
+            <div class="it"><span class="d">—</span><span>Dépôt de garantie : 2 mois d'abonnement H.T.</span></div>
+            <div class="it"><span class="d">—</span><span>Frais d'installation : 100 € H.T. par poste.</span></div>
+            <div class="it"><span class="d">—</span><span>Préavis : 2 mois plus le mois en cours.</span></div>
+          </div>
+        </div>
+
+        <div class="em-foot">
+          <div class="snd"><span class="chev">»</span><div><div class="nm">Thomas Bougeard <span class="fn">· Directeur Commercial</span></div><div class="ct">+33 6 59 23 15 92 · <a>thomasb@thebureau.paris</a></div></div></div>
+          <div class="zip"><div class="z1">The Bureau Paris</div><div class="z2">75002 · 75008</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Email client — mêmes composants que l'interface : pastilles carrées, colonnes Réf/Bureau/Étage/m²/Postes/Dispo, en-tête clair, CTA encre, encart ivoire, pied jade. L'option recommandée ressort en jade + ★.</div>
+  </section>
+
+  <section>
+    <div class="sec-eye"><span class="n">05</span> · Maquette PDF (A4 paysage, pièce jointe)</div>
+    <div class="stage">
+      <div class="pdf">
+        <div class="pdf-head">
+          <div class="em-logo"><span class="lg" style="font-size:22px">The Bureau<span class="dot">.</span></span><span class="bar" style="height:44px"></span><span><span class="sub-e">Proposition personnalisée</span><br><span class="sub-t" style="font-size:24px">Sélection <b>bureaux</b></span></span></div>
+          <div style="text-align:right"><div class="em-date" style="font-size:22px">29/10/2026</div><div class="sub-e" style="margin-top:6px">Marie · Acme Studio</div></div>
+        </div>
+        <div class="em-eye" style="margin:22px 0 8px">Comparatif des options <span class="r">Prix H.T., par mois</span></div>
+        <table class="cmp">
+          <tr><th class="l">Option</th><th class="l">Configuration</th><th class="c" style="text-align:center">Postes</th><th class="c" style="text-align:center">m²</th><th>Mensuel</th><th>12 mois<span class="s">−5 %</span></th><th class="on">24 mois<span class="s">−10 %</span></th><th>36 mois<span class="s">−15 %</span></th></tr>
+          <tr><td class="l"><span class="optb">Option 1</span></td><td class="l" style="font-size:11px;color:#5a5248">A304 · A213 · Télétravail ×2</td><td class="c" style="text-align:center;font-family:var(--sp)">38</td><td class="c" style="text-align:center;font-family:var(--sp)">116,5</td><td>11 579 €</td><td>11 017 €</td><td class="on">10 455 €</td><td>9 893 €</td></tr>
+          <tr style="background:#1E4035;color:#F5EFE5"><td class="l"><span class="optb">Option 2</span> <span style="font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:#D4B870">★ Recommandé</span></td><td class="l" style="font-size:11px;color:rgba(245,239,229,.7)">A000</td><td class="c" style="text-align:center;font-family:var(--sp);color:#F5EFE5">28</td><td class="c" style="text-align:center;font-family:var(--sp);color:#F5EFE5">90</td><td style="color:#F5EFE5">17 750 €</td><td style="color:#F5EFE5">16 863 €</td><td class="on" style="background:transparent;color:#D4B870">15 975 €</td><td style="color:#F5EFE5">15 088 €</td></tr>
+        </table>
+        <div class="em-eye" style="margin:22px 0 8px">Détail des bureaux</div>
+        <div class="ob reco" style="margin:0">
+          <div class="ob-h"><div class="l"><span class="badge-opt">Option 2</span><span class="nm">Grand plateau</span><span class="star">★ Recommandé</span></div><div class="tot"><span class="big">15 975<span class="eu"> €</span></span> <span class="pal">24 mois</span></div></div>
+          <table class="odt" style="padding:0 16px">
+            <tr><th style="padding-left:16px">Réf.</th><th>Bureau</th><th class="c">Étage</th><th class="c">m²</th><th class="c">Postes</th><th>Dispo.</th><th style="text-align:right;padding-right:16px">Prix H.T./mois</th></tr>
+            <tr><td style="padding-left:16px"><span class="ref">A000</span></td><td><div class="onm">The Bureau I <span class="oad">· 28, Cours Albert Iᵉʳ, 75008 Paris</span></div><div class="ode">Grand plateau composé de 2 espaces. Belle vue sur le Patio.</div></td><td class="c">RDC</td><td class="c">90</td><td class="c">28</td><td><span class="disp">Immédiate</span></td><td style="text-align:right;padding-right:16px;font-weight:700;color:#1E4035">15 975 €</td></tr>
+          </table>
+        </div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-top:18px">
+          <div class="em-box" style="margin:0"><div class="em-eye" style="margin:0 0 10px">Tout est sur place</div><div class="cols"><div class="it"><span class="d">—</span><span>Accès 24/7, espaces communs, patio, sport.</span></div><div class="it"><span class="d">—</span><span>Domiciliation, téléphonie, impression.</span></div><div class="it"><span class="d">—</span><span>Tisaneries, conciergerie, programmation.</span></div><div class="it"><span class="d">—</span><span>All-Inclusive : charges, ménage, clim.</span></div></div></div>
+          <div class="em-box" style="margin:0;background:#fff;border:0.5px solid var(--sep)"><div class="em-eye" style="margin:0 0 10px">Conditions contractuelles</div><div style="display:flex;flex-direction:column;gap:6px"><div class="it"><span class="d">—</span><span>3 mois min., renouvellement 3 mois.</span></div><div class="it"><span class="d">—</span><span>Dépôt : 2 mois H.T.</span></div><div class="it"><span class="d">—</span><span>Installation : 100 € H.T./poste.</span></div><div class="it"><span class="d">—</span><span>Préavis : 2 mois + mois en cours.</span></div></div></div>
+        </div>
+        <div class="em-foot" style="margin-top:18px"><div class="snd"><span class="chev">»</span><div><div class="nm">Thomas Bougeard <span class="fn">· Directeur Commercial</span></div><div class="ct">+33 6 59 23 15 92 · <a>thomasb@thebureau.paris</a> · thebureau.paris</div></div></div><div class="zip"><div class="z1">The Bureau Paris</div><div class="z2">75002 · 75008</div></div></div>
+      </div>
+    </div>
+    <div class="cap">PDF (A4 paysage) — strictement les mêmes composants et la même grammaire que l'email, en plus large : comparatif enrichi (Postes/m²), colonne Prix par bureau, blocs inclus/conditions côte à côte. Montants identiques à l'email.</div>
+  </section>
+
+  <section>
+    <div class="sec-eye"><span class="n">06</span> · Ce qui change vs l'existant</div>
+    <div class="diff">
+      <b>Pastilles</b> : le PDF passe en pastilles <b>carrées</b> (comme l'interface et l'email) — plus de pastilles arrondies.<br>
+      <b>Option recommandée</b> : ajout d'un bouton ★ dans le bandeau droit pour désigner l'option recommandée → se reporte en jade + ★ sur l'email ET le PDF.<br>
+      <b>Colonnes identiques</b> partout : Réf · Bureau · Étage · m² · Postes · Dispo (+ Prix dans le PDF).<br>
+      <b>En-tête clair</b>, <b>CTA encre</b>, <b>encart ivoire « Tout est sur place »</b>, <b>pied jade</b> : communs email + PDF.<br>
+      <b>Typo</b> : Spectral pour descriptions + chiffres, Jakarta pour tout le reste, partout.
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
