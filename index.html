@@ -924,8 +924,10 @@ var CORES_REF   = 'CORES';
 var CORES_PRIX  = 725;
 var CORES_SITE  = 'I';
 var CORES_ADR   = '28, Cours Albert 1er, 75008 Paris';
-/* Produits « virtuels » (hors DATA) à réinjecter dans les sélections */
-var VIRT_REFS   = [ITIN_REF, CORES_REF];
+/* Produits « virtuels » (hors DATA) à réinjecter dans les sélections.
+   NB : les postes Co-Résident sont de VRAIES lignes DATA (sélection directe),
+   donc ils ne sont PAS dans VIRT_REFS — seul l'Itinérant est virtuel. */
+var VIRT_REFS   = [ITIN_REF];
 function injectVirt(arr){
   VIRT_REFS.forEach(function(r){
     if (SEL[r] && !arr.find(function(b){ return b.ref===r; })) arr.unshift(SEL[r]);
@@ -943,14 +945,15 @@ function coresList(){
     .sort(function(a,b){ return (parseInt(coresNo(a.ref))||0)-(parseInt(coresNo(b.ref))||0); });
 }
 function coresAvail(){ return coresList().length; }
-/* Libellé « Poste 3 » / « Postes 3, 4, 5 » à partir des réfs sélectionnées */
-function coresPostesLabel(b, useEN){
-  var refs = (b && b.coresRefs) ? b.coresRefs : [];
-  if(!refs.length) return '';
+/* Libellé « Poste 3 » / « Postes 3, 4, 5 » à partir d'une liste de réfs */
+function coresRefsLabel(refs, useEN){
+  if(!refs || !refs.length) return '';
   var nos = refs.map(coresNo).sort(function(x,y){ return (parseInt(x)||0)-(parseInt(y)||0); });
   var pfx = useEN ? (nos.length>1?'Desks ':'Desk ') : (nos.length>1?'Postes ':'Poste ');
   return pfx+nos.join(', ');
 }
+/* Réfs Co-Résident actuellement sélectionnées (vraies lignes DATA) */
+function coresSelectedRefs(){ return coresList().filter(function(b){ return !!SEL[b.ref]; }).map(function(b){ return b.ref; }); }
 var CORES_MENU_OPEN = false;
 var EP_LANG = 'fr'; /* current preview language */
 var OPT_MODE = false;       /* Options mode active */
@@ -1063,39 +1066,15 @@ function makeItinCard() {
   return div;
 }
 
-function coresSelObj(refs) {
-  refs = refs || [];
-  return {
-    ref:CORES_REF, site:CORES_SITE, label:'Co-Résident', adresse:CORES_ADR,
-    prix: CORES_PRIX, base: CORES_PRIX, itinQty: refs.length||1, coresRefs: refs,
-    cap:1, etage:4, surface:3, dispo:'immediate', date:null,
-    desc:'Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.',
-    descEN:'A dedicated workstation with access to our shared spaces and The Bureau services. Business address & storage included. 24/7 access. All-inclusive.',
-    isItin: true, isCores: true,
-    virtLabel:'Co-Résident', virtMeta:'Poste dédié · The Bureau I', virtUnit:'poste dédié', virtTag:'CO-RÉS', pdfRef:'Co-Rés.', pdfName:'Co-Résident'
-  };
-}
 function refreshCoresCard() {
   var old2 = document.querySelector('.cores-card');
   if (old2) old2.parentNode.replaceChild(makeCoresCard(), old2);
   updateSelBar(); updateModalTotal();
 }
-function coresSelectedRefs(){ var s=SEL[CORES_REF]; return (s&&s.coresRefs)?s.coresRefs:[]; }
+/* Sélectionne / désélectionne un poste Co-Résident (vraie ligne DATA) */
 function toggleCoresPoste(ref){
-  var availRefs = coresList().map(function(b){ return b.ref; });
-  var cur = coresSelectedRefs().slice();
-  var i = cur.indexOf(ref);
-  if (i>=0) cur.splice(i,1); else cur.push(ref);
-  cur = cur.filter(function(r){ return availRefs.indexOf(r)>=0; })
-           .sort(function(a,b){ return (parseInt(coresNo(a))||0)-(parseInt(coresNo(b))||0); });
-  if (cur.length===0) {
-    delete SEL[CORES_REF];
-    SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==CORES_REF; });
-  } else if (SEL[CORES_REF]) {
-    SEL[CORES_REF].coresRefs = cur; SEL[CORES_REF].itinQty = cur.length;
-  } else {
-    SEL[CORES_REF] = coresSelObj(cur); SEL_ORDER.push(CORES_REF);
-  }
+  if (SEL[ref]) { delete SEL[ref]; SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==ref; }); }
+  else { SEL[ref] = true; SEL_ORDER.push(ref); }
   refreshCoresCard();
 }
 
@@ -1103,17 +1082,7 @@ function makeCoresCard() {
   var d = disc();
   var list = coresList();
   var avail = list.length;
-  var sel = SEL[CORES_REF];
-  /* Réconcilie la sélection avec l'inventaire courant (postes devenus indispo) */
-  if (sel) {
-    var availRefs = list.map(function(b){ return b.ref; });
-    var kept = (sel.coresRefs||[]).filter(function(r){ return availRefs.indexOf(r)>=0; });
-    if (kept.length !== (sel.coresRefs||[]).length) {
-      if (kept.length===0) { delete SEL[CORES_REF]; SEL_ORDER=SEL_ORDER.filter(function(r){return r!==CORES_REF;}); sel=null; }
-      else { sel.coresRefs=kept; sel.itinQty=kept.length; }
-    }
-  }
-  var selRefs = coresSelectedRefs();
+  var selRefs = list.filter(function(b){ return !!SEL[b.ref]; }).map(function(b){ return b.ref; });
   var qty = selRefs.length;
   var isSel = qty>0;
   var base  = CORES_PRIX;
@@ -1126,7 +1095,7 @@ function makeCoresCard() {
   var savHtml  = (d>0 && isSel) ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="#153027"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>Économie : '+fmt(save)+' € / an</div>' : '';
   var availHtml = '<span class="cores-avail'+(avail>0?'':' full')+'">'+(avail>0?('<span class="cores-dot"></span>'+avail+' disponible'+(avail>1?'s':'')):'Complet')+'</span>';
 
-  var ddLabel = isSel ? coresPostesLabel(sel) : 'Choisir vos postes';
+  var ddLabel = isSel ? coresRefsLabel(selRefs) : 'Choisir vos postes';
   var menuItems = list.map(function(b){
     var checked = selRefs.indexOf(b.ref)>=0;
     return '<div class="cores-opt'+(checked?' on':'')+'" data-ref="'+esc(b.ref)+'"><span class="cores-cbx">'+(checked?'✓':'')+'</span>Poste '+coresNo(b.ref)+'</div>';
@@ -1174,8 +1143,7 @@ function makeCoresCard() {
 
 function setVirtAbo(ref, qty) {
   if (!SEL[ref]) return;
-  var max = (ref===CORES_REF && typeof coresAvail==='function') ? Math.max(1, coresAvail()) : 20;
-  SEL[ref].itinQty = Math.max(1, Math.min(max, qty||1));
+  SEL[ref].itinQty = Math.max(1, Math.min(20, qty||1));
   if (typeof openModal==='function') openModal();
 }
 function setItinAbo(qty) { setVirtAbo(ITIN_REF, qty); }
@@ -1346,7 +1314,7 @@ function render() {
   /* Update occupied button label */
   var occBtn2 = document.getElementById('occBtn');
   if (occBtn2) {
-    var occTotal = DATA.filter(function(b){ return b.dispo==='occupied'; }).length;
+    var occTotal = DATA.filter(function(b){ return b.dispo==='occupied' && !isCoresRow(b); }).length;
     occBtn2.lastChild.textContent = ' Occupés' + (occTotal > 0 ? ' (' + occTotal + ')' : '');
   }
   updateSelBar();
@@ -1445,7 +1413,7 @@ function updateSelBar() {
   selData.slice(0,5).forEach(function(b) {
     var sp = document.createElement('span');
     sp.className = 'sc2';
-    sp.textContent = b.isItin ? (b.virtLabel||'Itinérant') : b.ref;
+    sp.textContent = isCoresRow(b) ? ('Poste '+coresNo(b.ref)) : (b.isItin ? (b.virtLabel||'Itinérant') : b.ref);
     sp.addEventListener('click', function(e){ e.stopPropagation(); toggleSel(b.ref); });
     chips.appendChild(sp);
   });
@@ -1486,9 +1454,9 @@ function openModal() {
     row.className = 'mrow'; row.dataset.ref = b.ref;
     var info = document.createElement('div');
     info.className = 'minfo';
-    if (b.isCores) {
-      var _cMeta = (typeof coresPostesLabel==='function'?coresPostesLabel(b):'')+' · '+etLbl(b.etage)+' · '+b.surface+' m² · The Bureau I';
-      info.innerHTML = '<span class="refbadge">'+(b.virtLabel||'Co-Résident')+'</span><span class="mmeta">'+_cMeta+'</span>';
+    if (isCoresRow(b)) {
+      var _cMeta = 'Co-Résident · '+etLbl(b.etage)+(b.surface?' · '+b.surface+' m²':'')+' · The Bureau I';
+      info.innerHTML = '<span class="refbadge">Poste '+coresNo(b.ref)+'</span><span class="mmeta">'+_cMeta+'</span>';
     } else if (b.isItin) {
       info.innerHTML = '<span class="refbadge">'+(b.virtLabel||'Itinérant')+'</span><span class="mmeta">'+(b.virtMeta||'Placement libre · tous nos sites')+' · '+_itinQ+' '+(b.virtUnit||'abonnement')+(_itinQ>1?'s':'')+'</span>';
     } else {
@@ -1496,7 +1464,7 @@ function openModal() {
     }
     var right = document.createElement('div');
     right.style.cssText = 'display:flex;align-items:center;gap:8px';
-    if (b.isItin && !b.isCores) {
+    if (b.isItin) {
       var stp = document.createElement('div');
       stp.className = 'tw-qty';
       stp.innerHTML = '<button type="button" aria-label="Moins">−</button><input type="number" min="1" max="20" value="'+_itinQ+'"><button type="button" aria-label="Plus">+</button>';
@@ -1916,8 +1884,8 @@ function buildPlainText(data) {
       ? (b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor')
       : etLbl(b.etage);
     var _qpt = b.itinQty||1;
-    var _refPT = b.isItin ? (b.virtLabel||b.ref) : b.ref;
-    if (b.isItin && !b.isCores) {
+    var _refPT = isCoresRow(b) ? ('Poste '+coresNo(b.ref)) : (b.isItin ? (b.virtLabel||b.ref) : b.ref);
+    if (b.isItin) {
       t += '  \u25cf  ' + _refPT + nl;
       t += '     ' + _qpt + (isEN?(' subscription'+(_qpt>1?'s':'')):(_qpt>1?' abonnements':' abonnement')) + nl;
     } else {
@@ -1925,10 +1893,7 @@ function buildPlainText(data) {
       if (b.adresse) t += '     ' + b.adresse + nl;
       if (b.surface) t += '     ' + b.surface.toLocaleString('fr-FR') + '\u00a0m\u00b2  \u00b7  ';
       else t += '     ';
-      var _postesPT = b.isCores ? _qpt : b.cap;
-      t += _postesPT + (isEN ? ' desk' + (_postesPT>1?'s':'') : ' poste' + (_postesPT>1?'s':''));
-      if (b.isCores) { var _clpt=coresPostesLabel(b,isEN); if(_clpt) t += '  \u00b7  '+_clpt; }
-      t += nl;
+      t += b.cap + (isEN ? ' desk' + (b.cap>1?'s':'') : ' poste' + (b.cap>1?'s':'')) + nl;
     }
     t += '     ' + (b.dispo==='immediate'
       ? (isEN?'Available immediately':'Disponible imm\u00e9diatement')
@@ -2154,12 +2119,7 @@ function buildCard(b) {
     var price = b.isItin ? Math.round(_bse*(1-p.d))+_itinAddons : Math.round(b.prix*(1-p.d));
     var qv = b.itinQty||1;
     var metaParts = [];
-    if (b.isCores) {
-      metaParts.push(etageLabel);
-      if (b.surface) metaParts.push(b.surface.toLocaleString('fr-FR')+' m²');
-      metaParts.push(qv + (isEN?(' desk'+(qv>1?'s':'')):(qv>1?' postes':' poste')));
-      var _clb = coresPostesLabel(b, isEN); if (_clb) metaParts.push(_clb);
-    } else if (b.isItin) {
+    if (b.isItin) {
       metaParts.push(qv + (isEN?(' subscription'+(qv>1?'s':'')):(qv>1?' abonnements':' abonnement')));
     } else {
       metaParts.push(etageLabel);
@@ -2167,13 +2127,15 @@ function buildCard(b) {
       metaParts.push(postes);
     }
     var meta = metaParts.join(' · ');
-    var refTxt = b.isItin?(b.virtTag||'ITIN'):b.ref;
+    var _isCo = isCoresRow(b);
+    var refTxt = _isCo?('Poste '+coresNo(b.ref)):(b.isItin?(b.virtTag||'ITIN'):b.ref);
+    var _nm = _isCo?(isEN?'Co-Resident':'Co-Résident'):b.label;
     return '<tr><td style="padding:0 0 10px">'
       +'<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e9e1d2;border-radius:12px">'
       +'<tr>'
       +'<td width="74" valign="middle" style="padding:14px 0 14px 16px"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:5px 12px;font-weight:700;font-size:12px;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>'
       +'<td valign="middle" style="padding:12px 12px">'
-      +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13.5px;font-weight:700;color:#0F0F0F">'+b.label+((!b.isItin&&b.adresse)?' <span style="font-size:10px;font-weight:500;color:#7A6015">· '+b.adresse+'</span>':'')+'</div>'
+      +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13.5px;font-weight:700;color:#0F0F0F">'+_nm+((!b.isItin&&b.adresse)?' <span style="font-size:10px;font-weight:500;color:#7A6015">· '+b.adresse+'</span>':'')+'</div>'
       +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#5a5248;margin-top:2px">'+meta+'</div>'
       +'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;color:'+dispo_color+';font-weight:600;margin-top:3px">'+dispo_label+'</div>'
       +'</td>'
@@ -3079,15 +3041,15 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
     var price=b.isItin?Math.round((b.base||ITIN_PRIX)*(1-paliers[dt].d))*(b.itinQty||1)+(b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0):Math.round(b.prix*(1-paliers[dt].d));
     var etageLabel=isEN?(b.etage===0?'Ground floor':b.etage===1?'1st floor':b.etage===2?'2nd floor':b.etage===3?'3rd floor':b.etage+'th floor'):etLbl(b.etage);
     var _qv=b.itinQty||1; var metaParts=[];
-    if(b.isCores){ metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(_qv+(isEN?(' desk'+(_qv>1?'s':'')):(_qv>1?' postes':' poste'))); var _cl2=coresPostesLabel(b,isEN); if(_cl2)metaParts.push(_cl2); }
-    else if(b.isItin){ metaParts.push(_qv+(isEN?(' subscription'+(_qv>1?'s':'')):(_qv>1?' abonnements':' abonnement'))); }
+    if(b.isItin){ metaParts.push(_qv+(isEN?(' subscription'+(_qv>1?'s':'')):(_qv>1?' abonnements':' abonnement'))); }
     else { metaParts.push(etageLabel); if(b.surface)metaParts.push(b.surface.toLocaleString('fr-FR')+' m²'); metaParts.push(b.cap+(isEN?' desk'+(b.cap>1?'s':''):(b.cap>1?' postes':' poste'))); }
     var meta=metaParts.join(' · ');
-    var refTxt=b.isItin?(b.virtTag||'ITIN'):b.ref;
+    var _isCo2=isCoresRow(b);
+    var refTxt=_isCo2?('Poste '+coresNo(b.ref)):(b.isItin?(b.virtTag||'ITIN'):b.ref);
     var bb=bi<opt.bureaux.length-1?'border-bottom:1px solid #f1ede4;':'';
     h+='<tr><td style="'+bb+'padding:9px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
     h+='<td width="118" valign="middle"><span style="display:inline-block;background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10.5px;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+refTxt+'</span></td>';
-    h+='<td valign="middle" style="padding:0 10px 0 0"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#0F0F0F">'+b.label+((!b.isItin&&b.adresse)?' <span style="font-size:10px;font-weight:500;color:#7A6015">· '+b.adresse+'</span>':'')+'</div><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10.5px;color:#5a5248;margin-top:1px">'+meta+'</div></td>';
+    h+='<td valign="middle" style="padding:0 10px 0 0"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#0F0F0F">'+(_isCo2?(isEN?'Co-Resident':'Co-Résident'):b.label)+((!b.isItin&&b.adresse)?' <span style="font-size:10px;font-weight:500;color:#7A6015">· '+b.adresse+'</span>':'')+'</div><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10.5px;color:#5a5248;margin-top:1px">'+meta+'</div></td>';
     h+='<td align="right" valign="middle" style="white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:600;color:#0F0F0F">'+fmt(price)+'<sup style="color:#B09438;font-size:9px"> €</sup></td>';
     h+='</tr></table></td></tr>';
   });
@@ -3629,16 +3591,14 @@ function exportPDF(){
   var ROWS='92px minmax(0,1fr) 56px 56px 56px 150px 110px';
   /* ===== Office row ===== */
   function officeRow(b, withPrice){
-    var ref=b.isItin?(b.pdfRef||(isEN?'Nomad':'Itin.')):esc(b.ref);
-    var nm=b.isItin?(b.pdfName||(isEN?'Nomad office':'Itinérant')):esc(b.label||'');
+    var isCo=isCoresRow(b);
+    var ref=isCo?('Poste '+coresNo(b.ref)):(b.isItin?(b.pdfRef||(isEN?'Nomad':'Itin.')):esc(b.ref));
+    var nm=isCo?(isEN?'Co-Resident':'Co-Résident'):(b.isItin?(b.pdfName||(isEN?'Nomad office':'Itinérant')):esc(b.label||''));
     var addr=addrOf(b);
     var qv=b.itinQty||1;
-    var desc;
-    if(b.isCores) desc=coresPostesLabel(b,isEN);
-    else if(b.isItin) desc=qv+' '+(isEN?('subscription'+(qv>1?'s':'')):('abonnement'+(qv>1?'s':'')));
-    else desc=clean(b);
-    var floor=b.isCores?etStr(b.etage):(b.isItin?'—':etStr(b.etage));
-    var m2=b.isCores?(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—'):(b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—'));
+    var desc=b.isItin?(qv+' '+(isEN?('subscription'+(qv>1?'s':'')):('abonnement'+(qv>1?'s':'')))):clean(b);
+    var floor=b.isItin?'—':etStr(b.etage);
+    var m2=b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—');
     var seats=b.isItin?qv:b.cap;
     var s='<div style="display:grid; grid-template-columns:'+(withPrice?ROWS:ROWM)+'; align-items:center; padding:12px 16px; border-top:0.5px solid '+SEP+';">';
     s+='<div><span style="display:inline-block; background:'+SLATE+'; color:'+IVORY+'; font-size:9.5px; font-weight:700; letter-spacing:0.04em; padding:5px 10px; text-align:center; min-width:34px; white-space:nowrap; border-radius:12px;">'+ref+'</span></div>';
@@ -3743,7 +3703,7 @@ function exportPDF(){
     CARTE.forEach(function(k){ h+='<div style="display:flex; justify-content:space-between; gap:10px; border-bottom:0.5px solid rgba(15,15,15,0.10); padding-bottom:4px;"><span style="font-weight:300; font-size:10px;">'+k[0]+'</span><span style="font-size:10px; font-weight:600; color:'+SLATE+'; white-space:nowrap;">'+k[1]+'</span></div>'; });
     h+='</div><div style="font-size:8.5px; color:rgba(15,15,15,0.5); margin-top:8px; font-weight:300;">'+(isEN?'Billed on use, with or without subscription. Prices excl. VAT.':'Facturé à l’usage, avec ou sans abonnement. Prix hors taxes.')+'</div></div></div>';
     /* Rangée 2 : conditions + accès */
-    var usedB=[]; selData.forEach(function(b){ if(b.site && !(b.isItin && !b.isCores) && usedB.indexOf(b.site)<0) usedB.push(b.site); });
+    var usedB=[]; selData.forEach(function(b){ if(!b.isItin && b.site && usedB.indexOf(b.site)<0) usedB.push(b.site); });
     if(usedB.length===0) usedB=['I'];
     var addrByB={}; selData.forEach(function(b){ if(b.site && b.adresse && !addrByB[b.site]) addrByB[b.site]=b.adresse; });
     h+='<div class="kt" style="display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:2px; margin-top:2px;">';
