@@ -1072,6 +1072,52 @@ body.dark .cat-title em,body.dark .eyebrow-l{color:#D4B870}
 body.dark .user-menu{background:#1B1B1B;border-color:rgba(255,255,255,.12)}
 body.dark .um-name{color:#F5EFE5}
 body.dark .um-role{color:rgba(245,239,229,.55)}
+/* ===== Modal d'envoi 2 colonnes ===== */
+.sendov{position:fixed;inset:0;z-index:9000;background:rgba(15,15,15,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px}
+.sendov.on{display:flex}
+.send-modal{width:min(1040px,100%);max-height:92vh;background:var(--blanc,#FAFAFA);border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(15,15,15,.08)}
+.sm-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--cf,#ece6da);background:#fff;flex-shrink:0}
+.sm-eye{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--or2,#8A6A18);font-weight:800}
+.sm-title{font-size:20px;font-weight:300;color:#0F0F0F;margin:3px 0 0}.sm-title b{font-weight:700}
+.sm-head-r{display:flex;align-items:center;gap:12px}
+.sm-lang{display:inline-flex;border:1px solid rgba(15,15,15,.14);border-radius:50px;overflow:hidden}
+.sm-lang button{border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;color:rgba(15,15,15,.5)}
+.sm-lang button.on{background:#0F0F0F;color:#fff}
+.sm-close{border:none;background:none;color:rgba(15,15,15,.45);cursor:pointer;padding:4px;line-height:0;border-radius:50%}
+.sm-close:hover{color:#0F0F0F;background:rgba(15,15,15,.06)}
+.sm-body{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:0;flex:1;min-height:0;overflow:hidden}
+.sm-form{padding:22px 24px;overflow-y:auto;border-right:1px solid var(--cf,#ece6da);display:flex;flex-direction:column}
+.sm-sec{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--or2,#8A6A18);font-weight:800;margin:0 0 12px}
+.sm-sec:not(:first-child){margin-top:20px}
+.sm-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.sm-fg{display:flex;flex-direction:column;gap:5px}
+.sm-fg label{font-size:10px;font-weight:600;color:rgba(15,15,15,.55)}
+.sm-fg input,.sm-fg select,.sm-fg textarea{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:#0F0F0F;background:#fff;border:1px solid var(--cf,#ddd4c4);border-radius:4px;padding:9px 11px;outline:none}
+.sm-fg input:focus,.sm-fg select:focus,.sm-fg textarea:focus{border-color:var(--jade,#1E4035)}
+.sm-fg input.err{border-color:#c0392b;background:#fdecea}
+.sm-grow{flex:1;margin-top:12px}
+.sm-grow textarea{min-height:90px;resize:vertical;line-height:1.5;height:100%}
+.sm-prev{background:#f0ece3;display:flex;flex-direction:column;min-height:0}
+.sm-prev-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;flex-shrink:0;border-bottom:1px solid rgba(15,15,15,.07)}
+.sm-prev-eye{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--or2,#8A6A18);font-weight:800}
+.sm-prev-note{font-size:10px;color:rgba(15,15,15,.4)}
+.sm-prev-frame{flex:1;width:100%;border:none;background:#FAFAFA;min-height:0}
+.sm-foot{display:flex;align-items:center;gap:10px;padding:14px 24px;border-top:1px solid var(--cf,#ece6da);background:#fff;flex-shrink:0}
+.sm-btn-ghost{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;color:rgba(15,15,15,.6);background:none;border:1px solid rgba(15,15,15,.16);border-radius:50px;padding:9px 16px;cursor:pointer}
+.sm-btn-ghost:hover{color:#0F0F0F;border-color:rgba(15,15,15,.35)}
+.sm-btn-send{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:.02em;color:#fff;background:var(--jade,#1E4035);border:none;border-radius:50px;padding:11px 22px;cursor:pointer}
+.sm-btn-send:hover{background:#163026}
+@media(max-width:860px){.sm-body{grid-template-columns:1fr;overflow-y:auto}.sm-form{border-right:none;border-bottom:1px solid var(--cf,#ece6da)}.sm-prev-frame{min-height:320px}}
+body.dark .send-modal{background:#161616;border-color:rgba(255,255,255,.1)}
+body.dark .sm-head,body.dark .sm-foot{background:#1B1B1B;border-color:rgba(255,255,255,.1)}
+body.dark .sm-title{color:#F5EFE5}
+body.dark .sm-form{border-color:rgba(255,255,255,.1)}
+body.dark .sm-fg input,body.dark .sm-fg select,body.dark .sm-fg textarea{background:#111;border-color:rgba(255,255,255,.14);color:#F5EFE5}
+body.dark .sm-lang{border-color:rgba(255,255,255,.18)}
+body.dark .sm-lang button{color:rgba(245,239,229,.5)}
+body.dark .sm-lang button.on{background:#F5EFE5;color:#0F0F0F}
+body.dark .sm-prev{background:#0e0e0e}
+body.dark .sm-btn-ghost{color:rgba(245,239,229,.65);border-color:rgba(255,255,255,.18)}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1082,6 +1128,7 @@ body.dark .um-role{color:rgba(245,239,229,.55)}
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
 <div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com" aria-describedby="feErr"><div class="field-err" id="feErr" role="alert">Adresse email invalide</div></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div></div><div id="twExtras"></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1" checked><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3"><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div><div class="mtiers" id="mtiers" style="display:none"></div><div class="ip-wrap"><button type="button" class="ip-toggle" id="ipToggle" aria-expanded="false"><span>👁 Aperçu de l'email</span><span class="ip-caret">▾</span></button><div class="ip-body" id="ipBody" style="display:none"><iframe class="ip-frame" id="ipFrame" title="Aperçu de l'email"></iframe><div class="ip-hint">Aperçu en direct — mis à jour selon votre configuration</div></div></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><button class="bcnl" id="modalRefreshBtn" style="font-size:9px" title="Actualiser les disponibilités et prix">↻ Actualiser</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
 <button class="present-exit" id="presentExit">&#10005; Quitter</button>
+<div class="sendov" id="sendov" role="dialog" aria-modal="true" aria-label="Envoyer la proposition"><div class="send-modal"><div class="sm-head"><div><div class="sm-eye">Envoi</div><h2 class="sm-title">Relire, <b>envoyer</b></h2></div><div class="sm-head-r"><div class="sm-lang"><button type="button" data-lang="fr" class="on" onclick="this.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('on')});this.classList.add('on');renderSendPreview();">FR</button><button type="button" data-lang="en" onclick="this.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('on')});this.classList.add('on');renderSendPreview();">EN</button></div><button class="sm-close" onclick="closeSendModal()" aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="sm-body"><div class="sm-form"><div class="sm-sec">Le destinataire</div><div class="sm-row2"><div class="sm-fg"><label>Prénom</label><input type="text" id="smP" oninput="smSync()" placeholder="Prénom"></div><div class="sm-fg"><label>Nom</label><input type="text" id="smN" oninput="smSync()" placeholder="Nom"></div></div><div class="sm-row2"><div class="sm-fg"><label>Société</label><input type="text" id="smS" oninput="smSync()" placeholder="Société"></div><div class="sm-fg"><label>Email</label><input type="email" id="smE" oninput="smSync()" placeholder="prenom@societe.com"></div></div><div class="sm-sec">Le message</div><div class="sm-fg"><label>Expéditeur</label><select id="smSender" onchange="smSync()"><option value="thomas">Thomas Bougeard — Directeur Commercial</option><option value="charles">Charles Caignol — Responsable d'exploitation</option><option value="oscar">Oscar Aumont — Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle — Responsable Conciergerie</option><option value="dynah">Dynah Laloum — Responsable Conciergerie</option></select></div><div class="sm-fg sm-grow"><label>Mot d'introduction</label><textarea id="smMsg" oninput="smSync()"></textarea></div></div><div class="sm-prev"><div class="sm-prev-bar"><span class="sm-prev-eye">Aperçu de l'email</span><span class="sm-prev-note">Mis à jour en direct</span></div><iframe class="sm-prev-frame" id="sendPrevFrame" title="Aperçu de l'email"></iframe></div></div><div class="sm-foot"><button class="sm-btn-ghost" onclick="closeSendModal()">← Retour</button><button class="sm-btn-ghost" onclick="closeSendModal();window.__pdfPreviewMode=true;exportPDF();">Aperçu PDF</button><div style="flex:1"></div><button class="sm-btn-send" onclick="sendModalSubmit()">Voir &amp; envoyer →</button></div></div></div>
 <div class="cmp-overlay" id="cmpOverlay"><div class="cmp-modal"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3 style="font-size:15px;font-weight:600">Comparaison</h3><button class="mclose" id="cmpClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="cmpBody"></div></div></div>
 <div class="hist-overlay" id="histOverlay"><div class="hist-modal"><div style="padding:16px 20px;border-bottom:1px solid var(--cf);display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:15px;font-weight:600">Historique</h3><button class="mclose" id="histClose"><svg viewBox="0 0 24 24" width="17" height="17"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></button></div><div id="histBody"></div></div></div>
 <!-- Text recap modal -->
@@ -1903,7 +1950,7 @@ function syncClientFromPanel(){
   if(fs) fs.value=comp;
 }
 (function(){
-  var s=document.getElementById('propSend'); if(s) s.addEventListener('click',function(){ if(!s.disabled && typeof openModal==='function') openModal(); });
+  var s=document.getElementById('propSend'); if(s) s.addEventListener('click',function(){ if(!s.disabled && typeof openSendModal==='function') openSendModal(); });
   var pp=document.getElementById('propPdf'); if(pp) pp.addEventListener('click',function(){ if(!pp.disabled && typeof exportPDF==='function'){ window.__pdfPreviewMode=true; exportPDF(); } });
   /* Champs client du panneau → inputs #fp/#fn/#fs (utilisés par email/PDF) */
   var cn=document.getElementById('propClientName'), cc=document.getElementById('propClientComp');
@@ -2330,6 +2377,91 @@ function updateInlinePreview(){
   setTimeout(_fit, 120); setTimeout(_fit, 500);
 }
 function scheduleInlinePreview(){ if (_ipTimer) clearTimeout(_ipTimer); _ipTimer = setTimeout(updateInlinePreview, 350); }
+
+/* ===== Nouveau modal d'envoi (2 colonnes : formulaire | aperçu email) ===== */
+function emailPreviewHTML(isEN){
+  var data = getEmailPreviewData();
+  var wrap = function(inner){ return '<!DOCTYPE html><html lang="'+(isEN?'en':'fr')+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><style>body{margin:0;background:#FAFAFA;font-family:\'Plus Jakarta Sans\',Arial,sans-serif;color:#0F0F0F} *{box-sizing:border-box}</style></head><body>'+inner+'</body></html>'; };
+  if (!data.length) return wrap('<div style="padding:32px;color:#999;font-size:13px">'+(isEN?'No office selected.':'Aucun bureau sélectionné.')+'</div>');
+  var remEl = document.getElementById('remiseInput');
+  var remise = remEl ? Math.min(25,Math.max(0,parseFloat(remEl.value)||0))/100 : 0;
+  var defs = getTierList(remise);
+  var defTier = getDefaultTier();
+  var defD = (defs[defTier]||defs[0]).d;
+  var soc = _ipVal('fs'), pren=_ipVal('fp'), nom=_ipVal('fn');
+  var civ = pren ? (pren+(nom?' '+nom:'')) : (isEN?'Sir or Madam':'Madame, Monsieur');
+  var intro = _ipVal('customMsg') || (isEN?'Please find our selection below.':'Veuillez trouver notre sélection ci-dessous.');
+  var senderSel = document.getElementById('senderSelect');
+  var sender = senderSel && senderSel.selectedIndex>=0 ? senderSel.options[senderSel.selectedIndex].text : '';
+  var oh='<div style="max-width:600px;margin:0 auto;padding:0 0 24px">';
+  oh+='<div style="background:#1E4035;padding:22px 24px;border-bottom:3px solid #B09438"><div style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#B09438;font-weight:700;margin-bottom:5px">The Bureau — '+(isEN?'Proposal':'Proposition')+'</div><div style="font-size:20px;font-weight:300;color:#fff">'+(isEN?'Configurations ':'Configurations ')+'<b style="font-weight:700">'+(isEN?'to choose':'au choix')+'</b>'+(soc?' <span style="font-size:13px;color:#F5EFE5">· '+esc(soc)+'</span>':'')+'</div></div>';
+  oh+='<div style="padding:20px 24px">';
+  oh+='<p style="font-size:13px;line-height:1.6;margin:0 0 6px">'+(isEN?'Dear ':'Bonjour ')+esc(civ)+',</p>';
+  oh+='<p style="font-size:12.5px;line-height:1.6;color:#5a5248;margin:0 0 16px">'+esc(intro)+'</p>';
+  var _any=false;
+  (typeof OPTIONS!=='undefined'?OPTIONS:[]).forEach(function(opt,i){
+    var ob=data.filter(function(b){ return opt.refs.indexOf(b.ref)>-1; });
+    if(!ob.length) return; _any=true;
+    var twFlatO=(opt.tw||0)*170 + (typeof optExtrasTotal==='function'?optExtrasTotal(opt):0);
+    var totO=ob.reduce(function(s,b){ var q=(b.isItin&&opt.itinQty)?opt.itinQty:1; return s+Math.round(b.prix*(1-defD))*q; },0)+twFlatO;
+    var nm=(opt.label&&opt.label!=='Texte personnalisé'&&opt.label!=='Custom text')?esc(opt.label):'';
+    oh+='<div style="border:1px solid #e9e1d2;border-left:4px solid #B09438;border-radius:12px;overflow:hidden;margin-bottom:12px">';
+    oh+='<div style="display:flex;align-items:center;gap:8px;background:#faf8f4;padding:10px 14px;border-bottom:1px solid #e9e1d2"><span style="background:#B09438;color:#fff;border-radius:50px;padding:3px 11px;font-size:10px;font-weight:700">Option '+(i+1)+'</span>'+(nm?'<span style="font-size:12px;font-weight:700">'+nm+'</span>':'')+'<span style="margin-left:auto;font-size:15px;font-weight:700;color:#1E4035">'+fmt(totO)+' <span style="color:#B09438;font-size:10px">€</span></span></div>';
+    oh+='<div style="padding:2px 14px">';
+    ob.forEach(function(b){ var q=(b.isItin&&opt.itinQty)?opt.itinQty:1; var pr=Math.round(b.prix*(1-defD))*q; var rtag=isCoresRow(b)?('Poste '+coresNo(b.ref)):(b.isItin?(b.virtTag||'ITIN'):esc(b.ref)); oh+='<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #f1ede4"><span style="background:#1E4035;color:#F5EFE5;border-radius:50px;padding:3px 9px;font-size:10px;font-weight:700">'+rtag+'</span><span style="font-size:12px">'+esc(b.label||'')+'</span><span style="margin-left:auto;font-size:13px;font-weight:700">'+fmt(pr)+' <span style="color:#B09438;font-size:9px">€</span></span></div>'; });
+    oh+='</div></div>';
+  });
+  if(!_any) oh+='<div style="color:#999;font-size:12.5px;padding:8px 0">'+(isEN?'Assign offices to your options to preview them.':'Attribuez des bureaux à vos options pour les prévisualiser.')+'</div>';
+  if(sender){ oh+='<div style="margin-top:18px;padding-top:14px;border-top:1px solid #e9e1d2;font-size:11px;color:#5a5248">'+esc(sender)+'<br>The Bureau · 75002 · 75008</div>'; }
+  oh+='</div></div>';
+  return wrap(oh);
+}
+function sendModalEN(){ var b=document.querySelector('#sendov .sm-lang button.on'); return !!(b && b.dataset.lang==='en'); }
+function renderSendPreview(){
+  var fr=document.getElementById('sendPrevFrame'); if(!fr) return;
+  /* garder le toggle EN du modal d'envoi synchro avec #langToggle (utilisé par l'envoi réel) */
+  var lt=document.getElementById('langToggle'); if(lt){ lt.checked=sendModalEN(); }
+  fr.srcdoc = emailPreviewHTML(sendModalEN());
+}
+function openSendModal(){
+  var ov=document.getElementById('sendov'); if(!ov) return;
+  ensureOptions();
+  /* Pré-remplir le formulaire depuis le panneau */
+  var cn=(document.getElementById('propClientName')||{}).value||'';
+  var parts=cn.trim().split(/\s+/);
+  var fp=document.getElementById('fp'), fn=document.getElementById('fn'), fs=document.getElementById('fs');
+  if(fp&&!fp.value) fp.value=parts.shift()||'';
+  if(fn&&!fn.value) fn.value=parts.join(' ')||'';
+  if(fs&&!fs.value) fs.value=(document.getElementById('propClientComp')||{}).value||'';
+  /* Reporter dans les champs du modal */
+  var sp=document.getElementById('smP'), sn=document.getElementById('smN'), ss=document.getElementById('smS'), se=document.getElementById('smE'), smsg=document.getElementById('smMsg'), ssel=document.getElementById('smSender');
+  if(sp) sp.value=fp?fp.value:''; if(sn) sn.value=fn?fn.value:''; if(ss) ss.value=fs?fs.value:'';
+  if(se) se.value=(document.getElementById('fe')||{}).value||'';
+  if(smsg) smsg.value=(document.getElementById('customMsg')||{}).value||'';
+  if(ssel){ var cur=document.getElementById('senderSelect'); if(cur) ssel.value=cur.value; }
+  ov.classList.add('on');
+  renderSendPreview();
+}
+function closeSendModal(){ var ov=document.getElementById('sendov'); if(ov) ov.classList.remove('on'); }
+function smSync(){
+  /* recopie les champs du modal vers les inputs cachés #fp… utilisés par l'envoi réel */
+  var map=[['smP','fp'],['smN','fn'],['smS','fs'],['smE','fe'],['smMsg','customMsg'],['smSender','senderSelect']];
+  map.forEach(function(p){ var a=document.getElementById(p[0]), b=document.getElementById(p[1]); if(a&&b) b.value=a.value; });
+  renderSendPreview();
+}
+function sendModalSubmit(){
+  smSync();
+  var se=document.getElementById('smE'); var email=se?se.value.trim():'';
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    if(se){ se.classList.add('err'); se.focus(); }
+    if(typeof showToast==='function') showToast('Adresse email invalide');
+    return;
+  }
+  if(se) se.classList.remove('err');
+  closeSendModal();
+  /* réutilise tout le pipeline d'envoi existant (overlay email, Copier/Gmail/PDF) */
+  var bsnd=document.getElementById('bsnd'); if(bsnd) bsnd.click();
+}
 (function(){
   var t = document.getElementById('ipToggle'); if (!t) return;
   t.addEventListener('click', function(){
