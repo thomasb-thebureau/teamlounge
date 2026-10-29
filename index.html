@@ -902,6 +902,15 @@ body.dark .prop-cta{background:#D4B870;color:#0F0F0F}
 body.dark .prop-cta2{border-color:rgba(245,239,229,.3);color:#F5EFE5}
 /* ancienne barre de sélection du bas supprimée (remplacée par le panneau) */
 .selbar{display:none!important}
+/* footer retiré — tout tient sur un écran desktop */
+footer[role="contentinfo"]{display:none!important}
+@media(min-width:1024px){
+  .top-bar{height:57px}
+  .app3{height:calc(100vh - 57px);overflow:hidden;align-items:stretch}
+  .rail{position:static;top:auto;min-height:0;max-height:none;height:100%}
+  .cat{height:100%;overflow-y:auto}
+  .prop{position:static;top:auto;height:100%}
+}
 @media(max-width:1023px){.prop{position:static;height:auto;max-height:none;border-left:0;border-top:0.5px solid rgba(15,15,15,.1)}.prop-body{max-height:none}}
 .rail{background:#1E4035;color:#F5EFE5;padding:26px 22px;display:flex;flex-direction:column;gap:22px;position:sticky;top:61px;align-self:start;min-height:calc(100vh - 61px);max-height:calc(100vh - 61px);overflow-y:auto;z-index:50}
 .rail-sec{display:flex;flex-direction:column;gap:9px}
