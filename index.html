@@ -864,7 +864,7 @@ body.dark .cores-ncard.sel .nc-band{background:#6f5514}
 body.dark .itin-ncard .nc-desc,body.dark .cores-ncard .nc-desc{color:rgba(245,239,229,.72)}
 /* ===== Layout 3 colonnes + rail jade (handoff 2026) ===== */
 .app3{display:grid;grid-template-columns:minmax(220px,250px) minmax(0,1fr) minmax(320px,380px);align-items:start}
-.prop{background:#F5EFE5;border-left:0.5px solid rgba(15,15,15,.10);position:sticky;top:57px;align-self:start;height:calc(100vh - 57px);display:flex;flex-direction:column;min-width:0;z-index:40}
+.prop{background:#F5EFE5;border-left:0.5px solid rgba(15,15,15,.10);position:sticky;top:57px;align-self:start;height:calc(100vh - 57px);display:flex;flex-direction:column;min-width:0;min-height:0;z-index:40}
 .prop-head{padding:26px 28px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0}
 .prop-eye{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#8A6A18;display:flex;align-items:center;gap:8px}
 .prop-eye::before{content:'';width:18px;height:1px;background:#B09438}
@@ -1187,8 +1187,8 @@ body.dark .um-role{color:rgba(245,239,229,.55)}
 .sm-form-foot{margin-top:auto;padding-top:22px;display:flex;flex-direction:column;gap:8px}
 .sm-btn-ghost{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(15,15,15,.7);background:none;border:0.5px solid rgba(15,15,15,.25);border-radius:2px;padding:12px;width:100%;cursor:pointer;transition:all .2s}
 .sm-btn-ghost:hover{color:#0F0F0F;border-color:rgba(15,15,15,.5)}
-.sm-btn-send{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#FAFAFA;background:#0F0F0F;border:none;border-radius:2px;padding:14px;width:100%;cursor:pointer;transition:background .2s}
-.sm-btn-send:hover{background:#1E4035}
+.sm-btn-send{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#FAFAFA;background:#B09438;border:none;border-radius:2px;padding:14px;width:100%;cursor:pointer;transition:background .2s}
+.sm-btn-send:hover{background:#9c8230}
 .sm-btn-txt{background:none;border:none;color:rgba(15,15,15,.45);font:600 11px 'Plus Jakarta Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;padding:6px;text-align:center}
 .sm-btn-txt:hover{color:#0F0F0F}
 body.dark .sm-btn-send{background:#D4B870;color:#0F0F0F}body.dark .sm-btn-send:hover{background:#c0a252}
@@ -3391,7 +3391,6 @@ function buildEmail(data, showTotal) {
       window.open(gUrl, '_blank');
       ov.style.display = 'none';
       document.body.style.overflow = '';
-      document.getElementById('mov').classList.add('on');
       smsg.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#1E4035" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
         +' Gmail ouvert \u2014 cliquez dans le corps puis Ctrl+V';
       smsg.classList.add('on');
@@ -3401,8 +3400,7 @@ function buildEmail(data, showTotal) {
     document.getElementById('epClose').addEventListener('click', function() {
       ov.style.display = 'none';
       document.body.style.overflow = '';
-      /* Return to proposal modal */
-      document.getElementById('mov').classList.add('on');
+      /* ne pas rouvrir l'ancien modal #mov : le nouveau modal d'envoi (#sendov) est l'entrée */
     });
     document.getElementById('epPdf').addEventListener('click', function() {
       var pw=window.open('','_blank','width=820,height=900');
@@ -3509,12 +3507,10 @@ function buildEmail(data, showTotal) {
       window.open(gUrl2, '_blank');
       document.getElementById('emailOverlay').style.display = 'none';
       document.body.style.overflow = '';
-      document.getElementById('mov').classList.add('on');
     });
     liveOv.querySelector('#epClose2').addEventListener('click', function() {
       document.getElementById('emailOverlay').style.display = 'none';
       document.body.style.overflow = '';
-      document.getElementById('mov').classList.add('on');
     });
     liveOv.querySelector('#epPdf2').addEventListener('click', function() {
       var pw = window.open('','_blank','width=820,height=900');
