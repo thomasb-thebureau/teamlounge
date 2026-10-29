@@ -2559,9 +2559,19 @@ function emailPreviewHTML(isEN){
 function sendModalEN(){ var b=document.querySelector('#sendov .sm-lang button.on'); return !!(b && b.dataset.lang==='en'); }
 function renderSendPreview(){
   var fr=document.getElementById('sendPrevFrame'); if(!fr) return;
+  var isEN=sendModalEN();
   /* garder le toggle EN du modal d'envoi synchro avec #langToggle (utilisé par l'envoi réel) */
-  var lt=document.getElementById('langToggle'); if(lt){ lt.checked=sendModalEN(); }
-  fr.srcdoc = emailPreviewHTML(sendModalEN());
+  var lt=document.getElementById('langToggle'); if(lt){ lt.checked=isEN; }
+  EP_LANG=isEN?'en':'fr';
+  /* L'aperçu affiche EXACTEMENT l'email réellement envoyé (buildOptionsEmail = maquette) */
+  var data=(typeof getEmailPreviewData==='function')?getEmailPreviewData():[];
+  if(!data.length){ fr.srcdoc='<!DOCTYPE html><html><body style="margin:0;padding:32px;font-family:Arial,sans-serif;color:#999;font-size:13px">'+(isEN?'No office selected.':'Aucun bureau sélectionné.')+'</body></html>'; return; }
+  var pren=_ipVal('fp'), nom=_ipVal('fn'), soc=_ipVal('fs');
+  var civ=pren?(pren+(nom?' '+nom:'')):(isEN?'Sir/Madam':'Madame, Monsieur');
+  var customMsg=_ipVal('customMsg');
+  var LOGO='https://teamlounge.thebureau.paris/logo-white.svg', CHEV='https://teamlounge.thebureau.paris/chevrons-email.png';
+  try{ fr.srcdoc = buildOptionsEmail(data, isEN, civ, soc, customMsg, LOGO, CHEV); }
+  catch(e){ fr.srcdoc='<!DOCTYPE html><html><body style="padding:20px;font-family:Arial,sans-serif;color:#b00;font-size:12px">Aperçu indisponible : '+esc(String(e&&e.message||e))+'</body></html>'; }
 }
 function openSendModal(){
   var ov=document.getElementById('sendov'); if(!ov) return;
