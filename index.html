@@ -894,6 +894,9 @@ body.dark .prop-optedit-ic{color:#D4B870}
 .prow-tw .ptw-btn{width:22px;height:22px;background:none;border:0;cursor:pointer;color:#0F0F0F;font-size:13px;font-family:inherit}
 .prow-tw .ptw-val{min-width:18px;text-align:center;font-size:12px}
 .prow-dash{color:rgba(15,15,15,.4)}
+.prow-addopt{width:100%;margin-top:10px;border:1px dashed rgba(176,148,56,.55);background:rgba(176,148,56,.07);color:#8A6A18;padding:11px;font:600 10px 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
+.prow-addopt:hover{background:rgba(176,148,56,.14);border-color:#B09438}
+body.dark .prow-addopt{color:#D4B870;border-color:rgba(212,184,112,.4);background:rgba(212,184,112,.08)}
 .prow.tw .tw-ref{background:rgba(176,148,56,.16);color:#8A6A18}
 body.dark .prop-tabs{border-bottom-color:rgba(255,255,255,.1)}
 body.dark .pt-name,body.dark .pt-tot{color:rgba(245,239,229,.5)}
@@ -1006,7 +1009,7 @@ body.dark .prop-need-lbl{color:rgba(245,239,229,.6)}
 body.dark .prop-need-in input{color:#F5EFE5;border-color:rgba(245,239,229,.25)}
 .prop-eng{padding:0 28px 14px;flex-shrink:0}
 .prop-eng-lbl{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(15,15,15,.55);margin-bottom:8px}
-.prop-eng .eng{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;border:0;background:none}
+.prop-eng .eng{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;border:0;border-radius:0;background:none}
 .prop-eng .eng .sb{border:0.5px solid rgba(15,15,15,.2);background:none;color:#0F0F0F;padding:9px 6px;text-align:center;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;line-height:1.3}
 .prop-eng .eng .sb small{display:block;font-size:8px;opacity:.6;margin:2px 0 0;letter-spacing:0;text-transform:none}
 .prop-eng .eng .sb.on{background:#0F0F0F;color:#FAFAFA;border-color:#0F0F0F}
@@ -1587,7 +1590,7 @@ function makeCard(b) {
       '<div class="nc-row1"><div class="nc-tags">'+occBadge+newBadge+matchHtml+'</div><span class="nc-dispo" style="color:'+dispoColor+'">'+dispoTxt+'</span></div>'+
       '<div class="nc-desc">'+esc(cleanDesc(b.desc))+'</div>'+
       '<div class="nc-foot">'+
-        '<div class="nc-stat"><b>'+b.cap+'</b> '+tlang('poste'+(b.cap>1?'s':''),'desk'+(b.cap>1?'s':''))+(b.surface?' · '+(b.surface%1===0?b.surface:b.surface.toLocaleString('fr-FR'))+' m²':'')+'</div>'+
+        '<div class="nc-stat"><b>'+b.cap+'</b> '+tlang('poste'+(b.cap>1?'s':''),'desk'+(b.cap>1?'s':''))+(b.surface?'<br>'+(b.surface%1===0?b.surface:b.surface.toLocaleString('fr-FR'))+' m²':'')+'</div>'+
         '<div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">'+tlang('H.T./mois','excl.VAT/mo')+' · '+engShort+'</div></div>'+
       '</div>'+
     '</div>';
@@ -1901,11 +1904,16 @@ function renderPropPanel(){
     else meta=floorLblL(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' '+tlang('poste'+(b.cap>1?'s':''),'desk'+(b.cap>1?'s':''));
     html+='<div class="prow"><span class="prow-ref">'+ref+'</span><div class="prow-info"><div class="prow-name">'+name+'</div><div class="prow-meta">'+meta+'</div></div><span class="prow-price">'+fmt(price)+'<span class="eu">€</span></span><button class="prow-del" data-ref="'+esc(b.ref)+'" data-cores="'+(isCo?1:0)+'" title="Retirer">×</button></div>';
   });
-  html+='<div class="prow tw"><span class="prow-ref tw-ref">'+tlang('Télétr.','Remote')+'</span><div class="prow-info"><div class="prow-name">'+tlang('Offre Télétravail','Remote-work add-on')+'</div><div class="prow-meta">170 € '+tlang('H.T./mois/pers.','excl.VAT/mo/pers.')+'</div></div><div class="prow-twcol"><span class="prow-price">'+(tw>0?(fmt(tw*170)+'<span class="eu">€</span>'):'<span class="prow-dash">—</span>')+'</span><div class="prow-tw"><button class="ptw-btn" data-tw="-">−</button><span class="ptw-val">'+tw+'</span><button class="ptw-btn" data-tw="+">+</button></div></div><span></span></div>';
+  if(tw>0){
+    html+='<div class="prow tw"><span class="prow-ref tw-ref">'+tlang('Télétr.','Remote')+'</span><div class="prow-info"><div class="prow-name">'+tlang('Offre Télétravail','Remote-work add-on')+'</div><div class="prow-meta">170 € '+tlang('H.T./mois/pers.','excl.VAT/mo/pers.')+'</div></div><div class="prow-twcol"><span class="prow-price">'+fmt(tw*170)+'<span class="eu">€</span></span><div class="prow-tw"><button class="ptw-btn" data-tw="-">−</button><span class="ptw-val">'+tw+'</span><button class="ptw-btn" data-tw="+">+</button></div></div><button class="prow-del" data-twdel="1" title="'+tlang('Retirer','Remove')+'">×</button></div>';
+  } else {
+    html+='<button class="prow-addopt" id="propAddTw">+ '+tlang('Option Télétravail','Remote-work add-on')+'</button>';
+  }
   body.innerHTML=html;
   body.querySelectorAll('.prow-del').forEach(function(btn){
-    btn.addEventListener('click',function(){ var r=btn.dataset.ref; if(btn.dataset.cores==='1'){ toggleCoresPoste(r); } else { toggleSel(r); } });
+    btn.addEventListener('click',function(){ if(btn.dataset.twdel){ o.tw=0; renderPropPanel(); return; } var r=btn.dataset.ref; if(btn.dataset.cores==='1'){ toggleCoresPoste(r); } else { toggleSel(r); } });
   });
+  var _addTw=document.getElementById('propAddTw'); if(_addTw) _addTw.addEventListener('click',function(){ o.tw=1; renderPropPanel(); });
   body.querySelectorAll('.ptw-btn').forEach(function(btn){
     btn.addEventListener('click',function(){ o.tw=Math.max(0,Math.min(20,(o.tw||0)+(btn.dataset.tw==='+'?1:-1))); renderPropPanel(); });
   });
@@ -3402,7 +3410,7 @@ function askReset(){
   var parts=[];
   if(opts) parts.push(opts+' option'+(opts>1?'s':''));
   parts.push(n+' '+tlang('bureau'+(n>1?'x':''),'office'+(n>1?'s':'')));
-  document.getElementById('rcTxt').textContent=parts.join(', ')+tlang((client?' et les informations de ce client':'')+' seront effacés. Les filtres (dont la référence) seront aussi réinitialisés.',(client?' and this client’s details':'')+' will be cleared. Filters (including the reference) will be reset too.');
+  document.getElementById('rcTxt').textContent=parts.join(', ')+tlang((client?' et les informations de ce client':'')+' seront effacés. Les filtres et la référence seront aussi réinitialisés.',(client?' and this client’s details':'')+' will be cleared. Filters and the reference will be reset too.');
   ov.style.display='flex';
   return false;
 }
