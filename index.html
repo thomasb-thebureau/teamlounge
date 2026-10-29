@@ -869,6 +869,31 @@ body.dark .itin-ncard .nc-desc,body.dark .cores-ncard .nc-desc{color:rgba(245,23
 .prop-eye::before{content:'';width:18px;height:1px;background:#B09438}
 .prop-count{font-size:10px;font-weight:700;letter-spacing:.06em;color:#1E4035}
 .prop-body{flex:1;overflow-y:auto;padding:4px 28px 10px;min-height:0}
+.prop-tabs{display:flex;flex-wrap:wrap;align-items:flex-end;gap:2px 6px;padding:0 28px 8px;flex-shrink:0;border-bottom:0.5px solid rgba(15,15,15,.1);margin-bottom:10px}
+.prop-tab{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 8px;background:none;border:0;border-bottom:2px solid transparent;cursor:pointer;min-width:0}
+.pt-name{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(15,15,15,.5);white-space:nowrap}
+.pt-tot{font-size:11px;font-weight:700;color:rgba(15,15,15,.5)}
+.prop-tab.on{border-bottom-color:#B09438}
+.prop-tab.on .pt-name{color:#0F0F0F}
+.prop-tab.on .pt-tot{color:#1E4035}
+.prop-tab-add{padding:6px 8px;background:none;border:0;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A6A18;cursor:pointer;white-space:nowrap}
+.prop-opthead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 28px 8px;flex-shrink:0}
+.prop-optname{border:0;background:none;font-size:14px;font-weight:700;color:#0F0F0F;outline:none;font-family:inherit;min-width:0;flex:1;border-bottom:1px solid transparent}
+.prop-optname:focus{border-bottom-color:#B09438}
+.prop-optdel{background:none;border:0;font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(15,15,15,.45);cursor:pointer;white-space:nowrap}
+.prop-optdel:hover{color:#9A5A1C}
+.prow-tw{display:inline-flex;align-items:center;border:0.5px solid rgba(15,15,15,.2);margin-right:8px}
+.prow-tw .ptw-btn{width:22px;height:22px;background:none;border:0;cursor:pointer;color:#0F0F0F;font-size:13px;font-family:inherit}
+.prow-tw .ptw-val{min-width:18px;text-align:center;font-size:12px}
+.prow-dash{color:rgba(15,15,15,.4)}
+.prow.tw .tw-ref{background:rgba(176,148,56,.16);color:#8A6A18}
+body.dark .prop-tabs{border-bottom-color:rgba(255,255,255,.1)}
+body.dark .pt-name,body.dark .pt-tot{color:rgba(245,239,229,.5)}
+body.dark .prop-tab.on .pt-name{color:#F5EFE5}
+body.dark .prop-tab.on .pt-tot{color:#6FB392}
+body.dark .prop-optname{color:#F5EFE5}
+body.dark .prow-tw{border-color:rgba(245,239,229,.2)}
+body.dark .prow-tw .ptw-btn{color:#F5EFE5}
 .prop-empty{font-family:Spectral,serif;font-style:italic;font-weight:300;font-size:14px;color:rgba(15,15,15,.6);padding:20px 0;line-height:1.5}
 .prow{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:12px 0;border-bottom:0.5px solid rgba(15,15,15,.1)}
 .prow-ref{justify-self:start;min-width:52px;text-align:center;padding:5px 9px;border-radius:999px;background:#1E4035;color:#F5EFE5;font-size:10px;font-weight:700;white-space:nowrap}
@@ -943,7 +968,7 @@ footer[role="contentinfo"]{display:none!important}
 .rail .occ-toggle.on .occ-slash{display:none}
 .rail .favr{align-self:flex-start;background:transparent;border:1px solid rgba(176,148,56,.5);color:#D4B870;cursor:pointer}
 .rail .favr.on{background:#B09438;border-color:#B09438;color:#FAFAFA}
-.rail-foot{margin-top:auto;padding-top:14px;border-top:1px solid rgba(245,239,229,.12);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rail-foot{display:none}
 .rail-nf{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,239,229,.55)}
 .rail .reset{color:#D4B870;text-decoration:none;font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:none;cursor:pointer;white-space:nowrap}
 .rail .reset:hover{color:#F5EFE5}
@@ -1053,7 +1078,7 @@ body.dark .um-role{color:rgba(245,239,229,.55)}
 </head>
 <body>
 <div class="top-bar"><div class="logo-wrap"><a href="#" onclick="return askReset();" title="Nouvelle session" style="display:flex;align-items:center;line-height:0"><img class="logo-main" src="./logo.svg?v=11" alt="The Bureau"/><img class="logo-main-dark" src="./logo-white.svg?v=11" alt="The Bureau"/></a><div class="logo-div"></div><span class="logo-tag">TEAM LOUNGE</span></div><div class="top-right"><button class="sync-pill" id="syncPill" onclick="fetchData()" title="Actualiser les données"><span class="sdot" id="sdot"></span><span class="stxt" id="stxt">Chargement…</span></button><button class="hdr-btn" id="resetBtn" onclick="return askReset();"><span style="font-size:13px;line-height:1">↺</span> Réinitialiser</button><div class="lang-toggle" id="langToggleHeader"><button data-lang="fr" class="on">FR</button><button data-lang="en">EN</button></div><button class="dark-toggle hdr-icon" id="darkToggle" title="Mode sombre"><svg class="ico-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="ico-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></button><span class="dlabel" id="dlabel" style="display:none"></span><button class="user-avatar" id="userAvatar" title="Changer d'expéditeur">TB</button></div></div>
-<div class="app3"><div class="rail-backdrop" id="railBackdrop"></div><aside class="rail"><img src="./chevrons.svg" alt="" class="rail-wm"><div class="rail-sec"><div class="rail-lbl">Adresse</div><div class="site-chips" id="sf"><span class="sc sc-all on" data-site="all">Toutes<span class="rc-ct" data-ct="all"></span></span><span class="sc" data-site="I">TB I<span class="rc-ct" data-ct="I"></span></span><span class="sc" data-site="II">TB II<span class="rc-ct" data-ct="II"></span></span><span class="sc" data-site="III">TB III<span class="rc-ct" data-ct="III"></span></span><span class="sc" data-site="IV">TB IV<span class="rc-ct" data-ct="IV"></span></span></div></div><div class="rail-sec"><div class="rail-lbl">Postes</div><div class="cap-pills" id="capBtns"><button class="cb on" data-cap="all">Tous</button><button class="cb" data-cap="s">1–6</button><button class="cb" data-cap="m">7–12</button><button class="cb" data-cap="l">13–20</button><button class="cb" data-cap="xl">20+</button></div></div><div class="rail-sec"><div class="rail-lbl">Disponibilité</div><div class="cap-pills" id="df"><button class="sb on" data-dispo="all">Toutes</button><button class="sb" data-dispo="immediate">Immédiate</button><button class="sb" data-dispo="future">À venir</button><button class="occ-toggle" id="occBtn" title="Afficher les bureaux occupés"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21" class="occ-slash"/></svg> Occupés</button></div></div><div class="rail-sec"><div class="rail-lbl">Référence</div><input type="text" class="ri wide" id="search" placeholder="ex. B402 · ⌘K"></div><div class="rail-foot"><span class="rail-nf" id="railNf">Aucun filtre</span><button class="reset" id="rst">Réinitialiser →</button></div><div style="display:none" aria-hidden="true"><input id="cmin"><input id="cmax"><select id="etf"><option value="all">Tous</option><option value="0">RDC</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option><option value="5">5e</option></select><span id="favFilter"></span></div></aside><main class="cat"><div class="cat-head"><div><div class="eyebrow-l">Paris · 75002 &amp; 75008</div><h1 class="cat-title"><strong id="cnt">-</strong> bureau<span id="ps"></span> <em>disponible<span id="ps2"></span></em></h1></div><div class="cat-tools"><button class="mob-filters-btn" id="mobFiltersBtn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<span class="mfb-dot" id="mobFiltersDot" style="display:none">0</span></button><div class="sort-btns" id="srtBtns"><button class="sortb on" data-sort="nom">Correspondance</button><button class="sortb" data-sort="pa">Prix</button><button class="sortb" data-sort="surface">Surface</button><button class="sortb" data-sort="dispo">Disponibilité</button></div><span class="data-warn" id="dataWarn" role="status">⚠ Données de secours · hors ligne</span><div style="display:none" aria-hidden="true"><select id="srt"><option value="nom" selected>Référence</option><option value="pa">Prix croissant</option><option value="pd">Prix décroissant</option><option value="ca">Capacité croissante</option><option value="cd">Capacité décroissante</option><option value="dispo">Disponibilité</option></select><div id="viewToggle"><button id="vtList"></button><button id="vtGrid"></button></div><button id="presentToggle"></button><button id="filterFab" onclick="openFilterDrawer()"><span id="filterFabDot"></span></button></div></div></div><div class="active-filters" id="activeFilters" aria-live="polite"></div><div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div></main><aside class="prop"><div class="prop-head"><div class="prop-eye">Proposition</div><span class="prop-count" id="propCount"></span></div><div class="prop-client"><input class="pc-name" id="propClientName" placeholder="Prénom Nom" autocomplete="off"><input class="pc-comp" id="propClientComp" placeholder="Société" autocomplete="off"></div><div class="prop-need"><span class="prop-need-lbl">Postes souhaités</span><div class="prop-need-in"><input type="number" id="needMin" min="1" placeholder="min" autocomplete="off"><span>–</span><input type="number" id="needMax" min="1" placeholder="max" autocomplete="off"></div></div><div class="prop-eng"><div class="prop-eng-lbl">Engagement</div><div class="sr eng" id="ef"><button class="sb on" data-eng="mensuel">Mensuel<small>3 mois min.</small></button><button class="sb" data-eng="12m">12 mois<small>−5 %</small></button><button class="sb" data-eng="24m">24 mois<small>−10 %</small></button><button class="sb" data-eng="36m">36 mois<small>−15 %</small></button></div></div><div class="prop-body" id="propBody"></div><div class="prop-foot" id="propFoot"><div class="prop-tot"><div class="prop-tot-l"><div class="prop-tot-lbl">Total H.T. / mois · <span id="propTier">—</span></div><div class="prop-sav" id="propSav"></div></div><span class="prop-tot-amt" id="propAmt">0 <span class="eu">€</span></span></div><button class="prop-cta" id="propSend" disabled>Envoyer au client →</button><button class="prop-cta2" id="propPdf" disabled>Aperçu &amp; téléchargement PDF</button></div></aside></div>
+<div class="app3"><div class="rail-backdrop" id="railBackdrop"></div><aside class="rail"><img src="./chevrons.svg" alt="" class="rail-wm"><div class="rail-sec"><div class="rail-lbl">Adresse</div><div class="site-chips" id="sf"><span class="sc sc-all on" data-site="all">Toutes<span class="rc-ct" data-ct="all"></span></span><span class="sc" data-site="I">TB I<span class="rc-ct" data-ct="I"></span></span><span class="sc" data-site="II">TB II<span class="rc-ct" data-ct="II"></span></span><span class="sc" data-site="III">TB III<span class="rc-ct" data-ct="III"></span></span><span class="sc" data-site="IV">TB IV<span class="rc-ct" data-ct="IV"></span></span></div></div><div class="rail-sec"><div class="rail-lbl">Postes</div><div class="cap-pills" id="capBtns"><button class="cb on" data-cap="all">Tous</button><button class="cb" data-cap="s">1–6</button><button class="cb" data-cap="m">7–12</button><button class="cb" data-cap="l">13–20</button><button class="cb" data-cap="xl">20+</button></div></div><div class="rail-sec"><div class="rail-lbl">Disponibilité</div><div class="cap-pills" id="df"><button class="sb on" data-dispo="all">Toutes</button><button class="sb" data-dispo="immediate">Immédiate</button><button class="sb" data-dispo="future">À venir</button><button class="occ-toggle" id="occBtn" title="Afficher les bureaux occupés"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21" class="occ-slash"/></svg> Occupés</button></div></div><div class="rail-sec"><div class="rail-lbl">Référence</div><input type="text" class="ri wide" id="search" placeholder="ex. B402 · ⌘K"></div><div class="rail-foot"><span class="rail-nf" id="railNf">Aucun filtre</span><button class="reset" id="rst">Réinitialiser →</button></div><div style="display:none" aria-hidden="true"><input id="cmin"><input id="cmax"><select id="etf"><option value="all">Tous</option><option value="0">RDC</option><option value="1">1er</option><option value="2">2e</option><option value="3">3e</option><option value="4">4e</option><option value="5">5e</option></select><span id="favFilter"></span></div></aside><main class="cat"><div class="cat-head"><div><div class="eyebrow-l">Paris · 75002 &amp; 75008</div><h1 class="cat-title"><strong id="cnt">-</strong> bureau<span id="ps"></span> <em>disponible<span id="ps2"></span></em></h1></div><div class="cat-tools"><button class="mob-filters-btn" id="mobFiltersBtn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtres<span class="mfb-dot" id="mobFiltersDot" style="display:none">0</span></button><div class="sort-btns" id="srtBtns"><button class="sortb on" data-sort="nom">Correspondance</button><button class="sortb" data-sort="pa">Prix</button><button class="sortb" data-sort="surface">Surface</button><button class="sortb" data-sort="dispo">Disponibilité</button></div><span class="data-warn" id="dataWarn" role="status">⚠ Données de secours · hors ligne</span><div style="display:none" aria-hidden="true"><select id="srt"><option value="nom" selected>Référence</option><option value="pa">Prix croissant</option><option value="pd">Prix décroissant</option><option value="ca">Capacité croissante</option><option value="cd">Capacité décroissante</option><option value="dispo">Disponibilité</option></select><div id="viewToggle"><button id="vtList"></button><button id="vtGrid"></button></div><button id="presentToggle"></button><button id="filterFab" onclick="openFilterDrawer()"><span id="filterFabDot"></span></button></div></div></div><div class="active-filters" id="activeFilters" aria-live="polite"></div><div class="grid" id="grid"><div class="empty" id="empty"><h3>Aucun bureau ne correspond à vos critères.</h3><p>Modifiez les filtres ou <a href="#" id="emptyRst" style="color:var(--or2)">réinitialisez</a>.</p></div></div></main><aside class="prop"><div class="prop-head"><div class="prop-eye">Proposition</div><span class="prop-count" id="propCount"></span></div><div class="prop-client"><input class="pc-name" id="propClientName" placeholder="Prénom Nom" autocomplete="off"><input class="pc-comp" id="propClientComp" placeholder="Société" autocomplete="off"></div><div class="prop-need"><span class="prop-need-lbl">Postes souhaités</span><div class="prop-need-in"><input type="number" id="needMin" min="1" placeholder="min" autocomplete="off"><span>–</span><input type="number" id="needMax" min="1" placeholder="max" autocomplete="off"></div></div><div class="prop-eng"><div class="prop-eng-lbl">Engagement</div><div class="sr eng" id="ef"><button class="sb on" data-eng="mensuel">Mensuel<small>3 mois min.</small></button><button class="sb" data-eng="12m">12 mois<small>−5 %</small></button><button class="sb" data-eng="24m">24 mois<small>−10 %</small></button><button class="sb" data-eng="36m">36 mois<small>−15 %</small></button></div></div><div class="prop-tabs" id="propTabs"></div><div class="prop-opthead" id="propOpthead"></div><div class="prop-body" id="propBody"></div><div class="prop-foot" id="propFoot"><div class="prop-tot"><div class="prop-tot-l"><div class="prop-tot-lbl">Total H.T. / mois · <span id="propTier">—</span></div><div class="prop-sav" id="propSav"></div></div><span class="prop-tot-amt" id="propAmt">0 <span class="eu">€</span></span></div><button class="prop-cta" id="propSend" disabled>Envoyer au client →</button><button class="prop-cta2" id="propPdf" disabled>Aperçu &amp; téléchargement PDF</button></div></aside></div>
 <div class="selbar" id="selbar"><div class="sb-left"><div><div class="sel-cnt"><strong id="scnt">0</strong> bureau<span id="sps"></span> sélectionné<span id="sps2"></span></div><div class="sel-tot" id="stot"></div></div><div class="sel-chips" id="schips"></div><button class="sel-clr" id="sclr">Tout désélectionner</button></div><div style="display:flex;gap:8px;align-items:center"><button class="btn-prop" id="bprop"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Envoyer une proposition</button><button class="btn-csv" id="pdfBtn" onclick="exportPDF()" title="PDF A4 Paysage">↓ PDF</button><button class="btn-csv" id="csvBtn">↓ CSV</button><button class="btn-csv" id="cmpBtn" style="display:none">⇄ Comparer</button></div></div>
 <div class="moverlay" id="mov" role="dialog" aria-modal="true" aria-label="Proposition commerciale"><div class="modal"><div class="mhdr"><div><div class="eyebrow">Proposition personnalisée</div><h2>Envoyer au <b>client</b></h2></div><div class="mhdr-right"><div class="mlang" id="movLang"><button type="button" data-lang="fr" class="on" onclick="setMovLang('fr')">FR</button><button type="button" data-lang="en" onclick="setMovLang('en')">EN</button></div><button class="mclose" id="mcls" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="mbody"><div class="mcol mcol-l"><div class="msec">Le destinataire</div><div class="frow2"><div class="fg"><label class="flbl">Prénom</label><input type="text" class="finp" id="fp" placeholder="Prénom"></div><div class="fg"><label class="flbl">Nom</label><input type="text" class="finp" id="fn" placeholder="Nom"></div></div><div class="frow2"><div class="fg"><label class="flbl">Société</label><input type="text" class="finp" id="fs" placeholder="Société"></div><div class="fg"><label class="flbl">Email</label><input type="email" class="finp" id="fe" placeholder="prenom@societe.com" aria-describedby="feErr"><div class="field-err" id="feErr" role="alert">Adresse email invalide</div></div></div><div class="msec mt">Message</div><div class="fg"><label class="flbl">Expéditeur</label><select class="fsel" id="senderSelect"><option value="thomas">Thomas Bougeard - Directeur Commercial</option><option value="charles">Charles Caignol - Responsable d'exploitation</option><option value="oscar">Oscar Aumont - Responsable de Centres</option><option value="pierrehenri">Pierre-Henri Poulle - Responsable Conciergerie</option><option value="dynah">Dynah Laloum - Responsable Conciergerie</option></select></div><div class="fg"><label class="flbl">Modèle</label><div class="chips" id="tplChips"><span class="chip" data-tpl="first" onclick="pickTpl(this)">Premier contact</span><span class="chip" data-tpl="relance" onclick="pickTpl(this)">Relance</span><span class="chip" data-tpl="surm" onclick="pickTpl(this)">Sur-mesure</span><span class="chip" data-tpl="post" onclick="pickTpl(this)">Post-visite</span></div><select id="tplSelect" style="display:none"><option value="">-- Choisir un modèle --</option><option value="first">Premier contact</option><option value="relance">Relance</option><option value="surm">Proposition sur-mesure</option><option value="post">Post-visite</option></select></div><div class="fg fg-grow"><label class="flbl">Texte d'introduction</label><textarea id="customMsg">Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.</textarea></div></div><div class="mcol mcol-r"><div class="msec between" id="selHead"><span>Bureaux sélectionnés · <span id="selCount">0</span></span><button id="optModeBtn" onclick="toggleOptMode()" class="optmode-btn">+ Mode options</button></div><div class="msortbtns sortrow" id="msortBtns"><button class="msb on" data-sort="custom">Manuel</button><button class="msb" data-sort="nom">Réf.</button><button class="msb" data-sort="surface">Taille</button><button class="msb" data-sort="prix">Prix</button></div><div class="moffs" id="moffs"></div><div class="msec between" id="optHead" style="display:none"><span>Options proposées · <span id="optCount">2</span></span><button type="button" class="modepill" onclick="toggleOptMode()"><span class="dot"></span>Mode options actif</button></div><div class="opt-hint" id="optHint" style="display:none">Le client reçoit plusieurs configurations <b>alternatives</b> et en choisit une. Chaque option a ses bureaux et son propre total.</div><div id="optPanel" style="display:none;margin-top:14px"><div id="optList"></div></div><div style="display:flex;gap:8px;margin:10px 0 0" id="groupToggleWrap"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf);flex:1"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex:1"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="groupToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="ttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="tthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="toggleLabel" style="font-size:11px;font-weight:500;color:var(--encre)">Bureaux dissociés</div></div></label></div><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--creme);border-radius:3px;border:1px solid var(--cf)"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none"><div style="position:relative;width:36px;height:20px;flex-shrink:0"><input type="checkbox" id="langToggle" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:2"><div id="lttrack" style="position:absolute;inset:0;border-radius:50px;background:var(--gc);transition:background .2s;pointer-events:none"></div><div id="ltthumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(0);pointer-events:none"></div></div><div><div id="langLabel" style="font-size:11px;font-weight:500;color:var(--encre)">FR</div></div></label></div></div><div class="msec mt" id="twHead">Options</div><div class="tw-section" id="twSection"><div class="tw-row"><span class="tw-badge">Télétravail</span><span class="tw-sub">170 € H.T./mois/pers.</span><div class="tw-qty"><button type="button" id="twMinus" aria-label="Moins">−</button><input type="number" id="twQty" min="0" max="20" value="0"><button type="button" id="twPlus" aria-label="Plus">+</button></div><div class="tw-price" id="twPrice">0 €</div></div></div><div id="twExtras"></div><div class="msec mt">Tarification</div><div class="tpanel"><label class="flbl" style="margin-bottom:10px;display:block">Paliers d'engagement · affichés dans l'email</label><div class="tiers" id="tierChecks"><label class="tier"><input type="checkbox" value="0" checked><span class="tk">Mensuel</span><span class="tv">0 %</span></label><label class="tier"><input type="checkbox" value="1" checked><span class="tk">12 mois</span><span class="tv">−5 %</span></label><label class="tier"><input type="checkbox" value="2" checked><span class="tk">24 mois</span><span class="tv">−10 %</span></label><label class="tier"><input type="checkbox" value="3" checked><span class="tk">36 mois</span><span class="tv">−15 %</span></label></div><label class="flbl" style="margin:12px 0 8px;display:block">Durée mise en avant · prix affichés des bureaux</label><div class="tiers" id="defaultTierChecks"><label class="tier"><input type="radio" name="defTier" value="0"><span class="tk">Mensuel</span></label><label class="tier"><input type="radio" name="defTier" value="1" checked><span class="tk">12 mois</span></label><label class="tier"><input type="radio" name="defTier" value="2"><span class="tk">24 mois</span></label><label class="tier"><input type="radio" name="defTier" value="3"><span class="tk">36 mois</span></label></div></div><div class="tpanel"><div class="discrow"><div><div class="lbl">Remise commerciale</div><div class="sub">% supplémentaire, appliqué en plus de la remise du palier</div></div><div class="disc-inp"><input type="number" id="remiseInput" min="0" max="25" step="1" value="0"><span>%</span></div></div></div><div class="mtot" id="mtot" style="display:none"></div><div class="mtiers" id="mtiers" style="display:none"></div><div class="ip-wrap"><button type="button" class="ip-toggle" id="ipToggle" aria-expanded="false"><span>👁 Aperçu de l'email</span><span class="ip-caret">▾</span></button><div class="ip-body" id="ipBody" style="display:none"><iframe class="ip-frame" id="ipFrame" title="Aperçu de l'email"></iframe><div class="ip-hint">Aperçu en direct — mis à jour selon votre configuration</div></div></div></div></div><div class="mftr"><button class="bcnl" id="bcnl">Annuler</button><button class="bcnl" id="histBtn" style="font-size:9px">Historique</button><button class="bcnl" id="modalRefreshBtn" style="font-size:9px" title="Actualiser les disponibilités et prix">↻ Actualiser</button><div class="spacer"></div><div class="smsg" id="smsg"></div><button class="btn-txt" id="btnPdfModal" title="Telecharger le PDF recap"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> PDF</button><button class="btn-txt" id="btnTxt" title="Partager le récap texte"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Récap texte</button><button class="bsnd" id="bsnd"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span class="bsnd-label">Voir &amp; envoyer</span></button></div></div></div>
 <button class="present-exit" id="presentExit">&#10005; Quitter</button>
@@ -1236,9 +1261,31 @@ function coresRefsLabel(refs, useEN){
 function coresSelectedRefs(){ return coresList().filter(function(b){ return !!SEL[b.ref]; }).map(function(b){ return b.ref; }); }
 var CORES_MENU_OPEN = false;
 var EP_LANG = 'fr'; /* current preview language */
-var OPT_MODE = false;       /* Options mode active */
-var OPTIONS = [];           /* [{id, label, refs:[], tw, extras:{}}] */
+var OPT_MODE = true;        /* Mode options OBLIGATOIRE (handoff) : le panneau = constructeur d'options */
+var OPTIONS = [];           /* [{id, label, refs:[], tw, extras:{}, itinQty}] */
 var OPT_COUNTER = 0;
+var PROP_ACTIVE = 0;        /* index de l'option active dans le panneau */
+function optLetter(i){ return String.fromCharCode(65+i); }
+function ensureOptions(){
+  if(!OPTIONS || !OPTIONS.length){ OPT_COUNTER++; OPTIONS=[{id:'opt'+OPT_COUNTER,label:'Option A',refs:[],tw:0,extras:{},itinQty:1}]; PROP_ACTIVE=0; }
+  if(PROP_ACTIVE>=OPTIONS.length) PROP_ACTIVE=OPTIONS.length-1;
+  if(PROP_ACTIVE<0) PROP_ACTIVE=0;
+  OPT_MODE=true;
+}
+function refInAnyOption(ref){ return OPTIONS.some(function(o){ return (o.refs||[]).indexOf(ref)>=0; }); }
+function itinSelObj(){ return { ref:ITIN_REF, site:null, label:'Itinérant', adresse:'', prix:ITIN_PRIX, base:ITIN_PRIX, itinQty:1, cap:1, etage:0, surface:null, dispo:'immediate', date:null, desc:'Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7. Formule all-incluse.', descEN:'Flexible access to shared spaces and The Bureau services. 24/7 access. All-inclusive.', isItin:true, virtLabel:'Itinérant', virtMeta:'Placement libre · tous nos sites', virtUnit:'abonnement', virtTag:'ITIN' }; }
+/* Total d'une option au coefficient de remise d (bureaux remisés, télétravail non remisé) */
+function optionTotalAt(o, dd){
+  var t=0;
+  (o.refs||[]).forEach(function(r){
+    var b=(r===ITIN_REF)?(SEL[ITIN_REF]||itinSelObj()):DATA.find(function(x){return x.ref===r;});
+    if(!b) return;
+    var q=b.isItin?(o.itinQty||1):1;
+    t += Math.round(b.prix*(1-dd))*q;
+  });
+  t += (o.tw||0)*170;
+  return t;
+}
 var PROP_RECO = 0;          /* Option recommandée (1-based, 0 = aucune) — PDF multi */
 var PROP_ANNEXES = true;    /* Afficher les annexes dans le PDF */
 /* Extras additionnels par option (quantité × prix, non remisés) */
@@ -1315,24 +1362,7 @@ function makeItinCard() {
     '</div>';
 
   div.addEventListener('click', function() {
-    if (!SEL[ITIN_REF]) {
-      SEL[ITIN_REF] = {
-        ref:ITIN_REF, site:null, label:'Itinérant', adresse:'',
-        prix: ITIN_PRIX, base: ITIN_PRIX, itinQty:1,
-        cap:1, etage:0, surface:null, dispo:'immediate', date:null,
-        desc:'Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7. Formule all-incluse.',
-        descEN:'Flexible access to shared spaces and The Bureau services. 24/7 access. All-inclusive.',
-        isItin: true,
-        virtLabel:'Itinérant', virtMeta:'Placement libre · tous nos sites', virtUnit:'abonnement', virtTag:'ITIN'
-      };
-      SEL_ORDER.push(ITIN_REF);
-    } else {
-      delete SEL[ITIN_REF];
-      SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==ITIN_REF; });
-    }
-    var old2 = document.querySelector('.itin-ncard');
-    if (old2) old2.parentNode.replaceChild(makeItinCard(), old2);
-    updateSelBar(); updateModalTotal();
+    toggleSel(ITIN_REF); /* render() redessine la carte Itinérant */
   });
   return div;
 }
@@ -1342,11 +1372,9 @@ function refreshCoresCard() {
   if (old2) old2.parentNode.replaceChild(makeCoresCard(), old2);
   updateSelBar(); updateModalTotal();
 }
-/* Sélectionne / désélectionne un poste Co-Résident (vraie ligne DATA) */
+/* Sélectionne / désélectionne un poste Co-Résident (vraie ligne DATA) → option active */
 function toggleCoresPoste(ref){
-  if (SEL[ref]) { delete SEL[ref]; SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==ref; }); }
-  else { SEL[ref] = true; SEL_ORDER.push(ref); }
-  refreshCoresCard();
+  toggleSel(ref); /* render() redessine la carte Co-Résident */
 }
 
 function makeCoresCard() {
@@ -1525,14 +1553,17 @@ function makeCard(b) {
    SELECT
 ============================================================ */
 function toggleSel(ref) {
-  if (SEL[ref]) { delete SEL[ref]; SEL_ORDER = SEL_ORDER.filter(function(r){ return r !== ref; }); } else { SEL[ref] = true; SEL_ORDER.push(ref); }
-  var el = document.querySelector('.ncard[data-ref="'+ref+'"]');
-  if (el) el.classList.toggle('sel', !!SEL[ref]);
+  ensureOptions();
+  var o=OPTIONS[PROP_ACTIVE]; var i=o.refs.indexOf(ref);
+  if(i>=0){ o.refs.splice(i,1); if(!refInAnyOption(ref)){ delete SEL[ref]; SEL_ORDER=SEL_ORDER.filter(function(r){ return r!==ref; }); } }
+  else { o.refs.push(ref); if(!SEL[ref]){ SEL[ref]=(ref===ITIN_REF)?itinSelObj():true; SEL_ORDER.push(ref); } }
+  if(typeof render==='function') render();
   updateSelBar();
-  if(typeof debounceSave==='function')debounceSave();
+  if(typeof debounceSave==='function') debounceSave();
 }
 function clearSel() {
   SEL = {}; SEL_ORDER = [];
+  if (typeof OPTIONS!=='undefined' && OPTIONS) OPTIONS.forEach(function(o){ o.refs=[]; o.tw=0; });
   document.querySelectorAll('.card.sel, .ncard.sel').forEach(function(el){ el.classList.remove('sel'); });
   var _r = document.getElementById('remiseInput'); if (_r) _r.value = '0';
   updateSelBar();
@@ -1778,55 +1809,89 @@ function updateSelBar() {
 /* ===== Panneau proposition (colonne droite, handoff) ===== */
 function renderPropPanel(){
   var body=document.getElementById('propBody'); if(!body) return;
+  ensureOptions();
   var d=disc();
   var remEl=document.getElementById('remiseInput');
   var remise=remEl?Math.min(25,Math.max(0,parseFloat(remEl.value)||0))/100:0;
-  var selData=DATA.filter(function(b){ return !!SEL[b.ref]; }); injectVirt(selData);
-  var ordered=[]; SEL_ORDER.forEach(function(r){ var b=selData.find(function(x){return x.ref===r;}); if(b)ordered.push(b); });
-  selData.forEach(function(b){ if(ordered.indexOf(b)<0) ordered.push(b); });
-  var cntEl=document.getElementById('propCount');
-  if(cntEl) cntEl.textContent = ordered.length?(ordered.length+' bureau'+(ordered.length>1?'x':'')):'';
-  var tw=(typeof getTwQty==='function')?getTwQty():0;
-  if(ordered.length===0 && tw===0){
-    body.innerHTML='<div class="prop-empty">Sélectionnez des bureaux dans le catalogue pour composer votre proposition.</div>';
-  } else {
-    var html='';
-    ordered.forEach(function(b){
-      var q=b.isItin?(b.itinQty||1):1;
-      var price=Math.round(b.prix*(1-d))*q;
-      var isCo=isCoresRow(b);
-      var ref=isCo?('Poste '+coresNo(b.ref)):(b.isItin?(b.virtLabel||b.ref):esc(b.ref));
-      var name=isCo?'Co-Résident':(b.isItin?(b.virtLabel||''):esc(b.label||''));
-      var meta;
-      if(isCo) meta=etLbl(b.etage)+(b.surface?' · '+b.surface+' m²':'')+' · The Bureau I';
-      else if(b.isItin) meta=q+' abonnement'+(q>1?'s':'');
-      else meta=etLbl(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' poste'+(b.cap>1?'s':'');
-      html+='<div class="prow"><span class="prow-ref">'+ref+'</span><div class="prow-info"><div class="prow-name">'+name+'</div><div class="prow-meta">'+meta+'</div></div><span class="prow-price">'+fmt(price)+'<span class="eu">€</span></span><button class="prow-del" data-ref="'+esc(b.ref)+'" data-cores="'+(isCo?1:0)+'" title="Retirer">×</button></div>';
-    });
-    if(tw>0){
-      html+='<div class="prow tw"><span class="prow-ref">Télé</span><div class="prow-info"><div class="prow-name">Offre Télétravail</div><div class="prow-meta">'+tw+' × 170 € H.T./mois/pers.</div></div><span class="prow-price">'+fmt(tw*170)+'<span class="eu">€</span></span><button class="prow-del" data-tw="1" title="Retirer">×</button></div>';
-    }
-    body.innerHTML=html;
-    body.querySelectorAll('.prow-del').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        if(btn.dataset.tw){ if(typeof setTwQ==='function') setTwQ(0); return; }
-        var r=btn.dataset.ref;
-        if(btn.dataset.cores==='1'){ if(typeof toggleCoresPoste==='function') toggleCoresPoste(r); }
-        else { toggleSel(r); }
-      });
-    });
+  var dCoef=d+remise;
+  var o=OPTIONS[PROP_ACTIVE];
+  renderOptionTabs(dCoef);
+  /* En-tête de l'option active : nom éditable + supprimer */
+  var oh=document.getElementById('propOpthead');
+  if(oh){
+    oh.innerHTML='<input class="prop-optname" id="propOptName" autocomplete="off"><button class="prop-optdel" id="propOptDel">Supprimer</button>';
+    var inp=document.getElementById('propOptName'); if(inp){ inp.value=o.label||('Option '+optLetter(PROP_ACTIVE)); inp.addEventListener('input',function(){ o.label=this.value; renderOptionTabs(dCoef); }); }
+    var del=document.getElementById('propOptDel'); if(del) del.addEventListener('click', removeActiveOption);
   }
-  /* Total (remise commerciale incluse) */
-  var tot=0, baseM=0;
-  ordered.forEach(function(b){ var q=b.isItin?(b.itinQty||1):1; tot+=Math.round(b.prix*(1-d-remise))*q; baseM+=Math.round(b.prix*(1-remise))*q; });
-  var twT=(typeof getTwTotal==='function')?getTwTotal():0; tot+=twT; baseM+=twT;
+  var selData=DATA.filter(function(b){ return !!SEL[b.ref]; }); injectVirt(selData);
+  var ordered=[]; (o.refs||[]).forEach(function(r){ var b=selData.find(function(x){return x.ref===r;}); if(b)ordered.push(b); });
+  var cntEl=document.getElementById('propCount'); if(cntEl) cntEl.textContent = ordered.length?(ordered.length+' bureau'+(ordered.length>1?'x':'')):'';
+  var tw=o.tw||0;
+  var html='';
+  if(ordered.length===0){
+    html='<div class="prop-empty">Cliquez sur des bureaux du catalogue pour composer cette option.</div>';
+  }
+  ordered.forEach(function(b){
+    var q=b.isItin?(o.itinQty||1):1;
+    var price=Math.round(b.prix*(1-d))*q;
+    var isCo=isCoresRow(b);
+    var ref=isCo?('Poste '+coresNo(b.ref)):(b.isItin?(b.virtLabel||b.ref):esc(b.ref));
+    var name=isCo?'Co-Résident':(b.isItin?(b.virtLabel||''):esc(b.label||''));
+    var meta;
+    if(isCo) meta=etLbl(b.etage)+(b.surface?' · '+b.surface+' m²':'')+' · The Bureau I';
+    else if(b.isItin) meta=q+' abonnement'+(q>1?'s':'');
+    else meta=etLbl(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' poste'+(b.cap>1?'s':'');
+    html+='<div class="prow"><span class="prow-ref">'+ref+'</span><div class="prow-info"><div class="prow-name">'+name+'</div><div class="prow-meta">'+meta+'</div></div><span class="prow-price">'+fmt(price)+'<span class="eu">€</span></span><button class="prow-del" data-ref="'+esc(b.ref)+'" data-cores="'+(isCo?1:0)+'" title="Retirer">×</button></div>';
+  });
+  html+='<div class="prow tw"><span class="prow-ref tw-ref">Télétr.</span><div class="prow-info"><div class="prow-name">Offre Télétravail</div><div class="prow-meta">170 € H.T./mois/pers.</div></div><div class="prow-tw"><button class="ptw-btn" data-tw="-">−</button><span class="ptw-val">'+tw+'</span><button class="ptw-btn" data-tw="+">+</button></div><span class="prow-price">'+(tw>0?(fmt(tw*170)+'<span class="eu">€</span>'):'<span class="prow-dash">—</span>')+'</span></div>';
+  body.innerHTML=html;
+  body.querySelectorAll('.prow-del').forEach(function(btn){
+    btn.addEventListener('click',function(){ var r=btn.dataset.ref; if(btn.dataset.cores==='1'){ toggleCoresPoste(r); } else { toggleSel(r); } });
+  });
+  body.querySelectorAll('.ptw-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){ o.tw=Math.max(0,Math.min(20,(o.tw||0)+(btn.dataset.tw==='+'?1:-1))); renderPropPanel(); });
+  });
+  var tot=optionTotalAt(o, dCoef);
+  var baseM=optionTotalAt(o, remise);
   var amtEl=document.getElementById('propAmt'); if(amtEl) amtEl.innerHTML=fmt(tot)+' <span class="eu">€</span>';
   var tierEl=document.getElementById('propTier'); if(tierEl) tierEl.textContent=(ST.eng==='mensuel'?'Mensuel':(ST.eng==='12m'?'12 mois':(ST.eng==='24m'?'24 mois':'36 mois')));
   var savEl=document.getElementById('propSav');
   if(savEl){ var savYr=Math.round((baseM-tot)*12); savEl.textContent = savYr>0 ? ('soit −'+fmt(savYr)+' € / an vs mensuel · télétravail non remisé') : 'Engagement 3 mois minimum'; }
-  var has=ordered.length>0;
+  var totalRefs=OPTIONS.reduce(function(s,op){ return s+((op.refs&&op.refs.length)?op.refs.length:0); },0);
   var send=document.getElementById('propSend'), pdf=document.getElementById('propPdf');
-  if(send) send.disabled=!has; if(pdf) pdf.disabled=!has;
+  if(send) send.disabled=!totalRefs; if(pdf) pdf.disabled=!totalRefs;
+}
+function renderOptionTabs(dCoef){
+  var el=document.getElementById('propTabs'); if(!el) return;
+  var html='';
+  OPTIONS.forEach(function(o,i){
+    var nm=(o.label&&!/^option\s/i.test((o.label||'').trim()))?(optLetter(i)+' · '+o.label):('Option '+optLetter(i));
+    var hasAny=(o.refs&&o.refs.length)||o.tw;
+    var tot=hasAny?(fmt(optionTotalAt(o,dCoef))+' €'):'—';
+    html+='<button class="prop-tab'+(i===PROP_ACTIVE?' on':'')+'" data-opt="'+i+'"><span class="pt-name">'+esc(nm)+'</span><span class="pt-tot">'+tot+'</span></button>';
+  });
+  html+='<button class="prop-tab-add" id="propTabAdd">+ Option</button>';
+  el.innerHTML=html;
+  el.querySelectorAll('.prop-tab').forEach(function(b){ b.addEventListener('click',function(){ PROP_ACTIVE=parseInt(b.dataset.opt)||0; if(typeof render==='function')render(); renderPropPanel(); }); });
+  var add=document.getElementById('propTabAdd'); if(add) add.addEventListener('click', addPanelOption);
+}
+function addPanelOption(){
+  ensureOptions(); OPT_COUNTER++;
+  OPTIONS.push({id:'opt'+OPT_COUNTER,label:'Option '+optLetter(OPTIONS.length),refs:[],tw:0,extras:{},itinQty:1});
+  PROP_ACTIVE=OPTIONS.length-1;
+  if(typeof render==='function')render(); renderPropPanel();
+}
+function removeActiveOption(){
+  ensureOptions();
+  if(OPTIONS.length<=1){
+    var o0=OPTIONS[0]; (o0.refs||[]).slice().forEach(function(r){ delete SEL[r]; SEL_ORDER=SEL_ORDER.filter(function(x){return x!==r;}); }); o0.refs=[]; o0.tw=0;
+  } else {
+    var dead=OPTIONS[PROP_ACTIVE];
+    OPTIONS.splice(PROP_ACTIVE,1);
+    PROP_ACTIVE=Math.max(0,PROP_ACTIVE-1);
+    (dead.refs||[]).forEach(function(r){ if(!refInAnyOption(r)){ delete SEL[r]; SEL_ORDER=SEL_ORDER.filter(function(x){return x!==r;}); } });
+  }
+  if(typeof render==='function')render(); renderPropPanel(); updateSelBar();
 }
 function syncClientFromPanel(){
   var nm=(document.getElementById('propClientName')||{}).value||'';
@@ -3099,8 +3164,9 @@ function buildEmail(data, showTotal) {
 function closeResetConfirm(){ var ov=document.getElementById('resetConfirmOv'); if(ov) ov.style.display='none'; }
 function resetProposition(){
   if(typeof clearSel==='function') clearSel();
-  ['fp','fn','fs','fe','customMsg','propClientName','propClientComp'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
-  OPT_MODE=false; OPTIONS=[]; OPT_COUNTER=0; PROP_RECO=0;
+  ['fp','fn','fs','fe','customMsg','propClientName','propClientComp','needMin','needMax'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  OPTIONS=[]; OPT_COUNTER=0; PROP_ACTIVE=0; PROP_RECO=0;
+  if(typeof ensureOptions==='function') ensureOptions();
   if(typeof setTwQ==='function') setTwQ(0);
   if(typeof renderPropPanel==='function') renderPropPanel();
   if(typeof render==='function') render();
