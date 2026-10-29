@@ -2450,6 +2450,9 @@ function openSendModal(){
   if(se) se.value=(document.getElementById('fe')||{}).value||'';
   if(smsg) smsg.value=(document.getElementById('customMsg')||{}).value||'';
   if(ssel){ var cur=document.getElementById('senderSelect'); if(cur) ssel.value=cur.value; }
+  /* Le modal s'ouvre dans la langue courante du site */
+  var want=tlang('fr','en');
+  ov.querySelectorAll('.sm-lang button').forEach(function(b){ b.classList.toggle('on', b.dataset.lang===want); });
   ov.classList.add('on');
   renderSendPreview();
 }
