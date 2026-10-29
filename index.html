@@ -961,6 +961,15 @@ body.dark .prop-eng .eng .sb.on{background:#D4B870;color:#0F0F0F;border-color:#D
 .sortb{padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:none;border:0.5px solid rgba(15,15,15,.2);color:#0F0F0F;cursor:pointer;transition:all .2s;font-family:inherit}
 .sortb:hover{border-color:rgba(15,15,15,.4)}
 .sortb.on{background:#0F0F0F;color:#FAFAFA;border-color:#0F0F0F}
+.pdfprev-ov{display:none;position:fixed;inset:0;background:rgba(9,8,12,.82);z-index:200;flex-direction:column;align-items:center;padding:16px 16px 28px;overflow:auto}
+.pdfprev-top{width:100%;max-width:1123px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px 14px}
+.pdfprev-title{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,239,229,.75);font-family:'Plus Jakarta Sans',sans-serif}
+.pdfprev-title span{color:#F5EFE5;letter-spacing:.02em;text-transform:none}
+.pdfprev-actions{display:flex;gap:8px}
+.pdfprev-dl{background:#D4B870;color:#0F0F0F;border:0;padding:11px 18px;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.pdfprev-close{background:none;border:0.5px solid rgba(245,239,229,.4);color:#F5EFE5;padding:11px 18px;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.pdfprev-body{width:100%;max-width:1123px;background:#fff;flex-shrink:0}
+.pdfprev-body iframe{width:100%;height:78vh;border:0;background:#fff;display:block}
 body.dark .sortb{color:#F5EFE5;border-color:rgba(245,239,229,.25)}
 body.dark .sortb.on{background:#D4B870;color:#0F0F0F;border-color:#D4B870}
 .cat .grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:2px}
@@ -1343,6 +1352,22 @@ function setVirtAbo(ref, qty) {
   if (!SEL[ref]) return;
   SEL[ref].itinQty = Math.max(1, Math.min(20, qty||1));
   if (typeof openModal==='function') openModal();
+}
+/* Overlay « Aperçu PDF » (in-app) */
+function showPdfPreview(h, title){
+  var ov=document.getElementById('pdfPrevOv');
+  if(!ov){
+    ov=document.createElement('div'); ov.id='pdfPrevOv'; ov.className='pdfprev-ov';
+    ov.innerHTML='<div class="pdfprev-top"><div class="pdfprev-title">Aperçu PDF · A4<span id="pdfPrevName"></span></div><div class="pdfprev-actions"><button class="pdfprev-dl" id="pdfPrevDl">Télécharger ↓</button><button class="pdfprev-close" id="pdfPrevClose">Fermer</button></div></div><div class="pdfprev-body"><iframe id="pdfPrevFrame" title="Aperçu PDF"></iframe></div>';
+    document.body.appendChild(ov);
+    document.getElementById('pdfPrevClose').addEventListener('click',function(){ ov.style.display='none'; });
+    document.getElementById('pdfPrevDl').addEventListener('click',function(){ if(typeof exportPDF==='function') exportPDF(); });
+    ov.addEventListener('click',function(e){ if(e.target===ov) ov.style.display='none'; });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') ov.style.display='none'; });
+  }
+  var nm=document.getElementById('pdfPrevName'); if(nm) nm.textContent = title? (' · '+title) : '';
+  var fr=document.getElementById('pdfPrevFrame'); if(fr) fr.srcdoc=h;
+  ov.style.display='flex';
 }
 function setItinAbo(qty) { setVirtAbo(ITIN_REF, qty); }
 function setItinQty(optId, qty) {
@@ -1759,7 +1784,7 @@ function syncClientFromPanel(){
 }
 (function(){
   var s=document.getElementById('propSend'); if(s) s.addEventListener('click',function(){ if(!s.disabled && typeof openModal==='function') openModal(); });
-  var pp=document.getElementById('propPdf'); if(pp) pp.addEventListener('click',function(){ if(!pp.disabled && typeof exportPDF==='function') exportPDF(); });
+  var pp=document.getElementById('propPdf'); if(pp) pp.addEventListener('click',function(){ if(!pp.disabled && typeof exportPDF==='function'){ window.__pdfPreviewMode=true; exportPDF(); } });
   /* Champs client du panneau → inputs #fp/#fn/#fs (utilisés par email/PDF) */
   var cn=document.getElementById('propClientName'), cc=document.getElementById('propClientComp');
   if(cn) cn.addEventListener('input', syncClientFromPanel);
