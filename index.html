@@ -807,6 +807,24 @@ body.dark .nc-stat b{color:#6FB392}
 body.dark .nc-price .amt{color:#D4B870}
 body.dark .nc-price .eu{color:#6FB392}
 body.dark .nc-price .sub{color:rgba(245,239,229,.58)}
+/* Itinérant / Co-Résident au format .ncard (identité jade / or) */
+.nc-ref-word{font-size:18px;letter-spacing:0}
+.itin-ncard .nc-band{background:#1E4035;color:#F5EFE5}
+.itin-ncard .nc-ref{color:#F5EFE5}
+.itin-ncard .nc-site{color:#D4B870}
+.itin-ncard .nc-optl{background:#B09438;color:#FAFAFA}
+.itin-ncard.sel .nc-band{background:#0F0F0F}
+.cores-ncard .nc-band{background:rgba(176,148,56,.16);color:#5c4610}
+.cores-ncard .nc-ref{color:#5c4610}
+.cores-ncard .nc-site{color:#8A6A18}
+.cores-ncard .nc-optl{background:#1E4035;color:#F5EFE5}
+.cores-ncard.sel .nc-band{background:#8A6A18;color:#FAFAFA}
+.cores-ncard.sel .nc-ref,.cores-ncard.sel .nc-site{color:#FAFAFA}
+.cores-ncard .cores-dd{margin:4px 0 2px}
+.cores-ncard.full{opacity:.7}
+body.dark .itin-ncard .nc-band{background:#1E4035}
+body.dark .cores-ncard .nc-band{background:rgba(176,148,56,.2);color:#D4B870}
+body.dark .cores-ncard .nc-ref{color:#D4B870}
 /* ===== Layout 3 colonnes + rail jade (handoff 2026) ===== */
 .app3{display:grid;grid-template-columns:minmax(220px,250px) minmax(0,1fr) minmax(320px,380px);align-items:start}
 .prop{background:#F5EFE5;border-left:0.5px solid rgba(15,15,15,.10);position:sticky;top:61px;align-self:start;height:calc(100vh - 61px);display:flex;flex-direction:column;min-width:0;z-index:40}
@@ -1183,26 +1201,17 @@ function makeItinCard() {
   var savHtml  = d>0 ? '<div class="sav"><svg viewBox="0 0 24 24" width="12" height="12" fill="var(--vert)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>Économie : '+fmt(save)+' € / an</div>' : '';
 
   var div = document.createElement('div');
-  div.className = 'card itin-card' + (isSel?' sel':'');
+  div.className = 'ncard itin-ncard' + (isSel?' sel':'');
   div.dataset.ref = ITIN_REF;
+  var engShort = ST.eng==='mensuel'?'Mensuel':(ST.eng==='12m'?'12 mois':(ST.eng==='24m'?'24 mois':'36 mois'));
 
   div.innerHTML =
-    '<div class="chk"><svg viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1"/></svg></div>'+
-    '<div class="ctop">'+
-      '<div>'+
-        '<div class="cref">Itinérant <span class="itin-badge">Starter</span></div>'+
-        '<div class="csite">Placement libre · tous nos sites</div>'+
-      '</div>'+
-    '</div>'+
-    '<p class="cdesc">Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7, accès à la journée aux autres sites. Formule all-incluse.</p>'+
-    '<div class="chips">'+
-      '<span class="chip itin-chip">Placement libre</span>'+
-      '<span class="chip itin-chip">Accès 24/7</span>'+
-      '<span class="chip itin-chip">Global Collective</span>'+
-    '</div>'+
-    '<div class="pb">'+
-      '<div class="pr"><div class="pm"><sup>€</sup>'+fmt(price)+'</div>'+rackHtml+'</div>'+
-      '<div class="psub">'+engLbl+'</div>'+savHtml+
+    '<div class="nc-band"><div class="nc-reflt"><span class="nc-ref nc-ref-word">Itinérant</span><span class="nc-optl">Starter</span></div>'+
+      '<div class="nc-right"><div class="nc-site">Nomade</div><div class="nc-floor">Tous nos sites</div></div></div>'+
+    '<div class="nc-body">'+
+      '<div class="nc-row1"><div class="nc-tags"><span class="nc-match" style="color:#D4B870">Placement libre</span></div><span class="nc-dispo" style="color:#D4B870">Disponible</span></div>'+
+      '<div class="nc-desc">Accès en placement libre aux espaces partagés et services The Bureau. Accès 24/7, accès à la journée aux autres sites. Formule all-incluse.</div>'+
+      '<div class="nc-foot"><div class="nc-stat">Accès 24/7 · Global Collective</div><div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">H.T./mois/pers · '+engShort+'</div></div></div>'+
     '</div>';
 
   div.addEventListener('click', function() {
@@ -1221,7 +1230,7 @@ function makeItinCard() {
       delete SEL[ITIN_REF];
       SEL_ORDER = SEL_ORDER.filter(function(r){ return r!==ITIN_REF; });
     }
-    var old2 = document.querySelector('.itin-card');
+    var old2 = document.querySelector('.itin-ncard');
     if (old2) old2.parentNode.replaceChild(makeItinCard(), old2);
     updateSelBar(); updateModalTotal();
   });
@@ -1229,7 +1238,7 @@ function makeItinCard() {
 }
 
 function refreshCoresCard() {
-  var old2 = document.querySelector('.cores-card');
+  var old2 = document.querySelector('.cores-ncard');
   if (old2) old2.parentNode.replaceChild(makeCoresCard(), old2);
   updateSelBar(); updateModalTotal();
 }
@@ -1270,28 +1279,18 @@ function makeCoresCard() {
     : '';
 
   var div = document.createElement('div');
-  div.className = 'card cores-card' + (isSel?' sel':'') + (avail<=0?' full':'');
+  div.className = 'ncard cores-ncard' + (isSel?' sel':'') + (avail<=0?' full':'');
   div.dataset.ref = CORES_REF;
+  var engShortC = ST.eng==='mensuel'?'Mensuel':(ST.eng==='12m'?'12 mois':(ST.eng==='24m'?'24 mois':'36 mois'));
 
   div.innerHTML =
-    '<div class="chk"><svg viewBox="0 0 12 10"><polyline points="1,5 4,8 11,1"/></svg></div>'+
-    '<div class="ctop">'+
-      '<div>'+
-        '<div class="cref">Co-Résident <span class="cores-badge">The Bureau I</span></div>'+
-        '<div class="csite">Poste dédié · 28 Cours Albert 1er</div>'+
-      '</div>'+
-      availHtml+
-    '</div>'+
-    '<p class="cdesc">Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.</p>'+
-    '<div class="chips">'+
-      '<span class="chip cores-chip">Poste dédié</span>'+
-      '<span class="chip cores-chip">Accès 24/7</span>'+
-      '<span class="chip cores-chip">Domiciliation incluse</span>'+
-    '</div>'+
-    ddHtml+
-    '<div class="pb">'+
-      '<div class="pr"><div class="pm"><sup>€</sup>'+fmt(price)+'</div>'+rackHtml+'</div>'+
-      '<div class="psub">'+engLbl+'</div>'+savHtml+
+    '<div class="nc-band"><div class="nc-reflt"><span class="nc-ref nc-ref-word">Co-Résident</span><span class="nc-optl">The Bureau I</span></div>'+
+      '<div class="nc-right"><div class="nc-site">Poste dédié</div><div class="nc-floor">28 Cours Albert 1er</div></div></div>'+
+    '<div class="nc-body">'+
+      '<div class="nc-row1"><div class="nc-tags">'+availHtml+'</div><span class="nc-dispo" style="color:#8A6A18">Domiciliation incluse</span></div>'+
+      '<div class="nc-desc">Un poste dédié et l\'accès à nos espaces partagés et aux services The Bureau. Domiciliation et caisson inclus. Accès 24/7. Formule all-incluse.</div>'+
+      ddHtml+
+      '<div class="nc-foot"><div class="nc-stat">Accès 24/7 · Poste dédié</div><div class="nc-price"><span class="amt">'+fmt(price)+'<span class="eu">€</span></span><div class="sub">H.T./mois/poste · '+engShortC+'</div></div></div>'+
     '</div>';
 
   /* Menu déroulant : sélection d'un ou plusieurs postes parmi les disponibles */
