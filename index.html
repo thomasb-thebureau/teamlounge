@@ -26,8 +26,10 @@ body{background:var(--creme);color:var(--encre);font-family:'Plus Jakarta Sans',
 .logo-div{width:1px;height:22px;background:rgba(15,15,15,.12);flex-shrink:0}
 body.dark .logo-div{background:rgba(255,255,255,.15)}
 .logo-tag{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--orAA);font-weight:600}
+button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif}
 .top-right{display:flex;align-items:center;gap:10px}
-.sync-pill{display:flex;align-items:center;gap:8px;height:30px;padding:0 12px;border:0;background:none;font-size:11px;color:rgba(15,15,15,.62);cursor:pointer;font-family:inherit;white-space:nowrap}
+.sync-pill{display:flex;align-items:center;gap:8px;height:30px;padding:0 12px;border:0;background:none;font-size:11px;color:rgba(15,15,15,.62);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.sync-pill .stxt{text-transform:none;letter-spacing:.01em;color:inherit;font-size:11px}
 .sync-pill .sdot{width:7px;height:7px;border-radius:50%;background:#B09438;flex-shrink:0}
 .sync-pill.offline{color:#9A5A1C}
 .sync-pill.offline .sdot{background:#9A5A1C}
@@ -749,9 +751,9 @@ body.present .present-exit{display:flex;align-items:center;gap:6px}
 /* F9: Message templates */
 .tpl-select{border:1px solid var(--cf);border-radius:3px;padding:6px 10px;font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--encre);background:var(--creme);cursor:pointer;outline:none;margin-bottom:6px;width:100%}
 
-.lang-toggle{display:inline-flex;align-items:center;height:28px;border:1px solid var(--cf);border-radius:50px;overflow:hidden}
-.lang-toggle button{background:none;border:none;padding:0 10px;height:100%;font-size:10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;letter-spacing:.1em;color:var(--gc);cursor:pointer;transition:all .25s}
-.lang-toggle button.on{background:var(--vert);color:#F5EFE5}
+.lang-toggle{display:inline-flex;align-items:center;height:30px;border:0.5px solid rgba(15,15,15,.28);overflow:hidden}
+.lang-toggle button{background:none;border:none;padding:0 11px;height:100%;font-size:9px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;letter-spacing:.16em;color:rgba(15,15,15,.55);cursor:pointer;transition:all .2s}
+.lang-toggle button.on{background:#0F0F0F;color:#FAFAFA}
 body.dark .lang-toggle{border-color:rgba(255,255,255,.15)}
 body.dark .lang-toggle button{color:rgba(255,255,255,.45)}
 body.dark .lang-toggle button.on{background:var(--or);color:#1a1a1a}
@@ -786,7 +788,7 @@ body.dark .tw-desc strong{color:#F5EFE5}
 .nc-band{background:#F2F2F2;color:#0F0F0F;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;transition:background .2s,color .2s}
 .ncard.sel .nc-band{background:#1E4035;color:#F5EFE5}
 .nc-reflt{display:flex;align-items:center;gap:10px;min-width:0}
-.nc-ref{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.05;white-space:nowrap}
+.nc-ref{font-size:25px;font-weight:800;letter-spacing:-.02em;line-height:1.05;white-space:nowrap}
 .nc-optl{padding:3px 7px;background:#B09438;color:#FAFAFA;font-size:10px;font-weight:700;letter-spacing:.1em;flex-shrink:0}
 .nc-right{text-align:right;min-width:0}
 .nc-site{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#8A6A18;white-space:nowrap}
@@ -1428,7 +1430,7 @@ function makeCard(b) {
   /* F15: newness tracking (badge already in .cref HTML above) */
   var _sk='tb_seen_'+b.ref;if(!localStorage.getItem(_sk)){localStorage.setItem(_sk,Date.now().toString())}
   /* F3: Fav button */
-  if(typeof FAVS!=='undefined'){var _fb=document.createElement('button');_fb.className='fav-btn'+(FAVS[b.ref]?' on':'');_fb.dataset.ref=b.ref;_fb.textContent=FAVS[b.ref]?'\u2605':'\u2606';_fb.addEventListener('click',function(e){e.stopPropagation();toggleFav(b.ref)});(div.querySelector('.nc-reflt')||div).appendChild(_fb)}
+  /* \u00c9toiles favoris retir\u00e9es des cartes (demande user) */
   div.setAttribute('tabindex', '0');
   div.setAttribute('draggable', 'true');
   div.setAttribute('role', 'option');
@@ -3499,14 +3501,23 @@ document.getElementById('sclr').addEventListener('click', clearSel);
 /* ============================================================
    LIVE FETCH
 ============================================================ */
+var __tlSyncAt = 0;
+function updateSyncLabel(){
+  var el=document.getElementById('stxt'); var pill=document.getElementById('syncPill');
+  if(!el||!__tlSyncAt||(pill&&pill.classList.contains('offline'))) return;
+  var m=Math.floor((Date.now()-__tlSyncAt)/60000);
+  el.textContent = m<1 ? 'Synchronisé à l’instant' : 'Synchronisé il y a '+m+' min';
+}
 function setStatus(type,txt) {
   var dot = document.getElementById('sdot');
-  document.getElementById('stxt').textContent = txt;
   dot.style.background = '';
   dot.className = 'sdot'+(type==='live'?' live':'');
   var pill=document.getElementById('syncPill');
   if(pill) pill.classList.toggle('offline', type==='fallback');
+  if(type==='live'){ __tlSyncAt=Date.now(); updateSyncLabel(); }
+  else { document.getElementById('stxt').textContent = txt; }
 }
+(function(){ setInterval(updateSyncLabel, 30000); })();
 function fetchData(cb) {
   setStatus('loading', 'Chargement\u2026');
   var xhr = new XMLHttpRequest();
