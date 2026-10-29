@@ -900,17 +900,50 @@ body.dark .prop-optdel:hover{color:#E0975A}
 .prow-addopt{width:100%;margin-top:10px;border:1px dashed rgba(176,148,56,.55);background:rgba(176,148,56,.07);color:#8A6A18;padding:11px;font:600 10px 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
 .prow-addopt:hover{background:rgba(176,148,56,.14);border-color:#B09438}
 body.dark .prow-addopt{color:#D4B870;border-color:rgba(212,184,112,.4);background:rgba(212,184,112,.08)}
-.exadd{position:relative;margin-top:10px}
-.exadd-menu{display:none;margin-top:6px;border:0.5px solid rgba(15,15,15,.16);background:#fff;border-radius:2px;overflow:hidden}
-.exadd.open .exadd-menu{display:block}
-.exadd-item{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;background:none;border:0;border-bottom:0.5px solid rgba(15,15,15,.08);font:600 11px 'Plus Jakarta Sans',sans-serif;color:#0F0F0F;cursor:pointer;text-align:left}
-.exadd-item:last-child{border-bottom:0}
-.exadd-item:hover{background:rgba(176,148,56,.08)}
-.exadd-p{color:#8A6A18;font-weight:700;white-space:nowrap}
-body.dark .exadd-menu{background:#232323;border-color:rgba(245,239,229,.16)}
-body.dark .exadd-item{color:#F5EFE5;border-bottom-color:rgba(245,239,229,.08)}
-body.dark .exadd-item:hover{background:rgba(212,184,112,.12)}
-body.dark .exadd-p{color:#D4B870}
+.prop-opts-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:12px 14px;border:0.5px solid rgba(176,148,56,.5);background:rgba(176,148,56,.07);border-radius:2px;cursor:pointer;font:600 11px 'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;color:#8A6A18;transition:all .2s}
+.prop-opts-btn:hover{background:rgba(176,148,56,.14);border-color:#B09438}
+.prop-opts-btn .pob-r{font-weight:700;color:#1E4035;white-space:nowrap}
+.prop-opts-sum{margin-top:8px;font-size:11px;color:rgba(15,15,15,.6);line-height:1.5}
+body.dark .prop-opts-btn{color:#D4B870;border-color:rgba(212,184,112,.45);background:rgba(212,184,112,.08)}
+body.dark .prop-opts-btn .pob-r{color:#6FB392}
+body.dark .prop-opts-sum{color:rgba(245,239,229,.6)}
+.exmodal-ov{display:none;position:fixed;inset:0;background:rgba(9,8,12,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:210;align-items:center;justify-content:center;padding:20px}
+.exmodal-ov.on{display:flex}
+.exmodal{background:#FAFAFA;width:100%;max-width:640px;max-height:88vh;display:flex;flex-direction:column;border-radius:2px;box-shadow:0 30px 90px rgba(0,0,0,.4);overflow:hidden}
+.exm-head{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 26px 16px;border-bottom:0.5px solid rgba(15,15,15,.1)}
+.exm-eye{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#8A6A18;margin-bottom:4px}
+.exm-title{font-size:20px;font-weight:400;color:#0F0F0F;margin:0}.exm-title b{font-weight:800}
+.exm-close{background:none;border:0;font-size:24px;line-height:1;color:rgba(15,15,15,.5);cursor:pointer;padding:0 4px}
+.exm-close:hover{color:#0F0F0F}
+.exm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:20px 26px;overflow-y:auto}
+.exm-card{border:0.5px solid rgba(15,15,15,.14);border-radius:2px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:#fff;transition:border-color .2s,box-shadow .2s,background .2s}
+.exm-card.on{border-color:#B09438;box-shadow:inset 0 0 0 1px #B09438;background:rgba(176,148,56,.05)}
+.exm-ic{font-size:26px;line-height:1;margin-bottom:4px}
+.exm-nm{font-size:12px;font-weight:700;color:#0F0F0F}
+.exm-pr{font-size:11px;font-weight:700;color:#8A6A18}
+.exm-pr span{display:block;font-size:9px;font-weight:500;color:rgba(15,15,15,.5);letter-spacing:0;margin-top:1px}
+.exm-step{display:inline-flex;align-items:center;margin-top:9px;border:0.5px solid rgba(15,15,15,.2);border-radius:2px}
+.exm-step button{width:28px;height:26px;background:none;border:0;cursor:pointer;font-size:15px;color:#0F0F0F;font-family:inherit}
+.exm-step button:disabled{color:rgba(15,15,15,.25);cursor:default}
+.exm-q{min-width:24px;text-align:center;font-size:12px;font-weight:700}
+.exm-foot{display:flex;align-items:center;gap:14px;padding:16px 26px;border-top:0.5px solid rgba(15,15,15,.1);background:#F5EFE5}
+.exm-tot-l{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(15,15,15,.6)}
+.exm-tot{font-size:20px;font-weight:800;color:#1E4035;margin-right:auto}
+.exm-done{background:#0F0F0F;color:#FAFAFA;border:0;border-radius:2px;padding:11px 24px;font:700 11px 'Plus Jakarta Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.exm-done:hover{background:#1E4035}
+body.dark .exmodal{background:#1B1B1B}
+body.dark .exm-head{border-bottom-color:rgba(255,255,255,.1)}
+body.dark .exm-title{color:#F5EFE5}
+body.dark .exm-eye{color:#D4B870}
+body.dark .exm-close{color:rgba(245,239,229,.5)}body.dark .exm-close:hover{color:#F5EFE5}
+body.dark .exm-card{background:#232323;border-color:rgba(245,239,229,.14)}
+body.dark .exm-card.on{border-color:#D4B870;box-shadow:inset 0 0 0 1px #D4B870;background:rgba(212,184,112,.08)}
+body.dark .exm-nm{color:#F5EFE5}
+body.dark .exm-pr{color:#D4B870}body.dark .exm-pr span{color:rgba(245,239,229,.5)}
+body.dark .exm-step{border-color:rgba(245,239,229,.25)}body.dark .exm-step button{color:#F5EFE5}
+body.dark .exm-foot{background:#141414;border-top-color:rgba(255,255,255,.08)}
+body.dark .exm-tot-l{color:rgba(245,239,229,.6)}body.dark .exm-tot{color:#6FB392}
+body.dark .exm-done{background:#D4B870;color:#0F0F0F}
 .prow.tw .tw-ref{background:rgba(176,148,56,.16);color:#8A6A18}
 body.dark .prop-tabs{border-bottom-color:rgba(255,255,255,.1)}
 body.dark .pt-name,body.dark .pt-tot{color:rgba(245,239,229,.5)}
@@ -1013,7 +1046,7 @@ body.dark .prop-eng .eng .sb.on small{color:#0F0F0F;opacity:.78}
 /* Bords carrés sur les contrôles de filtres (rail) + menu Co-Résident — alignement prototype */
 .rail .sc,.rail .sr,.rail .cap-pills .cb,.rail .cap-pills .sb,.rail .cap-pills .occ-toggle,.rail .occ-toggle,.rail .fsel,.rail .ri{border-radius:2px}
 .cores-dd-btn,.cores-menu,.cores-ncard .cores-dd-btn,.cores-ncard .cores-menu{border-radius:2px}
-.rail-wm{position:absolute;left:50%;transform:translateX(-50%);bottom:26px;width:120px;opacity:1;pointer-events:none}
+.rail-wm{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;width:30px;opacity:1;pointer-events:none}
 /* Engagement dans le panneau proposition */
 .prop-client{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;padding:0 28px 16px;flex-shrink:0}
 .pc-name,.pc-comp{border:0;border-bottom:0.5px solid rgba(15,15,15,.22);background:none;padding:5px 0;font-size:15px;color:#0F0F0F;outline:none;font-family:inherit;min-width:0}
@@ -1045,7 +1078,8 @@ body.dark .prop-eng .eng .sb.on{background:#D4B870;color:#0F0F0F;border-color:#D
 .eyebrow-l{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#8A6A18}
 .cat-title{font-size:28px;font-weight:200;letter-spacing:-.02em;line-height:1;color:#0F0F0F;margin-top:6px}
 .cat-title em{font-style:normal;font-weight:800;color:#8A6A18}
-.cat-title strong{font-weight:800}
+.cat-title strong{font-weight:800;color:#1E4035}
+body.dark .cat-title strong{color:#6FB392}
 .cat-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sort-btns{display:flex;flex-wrap:wrap;gap:2px}
 .sortb{padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:none;border:0.5px solid rgba(15,15,15,.2);color:#0F0F0F;cursor:pointer;transition:all .2s;font-family:inherit}
@@ -1938,26 +1972,17 @@ function renderPropPanel(){
     else meta=floorLblL(b.etage)+(b.surface?' · '+b.surface.toLocaleString('fr-FR')+' m²':'')+' · '+b.cap+' '+tlang('poste'+(b.cap>1?'s':''),'desk'+(b.cap>1?'s':''));
     html+='<div class="prow"><span class="prow-ref">'+ref+'</span><div class="prow-info"><div class="prow-name">'+name+'</div><div class="prow-meta">'+meta+'</div></div><span class="prow-price">'+fmt(price)+'<span class="eu">€</span></span><button class="prow-del" data-ref="'+esc(b.ref)+'" data-cores="'+(isCo?1:0)+'" title="Retirer">×</button></div>';
   });
-  /* Options additionnelles (télétravail, parking, vélo, casier, …) */
-  panelExtras().forEach(function(x){
-    var q=extraQty(o,x.k); if(q<=0) return;
-    var unit=x.p+' € '+tlang('H.T.'+x.perFr,'excl.VAT'+x.perEn);
-    html+='<div class="prow tw"><span class="prow-ref tw-ref">'+esc(x.abbr)+'</span><div class="prow-info"><div class="prow-name">'+esc(tlang(x.fr,x.en))+'</div><div class="prow-meta">'+unit+'</div></div><div class="prow-twcol"><span class="prow-price">'+fmt(q*x.p)+'<span class="eu">€</span></span><div class="prow-tw"><button class="ptw-btn" data-exk="'+x.k+'" data-exd="-">−</button><span class="ptw-val">'+q+'</span><button class="ptw-btn" data-exk="'+x.k+'" data-exd="+">+</button></div></div><button class="prow-del" data-exdel="'+x.k+'" title="'+tlang('Retirer','Remove')+'">×</button></div>';
-  });
-  var _avail=panelExtras().filter(function(x){ return extraQty(o,x.k)<=0; });
-  if(_avail.length){
-    var _mi=_avail.map(function(x){ return '<button type="button" class="exadd-item" data-exadd="'+x.k+'"><span>'+esc(tlang(x.fr,x.en))+'</span><span class="exadd-p">'+x.p+' €</span></button>'; }).join('');
-    html+='<div class="exadd'+(EXADD_OPEN?' open':'')+'"><button type="button" class="prow-addopt" id="propAddExtra">+ '+tlang('Ajouter une option','Add an option')+'</button><div class="exadd-menu">'+_mi+'</div></div>';
-  }
+  /* Options & services → fenêtre dédiée (pictos) */
+  var _exSel=panelExtras().filter(function(x){ return extraQty(o,x.k)>0; });
+  var _exCount=_exSel.reduce(function(s,x){ return s+extraQty(o,x.k); },0);
+  var _exTot=(o.tw||0)*170+optExtrasTotal(o);
+  html+='<button type="button" class="prop-opts-btn" id="propOptsBtn"><span class="pob-l">+ '+tlang('Options & services','Options & services')+'</span><span class="pob-r">'+(_exCount?(_exCount+' · '+fmt(_exTot)+' €'):tlang('Ajouter','Add'))+'</span></button>';
+  if(_exSel.length){ html+='<div class="prop-opts-sum">'+_exSel.map(function(x){ return esc(tlang(x.fr,x.en))+' ×'+extraQty(o,x.k); }).join(' · ')+'</div>'; }
   body.innerHTML=html;
   body.querySelectorAll('.prow-del').forEach(function(btn){
-    btn.addEventListener('click',function(){ if(btn.dataset.exdel){ setExtraQty(o,btn.dataset.exdel,0); renderPropPanel(); return; } var r=btn.dataset.ref; if(btn.dataset.cores==='1'){ toggleCoresPoste(r); } else { toggleSel(r); } });
+    btn.addEventListener('click',function(){ var r=btn.dataset.ref; if(btn.dataset.cores==='1'){ toggleCoresPoste(r); } else { toggleSel(r); } });
   });
-  body.querySelectorAll('.ptw-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){ var k=btn.dataset.exk; setExtraQty(o,k, extraQty(o,k)+(btn.dataset.exd==='+'?1:-1)); renderPropPanel(); });
-  });
-  var _addE=document.getElementById('propAddExtra'); if(_addE) _addE.addEventListener('click',function(e){ e.stopPropagation(); EXADD_OPEN=!EXADD_OPEN; renderPropPanel(); });
-  body.querySelectorAll('.exadd-item').forEach(function(b){ b.addEventListener('click',function(){ setExtraQty(o,b.dataset.exadd,1); EXADD_OPEN=false; renderPropPanel(); }); });
+  var _ob=document.getElementById('propOptsBtn'); if(_ob) _ob.addEventListener('click', openExtraModal);
   var tot=optionTotalAt(o, dCoef);
   var baseM=optionTotalAt(o, remise);
   var amtEl=document.getElementById('propAmt'); if(amtEl) amtEl.innerHTML=fmt(tot)+' <span class="eu">€</span>';
@@ -1968,6 +1993,32 @@ function renderPropPanel(){
   var send=document.getElementById('propSend'), pdf=document.getElementById('propPdf');
   if(send) send.disabled=!totalRefs; if(pdf) pdf.disabled=!totalRefs;
 }
+
+/* ===== Fenêtre « Options & services » (pictos) ===== */
+var EXTRA_ICONS={tw:'💻',domi:'🏢',parking:'🚗',ev:'⚡',moto:'🏍️',casier:'🔒',velo:'🚲',signal:'🪧'};
+function ensureExtraModal(){
+  var ov=document.getElementById('extraModal'); if(ov) return ov;
+  ov=document.createElement('div'); ov.id='extraModal'; ov.className='exmodal-ov';
+  ov.innerHTML='<div class="exmodal"><div class="exm-head"><div><div class="exm-eye">'+tlang('À la carte','À la carte')+'</div><h3 class="exm-title">'+tlang('Options &amp; <b>services</b>','Options &amp; <b>services</b>')+'</h3></div><button class="exm-close" id="exmClose" aria-label="Fermer">&times;</button></div><div class="exm-grid" id="exmGrid"></div><div class="exm-foot"><div><div class="exm-tot-l">'+tlang('Total options · H.T./mois','Options total · excl.VAT/mo')+'</div></div><div class="exm-tot" id="exmTot">0 €</div><button class="exm-done" id="exmDone">'+tlang('Terminé','Done')+'</button></div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){ if(e.target===ov) closeExtraModal(); });
+  document.getElementById('exmClose').addEventListener('click', closeExtraModal);
+  document.getElementById('exmDone').addEventListener('click', closeExtraModal);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeExtraModal(); });
+  return ov;
+}
+function renderExtraCards(){
+  var o=OPTIONS[PROP_ACTIVE]; if(!o) return;
+  var grid=document.getElementById('exmGrid'); if(!grid) return;
+  grid.innerHTML=panelExtras().map(function(x){
+    var q=extraQty(o,x.k);
+    return '<div class="exm-card'+(q>0?' on':'')+'"><div class="exm-ic">'+(EXTRA_ICONS[x.k]||'•')+'</div><div class="exm-nm">'+esc(tlang(x.fr,x.en))+'</div><div class="exm-pr">'+x.p+' €<span>'+tlang('H.T.'+x.perFr,'excl.VAT'+x.perEn)+'</span></div><div class="exm-step"><button type="button" data-exk="'+x.k+'" data-exd="-"'+(q<=0?' disabled':'')+'>−</button><span class="exm-q">'+q+'</span><button type="button" data-exk="'+x.k+'" data-exd="+">+</button></div></div>';
+  }).join('');
+  grid.querySelectorAll('.exm-step button').forEach(function(b){ if(b.disabled) return; b.addEventListener('click',function(){ var k=b.dataset.exk; setExtraQty(o,k, extraQty(o,k)+(b.dataset.exd==='+'?1:-1)); renderExtraCards(); if(typeof renderPropPanel==='function') renderPropPanel(); }); });
+  var t=document.getElementById('exmTot'); if(t) t.textContent=fmt((o.tw||0)*170+optExtrasTotal(o))+' €';
+}
+function openExtraModal(){ ensureExtraModal(); renderExtraCards(); document.getElementById('extraModal').classList.add('on'); }
+function closeExtraModal(){ var ov=document.getElementById('extraModal'); if(ov) ov.classList.remove('on'); }
 function renderOptionTabs(dCoef){
   var el=document.getElementById('propTabs'); if(!el) return;
   var html='';
