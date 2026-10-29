@@ -3851,11 +3851,15 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAFAFA;padding:32px 0"><tr><td align="center">';
   h+='<table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">';
 
-  /* Header — jade */
-  h+='<tr><td style="background:#1E4035;padding:22px 36px;border-radius:4px 4px 0 0">';
+  /* Header — clair (maquette) : logo sombre | PROPOSITION PERSONNALISÉE / Sélection bureaux + date */
+  var _dH=new Date(); var _pH=function(n){return(n<10?'0':'')+n;}; var _dateStr=_pH(_dH.getDate())+'/'+_pH(_dH.getMonth()+1)+'/'+_dH.getFullYear();
+  h+='<tr><td style="background:#ffffff;padding:24px 36px;border-bottom:1px solid rgba(15,15,15,.1);border-radius:4px 4px 0 0">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td><img src="https://teamlounge.thebureau.paris/logo-white.svg" alt="The Bureau" height="30" style="display:block"/></td>';
-  h+='<td align="right" style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#B09438;font-family:Plus Jakarta Sans,Arial,sans-serif;font-weight:700;vertical-align:middle">'+propLabel+'</td>';
+  h+='<td style="vertical-align:middle"><table cellpadding="0" cellspacing="0" border="0"><tr>';
+  h+='<td style="vertical-align:middle;padding-right:14px"><img src="https://teamlounge.thebureau.paris/logo.svg" alt="The Bureau" height="26" style="display:block"/></td>';
+  h+='<td style="vertical-align:middle;border-left:1px solid rgba(15,15,15,.15);padding-left:14px"><div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8A6A18;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif">'+propLabel+'</div><div style="font-size:17px;font-weight:300;color:#0F0F0F;font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:2px">'+(isEN?'Office ':'Sélection ')+'<b style="font-weight:800">'+(isEN?'selection':'bureaux')+'</b></div></td>';
+  h+='</tr></table></td>';
+  h+='<td align="right" style="vertical-align:middle;font-size:12px;color:#5a5248;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+_dateStr+'</td>';
   h+='</tr></table></td></tr>';
 
   /* Intro — maquette mode options : prénom en gras + « · société », intro spécifique */
@@ -3883,13 +3887,20 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
 
   /* CTA */
   h+='<tr><td style="background:#ffffff;padding:24px 36px;text-align:center">';
-  h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#B09438;color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 34px;border-radius:50px">'+ctaLabel+'</a>';
+  h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#0F0F0F;color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 34px;border-radius:2px">'+ctaLabel+' &rarr;</a>';
   h+='<p style="margin:10px 0 0;font-size:11px;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?'or simply reply to this email':'ou répondez simplement à cet email')+'</p>';
   h+='</td></tr>';
-  /* Inclusions — fond ivoire, checkmarks */
-  h+=buildInclEmail(isEN);
-  /* Conditions contractuelles — fond creme */
-  h+=buildCondEmail(isEN);
+  /* Tout est sur place — encart condensé (détail complet dans le PDF joint) */
+  var _tespTitle=isEN?'EVERYTHING ON SITE':'TOUT EST SUR PLACE';
+  var _tespL=isEN?['24/7 access, shared spaces, patio, gym.','Pantries, concierge, events programme.']:['Accès 24/7, espaces communs, patio, sport.','Tisaneries, conciergerie, programmation.'];
+  var _tespR=isEN?['Business address, phone, printing included.','All-inclusive: utilities, cleaning, AC.']:['Domiciliation, téléphonie, impression incluses.','All-Inclusive : charges, ménage, climatisation.'];
+  var _tespNote=isEN?'Full details (inclusions &amp; contractual conditions) in the attached PDF proposal.':'Le détail complet (inclusions &amp; conditions contractuelles) figure dans la proposition PDF jointe.';
+  var _tespItem=function(t){return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:6px"><tr><td width="14" valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#B09438;font-weight:700;line-height:1.45">&mdash;</td><td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11.5px;color:#5a5248;line-height:1.45">'+t+'</td></tr></table>';};
+  h+='<tr><td style="background:#ffffff;padding:4px 36px 26px"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5EFE5;border-radius:4px"><tr><td style="padding:18px 22px">';
+  h+='<p style="margin:0 0 12px;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+_tespTitle+'</p>';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="50%" valign="top" style="padding-right:12px">'+_tespL.map(_tespItem).join('')+'</td><td width="50%" valign="top" style="padding-left:12px">'+_tespR.map(_tespItem).join('')+'</td></tr></table>';
+  h+='<p style="margin:10px 0 0;font-size:10.5px;color:rgba(15,15,15,.5);font-style:italic;font-family:Plus Jakarta Sans,Arial,sans-serif">'+_tespNote+'</p>';
+  h+='</td></tr></table></td></tr>';
 
   /* Signature — fond blanc, chevrons */
   var _snd2=getCurrentSender();
