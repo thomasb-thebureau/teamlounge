@@ -3898,27 +3898,22 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<p style="margin:10px 0 0;font-size:10.5px;color:rgba(15,15,15,.5);font-style:italic;font-family:Plus Jakarta Sans,Arial,sans-serif">'+_tespNote+'</p>';
   h+='</td></tr></table></td></tr>';
 
-  /* Signature — fond blanc, chevrons */
+  /* Pied jade — expéditeur (chevrons or) à gauche · The Bureau Paris à droite */
   var _snd2=getCurrentSender();
-  h+='<tr><td style="background:#ffffff;padding:22px 36px;border-top:1px solid rgba(15,15,15,.09)">';
+  h+='<tr><td style="background:#1E4035;padding:22px 36px;border-radius:0 0 4px 4px">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td width="54" style="vertical-align:middle"><img src="https://teamlounge.thebureau.paris/chevrons-email.png" alt="The Bureau" width="42" style="display:block"/></td>';
+  h+='<td style="vertical-align:middle"><table cellpadding="0" cellspacing="0" border="0"><tr>';
+  h+='<td width="50" style="vertical-align:middle"><img src="https://teamlounge.thebureau.paris/chevrons-email.png" alt="The Bureau" width="40" style="display:block"/></td>';
   h+='<td style="vertical-align:middle;padding-left:14px">';
-  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:14px;font-weight:700;color:#0F0F0F">'+_snd2.name+'</p>';
-  h+='<p style="margin:1px 0 4px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#7A6015;font-weight:600;font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?_snd2.titleEN:_snd2.title)+'</p>';
-  h+='<p style="margin:0;font-size:11.5px;color:'+GR+';line-height:1.5;font-family:Plus Jakarta Sans,Arial,sans-serif">';
-  h+='<a href="tel:'+_snd2.phone.replace(/\s/g,'')+'" style="color:'+GR+';text-decoration:none">'+_snd2.phone+'</a> · ';
-  h+='<a href="mailto:'+_snd2.email+'" id="femail" style="color:#1E4035;text-decoration:none">'+_snd2.email+'</a> · ';
-  h+='<a href="https://www.thebureau.paris" style="color:#1E4035;text-decoration:none">thebureau.paris</a>';
-  h+='</p></td></tr></table></td></tr>';
-  /* Footer jade fin */
-  h+='<tr><td style="background:#1E4035;padding:16px 36px;border-radius:0 0 4px 4px;text-align:center">';
-  h+='<p style="margin:0;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,239,229,.8);font-family:Plus Jakarta Sans,Arial,sans-serif">The Bureau Paris · <span style="color:#B09438">75002 · 75008</span></p>';
-  h+='<p style="margin:8px 0 0;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-family:Plus Jakarta Sans,Arial,sans-serif">';
-  h+='<a href="https://www.instagram.com/thebureauparis/" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">Instagram</a>·';
-  h+='<a href="https://www.linkedin.com/company/the-bureau-paris/" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">LinkedIn</a>·';
-  h+='<a href="https://www.thebureau.paris" target="_blank" style="color:rgba(245,239,229,.6);text-decoration:none;margin:0 8px">thebureau.paris</a>';
-  h+='</p></td></tr>';
+  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;color:rgba(245,239,229,.92)"><b style="font-weight:700">'+_snd2.name+'</b> <span style="color:#D4B870;font-weight:600">· '+(isEN?_snd2.titleEN:_snd2.title)+'</span></p>';
+  h+='<p style="margin:4px 0 0;font-size:11.5px;color:rgba(245,239,229,.7);font-family:Plus Jakarta Sans,Arial,sans-serif">';
+  h+='<a href="tel:'+_snd2.phone.replace(/\s/g,'')+'" style="color:rgba(245,239,229,.7);text-decoration:none">'+_snd2.phone+'</a> · ';
+  h+='<a href="mailto:'+_snd2.email+'" id="femail" style="color:#D4B870;text-decoration:none">'+_snd2.email+'</a>';
+  h+='</p></td></tr></table></td>';
+  h+='<td align="right" style="vertical-align:middle">';
+  h+='<div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,239,229,.6);font-family:Plus Jakarta Sans,Arial,sans-serif">The Bureau Paris</div>';
+  h+='<div style="font-family:Georgia,\'Spectral\',serif;font-style:italic;font-size:15px;color:#D4B870;margin-top:3px">75002 · 75008</div>';
+  h+='</td></tr></table></td></tr>';
   h+='</table></td></tr></table>\n</body></html>';
   return h;
 }
