@@ -3775,8 +3775,7 @@ function setOptExtra(optId, key, qty){
 
 
 function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B64) {
-  /* Mirrors buildEmail exactly — only cards section replaced by option blocks */
-  var OR = '#B09438', OR2 = '#B09438', INK = '#0F0F0F', CR = '#FAFAFA', GR = '#5a5248';
+  var INK='#0F0F0F', GR='#5a5248', GOLD='#B09438', GOLDAA='#8A6A18', SLATE='#1E4035', IVORY='#F5EFE5', GOLDLT='#D4B870', SEP='rgba(15,15,15,0.12)';
 
   /* Enrich options with bureau data */
   var enrichedOpts = OPTIONS.map(function(opt) {
@@ -3786,173 +3785,255 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
     return { id:opt.id, label:opt.label, itinQty:opt.itinQty||1, tw:opt.tw||0, extras:opt.extras||{}, bureaux:bureaux };
   }).filter(function(o){ return o.bureaux.length > 0; });
   if (!enrichedOpts.length) {
-    /* No option contains any bureau — fall back to non-options email if available, else show a message.
-       buildEmail is scoped inside the bsnd handler; we expose it as window.__buildEmail there. */
     if (typeof window.__buildEmail === 'function') return window.__buildEmail(allData, false);
     return '<html><body style="margin:0;padding:40px;background:#FAFAFA;font-family:Plus Jakarta Sans,Arial,sans-serif;color:#0F0F0F;text-align:center">'
-      +'<p style="font-size:14px;color:rgba(15,15,15,.6)">'+(isEN?'No office assigned to your options yet. Add bureaux to at least one option to generate the preview.':'Aucun bureau n’est rattaché à vos options. Ajoutez des bureaux à au moins une option pour générer l’aperçu.')+'</p>'
-      +'</body></html>';
+      +'<p style="font-size:14px;color:rgba(15,15,15,.6)">'+(isEN?'No office assigned to your options yet.':'Aucun bureau n’est rattaché à vos options.')+'</p></body></html>';
   }
 
   var _nOpts = enrichedOpts.length;
-  var _cwFR = ['','une','deux','trois','quatre','cinq','six','sept','huit'];
-  var _cwEN = ['','one','two','three','four','five','six','seven','eight'];
-  var _cw = (isEN?_cwEN:_cwFR)[_nOpts] || _nOpts;
-  var nbLabel = isEN
-    ? (_cw + ' configuration' + (_nOpts>1?'s':'') + ' to choose from')
-    : (_cw + ' configuration' + (_nOpts>1?'s':'') + ' au choix');
+  var isMulti = _nOpts > 1;
 
-  /* Intro sp\u00e9cifique mode options (HTML autoris\u00e9 : \u00ab N configurations \u00bb en gras) */
-  var _cmEl = document.getElementById('customMsg');
-  var _cm = _cmEl ? _cmEl.value.trim() : '';
-  /* Le message générique (défaut mode normal) n'est PAS considéré comme personnalisé en mode options */
-  var _genFR = 'Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.';
-  var _genEN = 'Following our discussions, please find below our selection of available offices at The Bureau.';
-  var _isCustom = _cm && _cm !== _genFR && _cm !== _genEN;
-  var introHTML;
-  if (_isCustom) {
-    introHTML = _cm.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-  } else {
-    introHTML = isEN
-      ? 'Following our discussions, here are <b style="color:'+INK+';font-weight:700">'+_cw+' possible configurations</b> based on your priorities. Each one is independent \u2014 let me know which suits you best.'
-      : 'Suite \u00e0 nos \u00e9changes, voici <b style="color:'+INK+';font-weight:700">'+_cw+' configurations</b> possibles selon vos priorit\u00e9s. Chacune est ind\u00e9pendante \u2014 dites-moi celle qui vous convient le mieux.';
+  /* ===== Durées / remises (mirror PDF) ===== */
+  var _remEl=document.getElementById('remiseInput');
+  var remise=_remEl?Math.min(25,Math.max(0,parseFloat(_remEl.value)||0))/100:0;
+  var allTiers=[
+    {key:'mensuel',label:isEN?'Monthly':'Mensuel',sub:(isEN?'3 months min.':'3 mois min.'),coef:1-remise,idx:0},
+    {key:'12m',label:isEN?'12 months':'12 mois',sub:'−'+(Math.round((0.05+remise)*1000)/10)+' %',coef:1-(0.05+remise),idx:1},
+    {key:'24m',label:isEN?'24 months':'24 mois',sub:'−'+(Math.round((0.10+remise)*1000)/10)+' %',coef:1-(0.10+remise),idx:2},
+    {key:'36m',label:isEN?'36 months':'36 mois',sub:'−'+(Math.round((0.15+remise)*1000)/10)+' %',coef:1-(0.15+remise),idx:3}
+  ];
+  var _selTiers=getSelectedTiers();
+  var durs=allTiers.filter(function(t){return _selTiers.indexOf(t.idx)>-1;});
+  if(durs.length===0) durs=[allTiers[0]];
+  var _defIdx=getDefaultTier();
+  var hiKey=(allTiers[_defIdx]?allTiers[_defIdx].key:'12m');
+  if(!durs.some(function(t){return t.key===hiKey;})) hiKey=durs[durs.length-1].key;
+  function optTotalAt(opt,coef){
+    return opt.bureaux.reduce(function(s,b){
+      if(b.isItin){var q=b.itinQty||1;return s+Math.round((b.base||b.prix||ITIN_PRIX)*coef)*q;}
+      return s+Math.round(b.prix*coef);
+    },0)+((opt.tw||0)*170)+((typeof optExtrasTotal==='function')?optExtrasTotal(opt):0);
+  }
+  function sumSeats(bx){return bx.reduce(function(s,b){return s+(b.isItin?(b.itinQty||1):(b.cap||0));},0);}
+  function sumM2(bx){var v=bx.reduce(function(s,b){return s+(b.isItin?0:(b.surface||0));},0);return v?v.toLocaleString('fr-FR'):'—';}
+  function refsStr(bx){return bx.map(function(b){return isCoresRow(b)?('P'+coresNo(b.ref)):(b.isItin?'ITIN':b.ref);}).join(' · ');}
+
+  /* ===== Bâtiments (accès) ===== */
+  var BLD={
+    I:{zone:isEN?'Paris 8th · Golden Triangle':'Paris VIIIᵉ · Triangle d’Or',metro:['M1','M9'],rer:['RER C'],bus:['42','72','80']},
+    II:{zone:isEN?'Paris 8th · Champs-Élysées':'Paris VIIIᵉ · Champs-Élysées',metro:['M1','M9'],rer:['RER C'],bus:['42','72','80']},
+    III:{zone:isEN?'Paris 2nd · Opéra':'Paris IIᵉ · Opéra',metro:['M3','M7','M8'],rer:['RER A'],bus:['20','29','39']},
+    IV:{zone:isEN?'Paris 2nd · Bourse':'Paris IIᵉ · Bourse',metro:['M3','M8','M9'],rer:['RER A'],bus:['20','39','74']}
+  };
+  var LCOL={M1:['#FFCD00','#0F0F0F'],M3:['#837902','#FAFAFA'],M7:['#FA9ABA','#0F0F0F'],M8:['#E19BDF','#0F0F0F'],M9:['#B6BD00','#0F0F0F'],'RER A':['#E2231A','#FAFAFA'],'RER C':['#FFCD00','#0F0F0F']};
+  function bPre(txt){ return '<span style="display:inline-block;height:16px;line-height:14px;padding:0 5px;border:1px solid #0F0F0F;border-radius:3px;color:#0F0F0F;font-size:8px;font-weight:700;letter-spacing:.03em;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+txt+'</span>'; }
+  function bM(){ return '<span style="display:inline-block;width:16px;height:16px;line-height:14px;text-align:center;border:1px solid #0F0F0F;border-radius:50%;color:#0F0F0F;font-size:8px;font-weight:800;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">M</span>'; }
+  function bLine(m,sq){ var c=LCOL[m]||[SLATE,IVORY]; var n=m.replace('RER ',''); return '<span style="display:inline-block;min-width:16px;height:16px;line-height:16px;padding:0 3px;text-align:center;background:'+c[0]+';color:'+c[1]+';border-radius:'+(sq?'3px':'50%')+';font-size:8.5px;font-weight:800;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+n+'</span>'; }
+  function bBus(n){ return '<span style="display:inline-block;min-width:18px;height:16px;line-height:16px;padding:0 3px;text-align:center;background:'+SLATE+';color:'+IVORY+';border-radius:3px;font-size:8.5px;font-weight:700;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+n+'</span>'; }
+  function accBadges(B){
+    var g='<span style="white-space:nowrap">'+bM()+' '+B.metro.map(function(m){return bLine(m,false);}).join(' ')+'</span>';
+    if(B.rer&&B.rer.length) g+=' &nbsp;<span style="white-space:nowrap">'+bPre('RER')+' '+B.rer.map(function(m){return bLine(m,true);}).join(' ')+'</span>';
+    if(B.bus&&B.bus.length) g+=' &nbsp;<span style="white-space:nowrap">'+bPre('BUS')+' '+B.bus.map(bBus).join(' ')+'</span>';
+    return g;
   }
 
-  var legalText = document.querySelector ? '' : ''; /* reuse from buildEmail scope */
-  /* Rebuild legal same as buildEmail */
-  var legalFR = '<u><strong>Tous les tarifs sont indiqu\u00e9s H.T. et incluent\u00a0:</strong></u><br>\u2022 Acc\u00e8s 24h/24 et 7j/7 dans l\u2019arrondissement choisi, et du lundi au vendredi de 8h00 \u00e0 19h00 aux autres espaces The Bureau sur pr\u00e9sentation de son badge \u00e0 la conciergerie.<br>\u2022 Acc\u00e8s \u00e0 l\u2019ensemble des espaces communs\u00a0: coworking, espace restauration, patio, douches, salle de sport et cabines t\u00e9l\u00e9phoniques.<br>\u2022 Domiciliation et rangement tiroir inclus (sauf Itinérant).<br>\u2022 T\u00e9l\u00e9phone fixe, communications France et monde incluses (fixe et portable).<br>\u2022 Forfait impression\u00a0: 200 copies N&B et 25 couleurs par mois et par personne.<br>\u2022 Acc\u00e8s illimit\u00e9 aux tisaneries\u00a0: caf\u00e9, th\u00e9, eau filtr\u00e9e et fruits frais \u00e0 discr\u00e9tion.<br>\u2022 Programmation \u00e9v\u00e9nementielle\u00a0: soir\u00e9es, vernissages, partenariats et ap\u00e9ritivo du jeudi.<br>\u2022 Mobilier\u00a0: bureau, chaise et caisson.<br>\u2022 Conciergerie\u00a0: accueil clients, courrier, taxis, r\u00e9servations de salles.<br>\u2022 Global Collective\u00a0: 2 jours/mois dans les espaces partenaires (globalcollective.co).<br>\u2022 All-inclus\u00a0: \u00e9lectricit\u00e9, m\u00e9nage, charges, climatisation, chauffage.';
-  var legalEN = '<u><strong>All prices are quoted excl. VAT and include\u00a0:</strong></u><br>\u2022 24/7 access in your arrondissement, plus weekday access (8am\u20137pm) to all The Bureau locations on badge presentation.<br>\u2022 All shared spaces\u00a0: coworking, dining area, patio, showers, gym and phone booths.<br>\u2022 Business address registration and drawer storage (except Nomad).<br>\u2022 Fixed-line phone with unlimited calls to France and worldwide.<br>\u2022 Print allowance\u00a0: 200 B&W and 25 colour copies per person/month.<br>\u2022 Unlimited break areas\u00a0: coffee, tea, filtered water and fresh fruit on every floor.<br>\u2022 Events programme\u00a0: evenings, openings, partnerships and Thursday aperitivo.<br>\u2022 Furniture\u00a0: desk, chair and pedestal.<br>\u2022 Concierge\u00a0: guest reception, mail, taxis and meeting room bookings.<br>\u2022 Global Collective\u00a0: 2 days/month at partner spaces (globalcollective.co).<br>\u2022 All-inclusive\u00a0: electricity, cleaning, utilities, AC and heating.';
-  legalText = isEN ? legalEN : legalFR;
+  /* ===== Intro ===== */
+  var _cmEl=document.getElementById('customMsg');
+  var _cm=_cmEl?_cmEl.value.trim():'';
+  var _genFR='Suite à nos échanges, veuillez trouver ci-dessous notre sélection de bureaux disponibles au sein de The Bureau.';
+  var _genEN='Following our discussions, please find below our selection of available offices at The Bureau.';
+  var _isCustom=_cm && _cm!==_genFR && _cm!==_genEN;
+  var introHTML;
+  if(_isCustom){ introHTML=_cm.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+  else {
+    introHTML=isEN
+      ? 'Following our discussions, here are '+(isMulti?'the configurations below based on your priorities. Each one is independent':'the selection below')+' — '+(isMulti?'let me know which suits you best.':'I remain at your disposal.')
+      : 'Suite à nos échanges, voici '+(isMulti?'les configurations ci-dessous selon vos priorités. Chacune est indépendante — dites-moi celle qui vous convient le mieux.':'la sélection ci-dessous. Je reste à votre entière disposition.');
+  }
 
-  var ccTitle = isEN ? 'CONTRACTUAL CONDITIONS' : 'CONDITIONS CONTRACTUELLES';
-  var ccItemsFR = ['3 mois minimum, puis renouvellement de 3 mois successifs.',
-    'D\u00e9p\u00f4t de garantie\u00a0: 2 mois d\u2019abonnement H.T. (pr\u00e9cis\u00e9 dans le contrat).',
-    'Frais d\u2019installation\u00a0: 100\u20ac H.T. par poste capacitaire.',
-    'Pr\u00e9avis\u00a0: 2 mois plus le mois en cours.'];
-  var ccItemsEN = ['3-month minimum, then renewed for successive 3-month periods.',
-    'Security deposit: 2 months subscription excl. VAT (specified in the contract).',
-    'Installation fee: 100\u20ac excl. VAT per workstation capacity.',
-    'Notice period: two months plus the current month.'];
-  var ccItems = isEN ? ccItemsEN : ccItemsFR;
-  var ccList = ccItems.map(function(i){ return '<li style="margin:0 0 2px;font-size:11px;color:rgba(245,239,229,0.65);font-family:Plus Jakarta Sans,Arial,sans-serif">'+i+'</li>'; }).join('');
+  /* ===== Sous-titre header : nb bureaux + zone(s) ===== */
+  var _sites=[]; allData.forEach(function(b){ if(!b.isItin && b.site && _sites.indexOf(b.site)<0) _sites.push(b.site); });
+  var _nOff=allData.length;
+  var _countTxt = isMulti ? (_nOpts+(isEN?' configurations':' configurations')) : (_nOff>1?(_nOff+' '+(isEN?'offices':'bureaux')):(isEN?'1 office':'1 bureau'));
+  var _zoneTxt = _sites.length===1 ? (BLD[_sites[0]]?BLD[_sites[0]].zone:'') : (_sites.length>1 ? (_sites.length+(isEN?' sites':' sites')) : '');
+  var _subTxt = _countTxt + (_zoneTxt?(' · '+_zoneTxt):'');
 
-  var propLabel = isEN ? 'Personalised proposal' : 'Proposition personnalisée';
-  var yourRef   = isEN ? 'Your contact' : 'Votre interlocuteur';
-  var ctaLabel  = isEN ? 'BOOK A VISIT' : 'R\u00c9SERVER UNE VISITE';
-  var CAL_URL   = 'https://calendar.app.google/TpzHDUHnLvaxVLL59';
-  var GFONTS    = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap';
-
-  var h = '';
-  h+='<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"/><link href="'+GFONTS+'" rel="stylesheet"/><style>@media only screen and (max-width:620px){.email-container{width:100%!important}.email-pad{padding:16px!important}}</style></head>';
-  h+='<body style="margin:0;padding:0;background:#FAFAFA">';
-  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAFAFA;padding:32px 0"><tr><td align="center">';
-  h+='<table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">';
-
-  /* Header — clair (maquette) : logo sombre | PROPOSITION PERSONNALISÉE / Sélection bureaux + date */
+  var propLabel=isEN?'Personalised proposal':'Proposition personnalisée';
+  var ctaLabel=isEN?'BOOK A VISIT':'RÉSERVER UNE VISITE';
+  var CAL_URL='https://calendar.app.google/TpzHDUHnLvaxVLL59';
+  var GFONTS='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Spectral:ital,wght@0,400;1,400&display=swap';
+  var LOGO_URL='https://teamlounge.thebureau.paris/logo-thebureau.png';
+  var CHEV_URL='https://teamlounge.thebureau.paris/chevrons-or.png';
   var _dH=new Date(); var _pH=function(n){return(n<10?'0':'')+n;}; var _dateStr=_pH(_dH.getDate())+'/'+_pH(_dH.getMonth()+1)+'/'+_dH.getFullYear();
-  h+='<tr><td style="background:#ffffff;padding:24px 36px;border-bottom:1px solid rgba(15,15,15,.1);border-radius:4px 4px 0 0">';
-  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td style="vertical-align:middle"><table cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td style="vertical-align:middle;padding-right:14px"><img src="https://teamlounge.thebureau.paris/logo.svg" alt="The Bureau" height="26" style="display:block"/></td>';
-  h+='<td style="vertical-align:middle;border-left:1px solid rgba(15,15,15,.15);padding-left:14px"><div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8A6A18;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif">'+propLabel+'</div><div style="font-size:17px;font-weight:300;color:#0F0F0F;font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:2px">'+(isEN?'Office ':'Sélection ')+'<b style="font-weight:800">'+(isEN?'selection':'bureaux')+'</b></div></td>';
-  h+='</tr></table></td>';
-  h+='<td align="right" style="vertical-align:middle;font-size:12px;color:#5a5248;font-family:Plus Jakarta Sans,Arial,sans-serif;white-space:nowrap">'+_dateStr+'</td>';
-  h+='</tr></table></td></tr>';
 
-  /* Intro — maquette mode options : prénom en gras + « · société », intro spécifique */
-  h+='<tr><td style="background:#ffffff;padding:28px 36px 22px;border-bottom:1px solid rgba(15,15,15,.09)">';
-  h+='<p style="margin:0 0 8px;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:21px;font-weight:300;color:'+INK+'">'+(isEN?'Hello ':'Bonjour ')+'<b style="font-weight:700">'+civ+'</b>'+(soc?' <span style="font-size:14px;color:'+GR+';font-weight:500">· '+soc+'</span>':'')+'</p>';
-  h+='<p style="margin:0;font-size:13.5px;color:'+GR+';line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+introHTML+'</p>';
+  /* ===== Eyebrow helper ===== */
+  function eyebrow(txt,right){
+    return '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
+      +'<td valign="middle" style="white-space:nowrap"><span style="display:inline-block;width:22px;height:1px;background:'+GOLD+';vertical-align:middle;margin-right:8px"></span><span style="font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+GOLDAA+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+txt+'</span></td>'
+      +(right?'<td align="right" valign="middle" style="font-size:8.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+right+'</td>':'')
+      +'</tr></table>';
+  }
+
+  var h='';
+  h+='<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"/><link href="'+GFONTS+'" rel="stylesheet"/><style>@media only screen and (max-width:620px){.email-container{width:100%!important}.ep{padding-left:20px!important;padding-right:20px!important}}</style></head>';
+  h+='<body style="margin:0;padding:0;background:#FAFAFA">';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAFAFA;padding:30px 0"><tr><td align="center">';
+  h+='<table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#FAFAFA">';
+
+  /* ===== HEADER éditorial ===== */
+  h+='<tr><td class="ep" style="background:#ffffff;padding:30px 36px 24px;border-bottom:1px solid '+GOLD+'">';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="vertical-align:middle"><img src="'+LOGO_URL+'" alt="The Bureau" height="30" style="display:block;height:30px;width:auto"/></td></tr></table>';
+  h+='<div style="font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+GOLDAA+';font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:20px">'+propLabel+' <span style="color:'+GR+';font-weight:600;letter-spacing:.06em"> · '+_dateStr+'</span></div>';
+  h+='<div style="font-size:30px;font-weight:200;letter-spacing:-.02em;line-height:1.05;color:'+INK+';font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:8px">'+(isEN?'For ':'Pour ')+'<b style="font-weight:800">'+esc(civ)+'</b>'+(soc?' <span style="font-size:16px;font-weight:300;color:'+GR+'">· '+esc(soc)+'</span>':'')+'</div>';
+  h+='<div style="font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:9px">'+esc(_subTxt)+'</div>';
   h+='</td></tr>';
 
-  /* Options count label */
-  h+='<tr><td style="background:#ffffff;padding:16px 36px 2px">';
-  h+='<span style="font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+nbLabel+'</span>';
-  h+='</td></tr>';
+  /* ===== INTRO ===== */
+  h+='<tr><td class="ep" style="background:#ffffff;padding:24px 36px 6px"><p style="margin:0;font-size:13.5px;color:'+GR+';line-height:1.7;font-family:Plus Jakarta Sans,Arial,sans-serif">'+introHTML+'</p></td></tr>';
 
-  /* Option blocks */
-  h+='<tr><td style="background:#ffffff;padding:22px 36px">';
-  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0">';
-  enrichedOpts.forEach(function(opt, oi) {
+  /* ===== COMPARATIF (multi) ===== */
+  if(isMulti){
+    h+='<tr><td class="ep" style="background:#ffffff;padding:22px 36px 0">'+eyebrow(isEN?'Options comparison':'Comparatif des options',(isEN?'excl. VAT / mo':'H.T. / mois'))+'</td></tr>';
+    h+='<tr><td class="ep" style="background:#ffffff;padding:12px 36px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border-bottom:1px solid '+GOLD+'">';
+    /* header row */
+    h+='<tr><td style="background:'+IVORY+';padding:9px 10px;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:'+GOLDAA+';font-family:Plus Jakarta Sans,Arial,sans-serif;text-align:left">Option</td>';
+    durs.forEach(function(d){ var on=d.key===hiKey; h+='<td style="background:'+(on?GOLD:IVORY)+';padding:9px 10px;font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:'+(on?'#fff':GOLDAA)+';font-family:Plus Jakarta Sans,Arial,sans-serif;text-align:right;white-space:nowrap">'+d.label+'<span style="display:block;opacity:.85;font-weight:500;margin-top:1px">'+d.sub+'</span></td>'; });
+    h+='</tr>';
+    enrichedOpts.forEach(function(opt,oi){
+      var reco=(typeof PROP_RECO!=='undefined'&&PROP_RECO===oi+1);
+      var _lab=opt.label; var _ph=!_lab||_lab==='Texte personnalisé'||_lab==='Custom text'||/^option\s*\d+$/i.test((_lab||'').trim());
+      var bg=reco?SLATE:'#ffffff', tx=reco?IVORY:INK, sub=reco?'rgba(245,239,229,.7)':GR, eu=reco?GOLDLT:GOLD;
+      h+='<tr>';
+      h+='<td style="background:'+bg+';border-top:0.5px solid '+(reco?'rgba(245,239,229,.18)':'rgba(15,15,15,.1)')+';'+(reco?'border-left:3px solid '+GOLD+';':'')+'padding:11px 10px;text-align:left;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'
+        +'<span style="display:inline-block;background:'+GOLD+';color:#fff;font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;vertical-align:middle">Option '+(oi+1)+'</span>'
+        +(reco?' <span style="font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:'+GOLDLT+';white-space:nowrap">★ '+(isEN?'Recommended':'Recommandé')+'</span>':'')
+        +(!_ph?' <span style="font-size:11px;font-weight:600;color:'+tx+'">'+esc(_lab)+'</span>':'')
+        +'<span style="display:block;font-size:10px;color:'+sub+';margin-top:3px">'+esc(refsStr(opt.bureaux))+'</span></td>';
+      durs.forEach(function(d){ var on=d.key===hiKey; h+='<td style="background:'+bg+';border-top:0.5px solid '+(reco?'rgba(245,239,229,.18)':'rgba(15,15,15,.1)')+';padding:11px 10px;text-align:right;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:'+(on?'14px':'12.5px')+';font-weight:'+(on?700:400)+';color:'+(on?eu:tx)+'">'+fmt(optTotalAt(opt,d.coef))+' <span style="font-size:9px;color:'+eu+'">€</span></td>'; });
+      h+='</tr>';
+    });
+    h+='</table></td></tr>';
+  }
+
+  /* ===== DÉTAIL DES BUREAUX ===== */
+  h+='<tr><td class="ep" style="background:#ffffff;padding:24px 36px 0">'+eyebrow(isMulti?(isEN?'Office detail':'Détail des bureaux'):(isEN?'Your selection':'Votre sélection'),(isEN?'excl. VAT / mo':'H.T. / mois'))+'</td></tr>';
+  h+='<tr><td class="ep" style="background:#ffffff;padding:12px 36px 0"><table width="100%" cellpadding="0" cellspacing="0" border="0">';
+  enrichedOpts.forEach(function(opt,oi){
+    var reco=(typeof PROP_RECO!=='undefined'&&PROP_RECO===oi+1);
     h+='<tr><td style="padding:0 0 '+(oi<enrichedOpts.length-1?'14':'0')+'px">';
-    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e9e1d2;border-left:5px solid #B09438;border-radius:12px;overflow:hidden">';
+    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:'+(reco?'1px solid '+GOLD:'0.5px solid rgba(176,148,56,0.45)')+';border-left:3px solid '+GOLD+'">';
     h+=buildOptionEmail(allData, opt, isEN, oi+1, LOGO_B64, CHEV_B64);
     h+='</table></td></tr>';
   });
   h+='</table></td></tr>';
-  h+='<tr><td style="background:#ffffff;height:16px"></td></tr>';
 
-  /* CTA */
-  h+='<tr><td style="background:#ffffff;padding:24px 36px;text-align:center">';
+  /* ===== CTA ===== */
+  h+='<tr><td class="ep" style="background:#ffffff;padding:26px 36px;text-align:center">';
   h+='<a href="'+CAL_URL+'" target="_blank" style="display:inline-block;background:#0F0F0F;color:#ffffff;text-decoration:none;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 34px;border-radius:2px">'+ctaLabel+' &rarr;</a>';
   h+='<p style="margin:10px 0 0;font-size:11px;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif">'+(isEN?'or simply reply to this email':'ou répondez simplement à cet email')+'</p>';
   h+='</td></tr>';
-  /* Tout est sur place — encart condensé (détail complet dans le PDF joint) */
-  var _tespTitle=isEN?'EVERYTHING ON SITE':'TOUT EST SUR PLACE';
-  var _tespL=isEN?['24/7 access, shared spaces, patio, gym.','Pantries, concierge, events programme.']:['Accès 24/7, espaces communs, patio, sport.','Tisaneries, conciergerie, programmation.'];
-  var _tespR=isEN?['Business address, phone, printing included.','All-inclusive: utilities, cleaning, AC.']:['Domiciliation, téléphonie, impression incluses.','All-Inclusive : charges, ménage, climatisation.'];
-  var _tespNote=isEN?'Full inclusions detailed in the attached PDF proposal.':'Le détail complet des inclusions figure dans la proposition PDF jointe.';
-  var _tespItem=function(t){return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:6px"><tr><td width="14" valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:#B09438;font-weight:700;line-height:1.45">&mdash;</td><td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11.5px;color:#5a5248;line-height:1.45">'+t+'</td></tr></table>';};
-  h+='<tr><td style="background:#ffffff;padding:4px 36px 26px"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5EFE5;border-radius:4px"><tr><td style="padding:18px 22px">';
-  h+='<p style="margin:0 0 12px;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#7A6015;font-weight:700;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="display:inline-block;width:16px;height:2px;background:#B09438;vertical-align:middle;margin-right:8px"></span>'+_tespTitle+'</p>';
-  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="50%" valign="top" style="padding-right:12px">'+_tespL.map(_tespItem).join('')+'</td><td width="50%" valign="top" style="padding-left:12px">'+_tespR.map(_tespItem).join('')+'</td></tr></table>';
-  h+='<p style="margin:10px 0 0;font-size:10.5px;color:rgba(15,15,15,.5);font-style:italic;font-family:Plus Jakarta Sans,Arial,sans-serif">'+_tespNote+'</p>';
-  h+='</td></tr></table></td></tr>';
-  /* Conditions contractuelles */
-  h+=buildCondEmail(isEN);
 
-  /* Pied jade — expéditeur (chevrons or) à gauche · The Bureau Paris à droite */
-  var _snd2=getCurrentSender();
-  h+='<tr><td style="background:#1E4035;padding:22px 36px;border-radius:0 0 4px 4px">';
-  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td style="vertical-align:middle"><table cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td width="50" style="vertical-align:middle"><img src="https://teamlounge.thebureau.paris/chevrons-email.png" alt="The Bureau" width="40" style="display:block"/></td>';
-  h+='<td style="vertical-align:middle;padding-left:14px">';
-  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;color:rgba(245,239,229,.92)"><b style="font-weight:700">'+_snd2.name+'</b> <span style="color:#D4B870;font-weight:600">· '+(isEN?_snd2.titleEN:_snd2.title)+'</span></p>';
-  h+='<p style="margin:4px 0 0;font-size:11.5px;color:rgba(245,239,229,.7);font-family:Plus Jakarta Sans,Arial,sans-serif">';
-  h+='<a href="tel:'+_snd2.phone.replace(/\s/g,'')+'" style="color:rgba(245,239,229,.7);text-decoration:none">'+_snd2.phone+'</a> · ';
-  h+='<a href="mailto:'+_snd2.email+'" id="femail" style="color:#D4B870;text-decoration:none">'+_snd2.email+'</a>';
-  h+='</p></td></tr></table></td>';
-  h+='<td align="right" style="vertical-align:middle">';
-  h+='<div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,239,229,.6);font-family:Plus Jakarta Sans,Arial,sans-serif">The Bureau Paris</div>';
-  h+='<div style="font-family:Georgia,\'Spectral\',serif;font-style:italic;font-size:15px;color:#D4B870;margin-top:3px">75002 · 75008</div>';
+  /* ===== TOUT EST SUR PLACE (complet) ===== */
+  var INCLUS=isEN?[
+    '24/7 access in our buildings.','Shared spaces: coworking, dining, patio, gym.','Business address & drawer storage (except Nomad).','Fixed line, calls to France & worldwide included.','Print allowance: 200 B&W and 25 colour / month.','Unlimited break areas: coffee, tea, fresh fruit.','Concierge: mail, taxis, meeting room bookings.','Events programme & Global Collective.','Furniture: desk, chair, pedestal.','All-Inclusive: electricity, cleaning, utilities, AC, heating.'
+  ]:[
+    'Accès 24/7 dans nos bâtiments.','Espaces communs : coworking, restauration, patio, salle de sport.','Domiciliation & rangement tiroir (sauf Itinérant).','Téléphone fixe, communications France & monde incluses.','Impression : 200 N&B et 25 couleurs / mois.','Tisaneries illimitées : café, thé, fruits frais.','Conciergerie : courrier, taxis, réservations de salles.','Programmation événementielle & Global Collective.','Mobilier : bureau, chaise, caisson.','All-Inclusive : électricité, ménage, charges, climatisation, chauffage.'
+  ];
+  var _inclItem=function(t){return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:6px"><tr><td width="12" valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;color:'+GOLD+';font-weight:700;line-height:1.5">›</td><td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:'+GR+';line-height:1.5">'+t+'</td></tr></table>';};
+  var _half=Math.ceil(INCLUS.length/2);
+  h+='<tr><td class="ep" style="background:#ffffff;padding:6px 36px 26px"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:'+IVORY+'"><tr><td style="padding:20px 24px">';
+  h+='<div style="margin-bottom:12px">'+eyebrow(isEN?'Everything on site · included':'Tout est sur place · inclus dans la mensualité')+'</div>';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="50%" valign="top" style="padding-right:14px">'+INCLUS.slice(0,_half).map(_inclItem).join('')+'</td><td width="50%" valign="top" style="padding-left:14px">'+INCLUS.slice(_half).map(_inclItem).join('')+'</td></tr></table>';
   h+='</td></tr></table></td></tr>';
+
+  /* ===== ACCÈS (multi-site) ===== */
+  var usedB=[]; allData.forEach(function(b){ if(!b.isItin && b.site && usedB.indexOf(b.site)<0) usedB.push(b.site); });
+  if(usedB.length===0) usedB=['I'];
+  var addrByB={}; allData.forEach(function(b){ if(b.site && b.adresse && !addrByB[b.site]) addrByB[b.site]=b.adresse; });
+  h+='<tr><td class="ep" style="background:#ffffff;padding:0 36px 26px">';
+  h+='<div style="margin-bottom:12px">'+eyebrow(usedB.length>1?(isEN?'Access · '+usedB.length+' sites':'Accès · '+usedB.length+' sites'):(isEN?'Access':'Accès'))+'</div>';
+  usedB.forEach(function(bk,ix){ var B=BLD[bk]||BLD.I; var ad=addrByB[bk]||'';
+    h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:'+(ix<usedB.length-1?'12':'0')+'px"><tr>';
+    h+='<td valign="top" style="font-family:Plus Jakarta Sans,Arial,sans-serif"><div style="font-size:12px;font-weight:700;color:'+INK+'">'+esc(ad)+'</div><div style="font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:'+GR+';margin-top:1px">'+B.zone+'</div></td>';
+    h+='<td align="right" valign="middle" style="white-space:nowrap">'+accBadges(B)+'</td>';
+    h+='</tr></table>';
+  });
+  h+='</td></tr>';
+
+  /* ===== À LA CARTE (= options du bandeau droit) ===== */
+  var CARTE=[[isEN?'Remote work':'Télétravail',170,(isEN?'/mo/pers.':'/mois/pers.')]];
+  ADDONS.forEach(function(a){ CARTE.push([isEN?a.en:a.fr,a.p,(isEN?a.perEn:a.perFr)]); });
+  var _carteItem=function(k){return '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:0.5px solid rgba(15,15,15,.1)"><tr><td style="padding:5px 0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:'+GR+'">'+k[0]+'</td><td align="right" style="padding:5px 0;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;font-weight:700;color:'+SLATE+'">'+k[1]+' €<span style="font-weight:400;color:'+GR+'"> '+k[2]+'</span></td></tr></table>';};
+  var _ch=Math.ceil(CARTE.length/2);
+  h+='<tr><td class="ep" style="background:#ffffff;padding:0 36px 26px">';
+  h+='<div style="margin-bottom:10px">'+eyebrow(isEN?'À la carte, no commitment · excl. VAT':'À la carte, sans engagement · H.T.')+'</div>';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="50%" valign="top" style="padding-right:14px">'+CARTE.slice(0,_ch).map(_carteItem).join('')+'</td><td width="50%" valign="top" style="padding-left:14px">'+CARTE.slice(_ch).map(_carteItem).join('')+'</td></tr></table>';
+  h+='</td></tr>';
+
+  /* ===== CONDITIONS CONTRACTUELLES ===== */
+  var COND=isEN?[
+    '3-month minimum, then renewed for successive 3-month periods.','Security deposit: 2 months’ subscription excl. VAT.','Installation fee: 100 € excl. VAT per workstation.','Notice period: two months plus the current month.','Indexation capped at 3 % per year.','Priority on adjacent spaces.'
+  ]:[
+    '3 mois minimum, puis renouvellement de 3 mois.','Dépôt de garantie : 2 mois d’abonnement H.T.','Frais d’installation : 100 € H.T. par poste.','Préavis : 2 mois plus le mois en cours.','Indexation plafonnée à 3 % / an.','Priorité sur les surfaces adjacentes.'
+  ];
+  var _ch2=Math.ceil(COND.length/2);
+  h+='<tr><td class="ep" style="background:#ffffff;padding:0 36px 28px">';
+  h+='<div style="margin-bottom:12px">'+eyebrow(isEN?'Contractual conditions':'Conditions contractuelles')+'</div>';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="50%" valign="top" style="padding-right:14px">'+COND.slice(0,_ch2).map(_inclItem).join('')+'</td><td width="50%" valign="top" style="padding-left:14px">'+COND.slice(_ch2).map(_inclItem).join('')+'</td></tr></table>';
+  h+='</td></tr>';
+
+  /* ===== PIED jade ===== */
+  var _snd2=getCurrentSender();
+  h+='<tr><td class="ep" style="background:#1E4035;padding:16px 30px;border-top:2px solid '+GOLD+'">';
+  h+='<table width="100%" cellpadding="0" cellspacing="0" border="0" style="line-height:1.2"><tr>';
+  h+='<td style="vertical-align:middle"><table cellpadding="0" cellspacing="0" border="0"><tr>';
+  h+='<td width="46" style="vertical-align:middle"><img src="'+CHEV_URL+'" alt="The Bureau" height="26" style="display:block;height:26px;width:auto"/></td>';
+  h+='<td style="vertical-align:middle;padding-left:14px">';
+  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.09em;color:'+IVORY+';line-height:1.1;text-transform:uppercase">'+esc(_snd2.name)+' <span style="font-weight:300;color:rgba(245,239,229,.72);letter-spacing:.03em">· '+esc(isEN?_snd2.titleEN:_snd2.title)+'</span></p>';
+  h+='<p style="margin:3px 0 0;font-size:10.5px;color:rgba(245,239,229,.68);font-family:Plus Jakarta Sans,Arial,sans-serif;line-height:1.1"><a href="tel:'+_snd2.phone.replace(/\s/g,'')+'" style="color:rgba(245,239,229,.68);text-decoration:none">'+_snd2.phone+'</a> · <a href="mailto:'+_snd2.email+'" id="femail" style="color:'+GOLDLT+';text-decoration:none">'+_snd2.email+'</a> · thebureau.paris</p>';
+  h+='</td></tr></table></td>';
+  h+='<td align="right" style="vertical-align:middle;line-height:1.2"><div style="font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,239,229,.6);font-family:Plus Jakarta Sans,Arial,sans-serif">The Bureau Paris</div><div style="font-size:13px;font-weight:600;color:'+GOLDLT+';margin-top:2px;font-family:Plus Jakarta Sans,Arial,sans-serif">75002 · 75008</div></td>';
+  h+='</tr></table></td></tr>';
+
   h+='</table></td></tr></table>\n</body></html>';
   return h;
 }
 
 function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
-  var INK='#0F0F0F', GR='#5a5248', GOLD='#B09438', GOLDAA='#8A6A18', SLATE='#1E4035', IVORY='#F5EFE5', SEP='rgba(15,15,15,0.12)';
+  var INK='#0F0F0F', GR='#5a5248', GOLD='#B09438', GOLDAA='#8A6A18', SLATE='#1E4035', IVORY='#F5EFE5', GOLDLT='#D4B870', SEP='rgba(15,15,15,0.12)';
   var _remEl=document.getElementById('remiseInput');
   var remise=_remEl?Math.min(25,Math.max(0,parseFloat(_remEl.value)||0))/100:0;
   var dt=getDefaultTier();
   var paliers=[{d:remise},{d:(0.05+remise)},{d:(0.10+remise)},{d:(0.15+remise)}];
   var mainLabels=isEN?['Monthly','12 months','24 months','36 months']:['Mensuel','12 mois','24 mois','36 mois'];
-  function optTotalAt(d){
+  var hiCoef=1-paliers[dt].d;
+  function optTotalAt(coef){
     return opt.bureaux.reduce(function(s,b){
-      if(b.isItin){var q=b.itinQty||1,add=b.addons?(b.addons.domi?60:0)+(b.addons.casier?30:0):0;return s+Math.round((b.base||ITIN_PRIX)*(1-d))*q+add;}
-      return s+Math.round(b.prix*(1-d));
-    },0)+((opt.tw||0)*170)+optExtrasTotal(opt);
+      if(b.isItin){var q=b.itinQty||1;return s+Math.round((b.base||b.prix||ITIN_PRIX)*coef)*q;}
+      return s+Math.round(b.prix*coef);
+    },0)+((opt.tw||0)*170)+((typeof optExtrasTotal==='function')?optExtrasTotal(opt):0);
   }
-  var hiCoef=paliers[dt].d;
   var totDefault=optTotalAt(hiCoef);
   var hiLine=mainLabels[dt]+(dt===0?'':' −'+(Math.round(paliers[dt].d*1000)/10)+' %');
   var _sel=getSelectedTiers();
-  var others=_sel.filter(function(pi){return pi!==dt;}).map(function(pi){return mainLabels[pi]+' '+fmt(optTotalAt(paliers[pi].d))+' €';}).join(' · ');
+  var others=_sel.filter(function(pi){return pi!==dt;}).map(function(pi){return mainLabels[pi]+' '+fmt(optTotalAt(1-paliers[pi].d))+' €';}).join(' · ');
   var pname=opt.label||'';
   var isPlaceholder=!pname||pname==='Texte personnalisé'||pname==='Custom text'||/^option\s*\d+$/i.test(pname.trim());
-  function _floorStr(b){ if(b.isItin)return '—'; if(isEN){return b.etage===0?'GF':(b.etage+(b.etage===1?'st':b.etage===2?'nd':b.etage===3?'rd':'th'));} return b.etage===0?'RDC':(b.etage+'ᵉ'); }
-  function _dispoStr(b){ if(b.isItin)return isEN?'Immediate':'Immédiate'; return b.dispo==='immediate'?(isEN?'Immediate':'Immédiate'):(b.date?((isEN?'From ':'Dès le ')+dtLbl(b.date)):(isEN?'On request':'Sur demande')); }
-  var reco = (typeof PROP_RECO!=='undefined' && PROP_RECO===optNum);
+  function _floorStr(b){ if(b.isItin)return '—'; if(isEN){return b.etage===0?'GF':(b.etage+(b.etage===1?'st':b.etage===2?'nd':b.etage===3?'rd':'th'));} return b.etage===0?'RDC':(b.etage===1?'1ᵉʳ':(b.etage+'ᵉ')); }
+  function _dispoStr(b){ if(b.isItin)return isEN?'Immediate':'Immédiate'; return b.dispo==='immediate'?(isEN?'Immediate':'Immédiate'):(b.date?((isEN?'From ':'Dès le ')+dtLbl(b.date,isEN)):(isEN?'On request':'Sur demande')); }
+  var reco=(typeof PROP_RECO!=='undefined'&&PROP_RECO===optNum);
+  var EU='<span style="font-size:7px;color:'+GOLD+'"> H.T.</span>';
   var h='';
+  /* En-tête option */
   h+='<tr><td style="background:'+(reco?SLATE:IVORY)+';border-bottom:1px solid '+GOLD+';padding:14px 16px">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
-  h+='<td valign="middle"><span style="display:inline-block;background:'+GOLD+';color:#fff;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;font-family:Plus Jakarta Sans,Arial,sans-serif">Option '+optNum+'</span>'+(!isPlaceholder?' <span style="font-size:16px;font-weight:600;color:'+(reco?IVORY:INK)+';font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+esc(pname)+'</span>':'')+(reco?' <span style="font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#D4B870">★ '+(isEN?'Recommended':'Recommandé')+'</span>':'')+'</td>';
-  h+='<td align="right" valign="middle" style="white-space:nowrap"><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:22px;font-weight:700;color:'+(reco?'#D4B870':SLATE)+'">'+fmt(totDefault)+'</span> <span style="font-size:11px;color:'+GOLD+'">€</span> <span style="font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:'+(reco?'rgba(245,239,229,.7)':GR)+'">'+hiLine+'</span>'+(others?'<div style="font-size:9px;font-weight:300;color:'+(reco?'rgba(245,239,229,.6)':GR)+';margin-top:3px">'+others+'</div>':'')+'</td>';
+  h+='<td valign="middle"><span style="display:inline-block;background:'+GOLD+';color:#fff;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">Option '+optNum+'</span>'+(!isPlaceholder?' <span style="font-size:16px;font-weight:600;color:'+(reco?IVORY:INK)+';font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+esc(pname)+'</span>':'')+(reco?' <span style="font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+GOLDLT+';vertical-align:middle">★ '+(isEN?'Recommended':'Recommandé')+'</span>':'')+'</td>';
+  h+='<td align="right" valign="middle" style="white-space:nowrap"><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:26px;font-weight:700;letter-spacing:-.01em;color:'+(reco?GOLDLT:SLATE)+'">'+fmt(totDefault)+'</span> <span style="font-size:11px;color:'+GOLD+'">€</span> <span style="font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:'+(reco?'rgba(245,239,229,.7)':GR)+'">'+hiLine+'</span>'+(others?'<div style="font-size:9px;font-weight:300;color:'+(reco?'rgba(245,239,229,.6)':GR)+';margin-top:3px">'+others+'</div>':'')+'</td>';
   h+='</tr></table></td></tr>';
+  /* Tableau colonnes */
   h+='<tr><td style="background:#fff;padding:0 16px"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed">';
-  h+='<colgroup><col style="width:58px"><col><col style="width:40px"><col style="width:42px"><col style="width:46px"><col style="width:82px"></colgroup>';
-  h+='<tr style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:'+GOLDAA+'"><td style="padding:9px 0">'+(isEN?'Ref.':'Réf.')+'</td><td style="padding:9px 0">'+(isEN?'Office':'Bureau')+'</td><td style="padding:9px 0;text-align:center">'+(isEN?'Floor':'Étage')+'</td><td style="padding:9px 0;text-align:center">m²</td><td style="padding:9px 0;text-align:center">'+(isEN?'Desks':'Postes')+'</td><td style="padding:9px 0">'+(isEN?'Avail.':'Dispo.')+'</td></tr>';
+  h+='<colgroup><col style="width:52px"><col><col style="width:34px"><col style="width:34px"><col style="width:40px"><col style="width:66px"><col style="width:62px"></colgroup>';
+  h+='<tr style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:'+GOLDAA+'"><td style="padding:9px 0">'+(isEN?'Ref.':'Réf.')+'</td><td style="padding:9px 0">'+(isEN?'Office':'Bureau')+'</td><td style="padding:9px 0;text-align:center">'+(isEN?'Fl.':'Ét.')+'</td><td style="padding:9px 0;text-align:center">m²</td><td style="padding:9px 0;text-align:center">'+(isEN?'Desks':'Postes')+'</td><td style="padding:9px 0">'+(isEN?'Avail.':'Dispo.')+'</td><td style="padding:9px 0;text-align:right">'+(isEN?'Price':'Prix')+'</td></tr>';
   opt.bureaux.forEach(function(b){
     var _isCo2=isCoresRow(b);
     var refTxt=_isCo2?('P'+coresNo(b.ref)):(b.isItin?'ITIN':esc(b.ref));
@@ -3962,25 +4043,28 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
     var _desc=b.isItin?(_qv+' '+(isEN?('subscription'+(_qv>1?'s':'')):('abonnement'+(_qv>1?'s':'')))):((b.desc)?cleanDesc(b.desc):'');
     var _m2=b.isItin?'—':(b.surface!=null?b.surface.toLocaleString('fr-FR'):'—');
     var _seats=b.isItin?_qv:b.cap;
+    var _price=b.isItin?(Math.round((b.base||b.prix||ITIN_PRIX)*hiCoef)*_qv):Math.round(b.prix*hiCoef);
     h+='<tr>';
-    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;vertical-align:top"><span style="display:inline-block;background:'+SLATE+';color:'+IVORY+';font-size:9.5px;font-weight:700;padding:5px 8px;text-align:center;min-width:34px;border-radius:12px;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'+refTxt+'</span></td>';
-    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 10px 11px 0;vertical-align:top"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;font-weight:700;color:'+INK+';line-height:1.3">'+_nameTxt+(_addr?' <span style="color:'+GOLDAA+';font-size:10px;font-weight:500">· '+_addr+'</span>':'')+'</div>'+(_desc?'<div style="font-family:Georgia,serif;font-style:italic;font-size:11.5px;color:rgba(15,15,15,.72);margin-top:2px;line-height:1.4">'+esc(_desc)+'</div>':'')+'</td>';
-    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;color:'+INK+';vertical-align:top">'+_floorStr(b)+'</td>';
-    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;color:'+INK+';vertical-align:top">'+_m2+'</td>';
-    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;color:'+INK+';vertical-align:top">'+_seats+'</td>';
+    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;vertical-align:top"><span style="display:inline-block;background:'+SLATE+';color:'+IVORY+';font-size:9px;font-weight:700;padding:5px 7px;text-align:center;min-width:30px;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'+refTxt+'</span></td>';
+    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 8px 11px 0;vertical-align:top"><div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;font-weight:700;color:'+INK+';line-height:1.3">'+_nameTxt+(_addr?'<span style="display:block;color:'+GOLDAA+';font-size:10px;font-weight:500;margin-top:1px">'+esc(_addr)+'</span>':'')+'</div>'+(_desc?'<div style="font-family:Spectral,Georgia,serif;font-style:italic;font-size:11.5px;color:rgba(15,15,15,.72);margin-top:2px;line-height:1.4">'+esc(_desc)+'</div>':'')+'</td>';
+    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;color:'+INK+';vertical-align:top">'+_floorStr(b)+'</td>';
+    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;color:'+INK+';vertical-align:top">'+_m2+'</td>';
+    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;color:'+INK+';vertical-align:top">'+_seats+'</td>';
     h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:300;color:'+INK+';vertical-align:top">'+_dispoStr(b)+'</td>';
+    h+='<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:right;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:600;color:'+GR+';vertical-align:top">'+fmt(_price)+' €'+EU+'</td>';
     h+='</tr>';
   });
   var _exAb={domi:'Domi.',parking:'Park.',ev:'P.élec',moto:'Moto',casier:'Casier',velo:'Vélo',signal:'Signa.'};
-  function _addonRow(label,abbr,detail,qty){
-    return '<tr><td style="border-top:0.5px solid '+SEP+';padding:11px 0;vertical-align:top"><span style="display:inline-block;background:'+GOLD+';color:#fff;font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;min-width:34px;text-align:center;border-radius:12px;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'+abbr+'</span></td>'
-    +'<td style="border-top:0.5px solid '+SEP+';padding:11px 10px 11px 0;vertical-align:top"><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;font-weight:700;color:'+INK+'">'+label+'</span> <span style="font-family:Georgia,serif;font-style:italic;font-size:11.5px;color:rgba(15,15,15,.72)">'+detail+'</span></td>'
+  function _addonRow(label,abbr,detail,qty,price){
+    return '<tr><td style="border-top:0.5px solid '+SEP+';padding:11px 0;vertical-align:top"><span style="display:inline-block;background:'+GOLD+';color:#fff;font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 7px;min-width:30px;text-align:center;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif">'+abbr+'</span></td>'
+    +'<td style="border-top:0.5px solid '+SEP+';padding:11px 8px 11px 0;vertical-align:top"><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;font-weight:700;color:'+INK+'">'+label+'</span> <span style="font-family:Spectral,Georgia,serif;font-style:italic;font-size:11.5px;color:rgba(15,15,15,.72)">'+detail+'</span></td>'
     +'<td style="border-top:0.5px solid '+SEP+';text-align:center;color:'+GR+'">—</td><td style="border-top:0.5px solid '+SEP+';text-align:center;color:'+GR+'">—</td>'
-    +'<td style="border-top:0.5px solid '+SEP+';text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12.5px;color:'+INK+'">'+qty+'</td>'
-    +'<td style="border-top:0.5px solid '+SEP+';padding:11px 0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:300;color:'+INK+'">'+(isEN?'Immediate':'Immédiate')+'</td></tr>';
+    +'<td style="border-top:0.5px solid '+SEP+';text-align:center;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:12px;color:'+INK+'">'+qty+'</td>'
+    +'<td style="border-top:0.5px solid '+SEP+';padding:11px 0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:300;color:'+INK+'">'+(isEN?'Immediate':'Immédiate')+'</td>'
+    +'<td style="border-top:0.5px solid '+SEP+';padding:11px 0;text-align:right;white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:10px;font-weight:600;color:'+GR+'">'+fmt(price)+' €'+EU+'</td></tr>';
   }
-  if(opt.tw&&opt.tw>0) h+=_addonRow(isEN?'Telework offer':'Offre Télétravail', isEN?'Remote':'Télé.', opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.'), opt.tw);
-  if(opt.extras){ ADDONS.forEach(function(a){ var q=opt.extras[a.k]||0; if(q<=0)return; h+=_addonRow(isEN?a.en:a.fr, _exAb[a.k]||a.fr.slice(0,5), q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr), q); }); }
+  if(opt.tw&&opt.tw>0) h+=_addonRow(isEN?'Telework offer':'Offre Télétravail', isEN?'Remote':'Télé.', opt.tw+' × 170 € '+(isEN?'excl. VAT/mo/pers.':'H.T./mois/pers.'), opt.tw, opt.tw*170);
+  if(opt.extras){ ADDONS.forEach(function(a){ var q=opt.extras[a.k]||0; if(q<=0)return; h+=_addonRow(isEN?a.en:a.fr, _exAb[a.k]||a.fr.slice(0,5), q+' × '+a.p+' € '+(isEN?'excl. VAT'+a.perEn:'H.T.'+a.perFr), q, q*a.p); }); }
   h+='</table></td></tr>';
   return h;
 }
