@@ -4631,13 +4631,15 @@ function exportPDF(){
   var _sitesH=[]; selData.forEach(function(b){ if(!b.isItin&&b.site&&_sitesH.indexOf(b.site)<0)_sitesH.push(b.site); });
   var _zoneH=_sitesH.length===1?(BLD[_sitesH[0]]?BLD[_sitesH[0]].zone:''):(_sitesH.length>1?(_sitesH.length+(isEN?' sites':' sites')):'');
   var _nmH=((_pren+' '+_nom).trim());
-  var _nameMain=_nmH||soc||(isEN?'Your proposal':'Votre proposition');
-  var _nameSec=(_nmH&&soc)?soc:'';
   var _subH=countLine+(_zoneH?(' · '+_zoneH):'');
+  var _heroHTML;
+  if(!_nmH && !soc){ _heroHTML='<b style="font-weight:800;">'+(isEN?'Dear Sir or Madam':'Madame, Monsieur')+'</b>'; }
+  else if(!_nmH && soc){ _heroHTML=(isEN?'For ':'Pour ')+'<b style="font-weight:800;">'+esc(soc)+'</b>'; }
+  else { _heroHTML=(isEN?'For ':'Pour ')+'<b style="font-weight:800;">'+esc(_nmH)+'</b>'+(soc?' <span style="font-size:17px; font-weight:300; color:#5a5248;">· '+esc(soc)+'</span>':''); }
   h+='<div style="padding:6px 0 18px; border-bottom:1px solid '+GOLD+';">';
   h+='<img src="'+logoUrl+'" alt="The Bureau" style="height:34px; width:auto; display:block;">';
   h+='<div style="font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:'+GOLDAA+'; margin-top:16px;">'+(isEN?'Personalised proposal':'Proposition personnalisée')+' <span style="color:rgba(15,15,15,0.5); font-weight:600; letter-spacing:0.06em;"> · '+dateFr+'</span></div>';
-  h+='<div style="font-size:30px; font-weight:200; letter-spacing:-0.02em; line-height:1.05; margin-top:8px;">'+(isEN?'For ':'Pour ')+'<b style="font-weight:800;">'+esc(_nameMain)+'</b>'+(_nameSec?' <span style="font-size:17px; font-weight:300; color:#5a5248;">· '+esc(_nameSec)+'</span>':'')+'</div>';
+  h+='<div style="font-size:30px; font-weight:200; letter-spacing:-0.02em; line-height:1.05; margin-top:8px;">'+_heroHTML+'</div>';
   h+='<div style="font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(15,15,15,0.55); margin-top:9px;">'+esc(_subH)+'</div>';
   h+='</div>';
   /* Ligne de section */
