@@ -3825,11 +3825,12 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
     III:{zone:isEN?'Paris 2nd · Opéra':'Paris IIᵉ · Opéra',metro:['M3','M7','M8'],rer:['RER A'],bus:['20','29','39']},
     IV:{zone:isEN?'Paris 2nd · Bourse':'Paris IIᵉ · Bourse',metro:['M3','M8','M9'],rer:['RER A'],bus:['20','39','74']}
   };
-  var LCOL={M1:['#FFCD00','#0F0F0F'],M3:['#837902','#FAFAFA'],M7:['#FA9ABA','#0F0F0F'],M8:['#E19BDF','#0F0F0F'],M9:['#B6BD00','#0F0F0F'],'RER A':['#E2231A','#FAFAFA'],'RER C':['#FFCD00','#0F0F0F']};
-  function bPre(txt){ return '<span style="display:inline-block;height:16px;line-height:14px;padding:0 5px;border:1px solid #0F0F0F;border-radius:3px;color:#0F0F0F;font-size:8px;font-weight:700;letter-spacing:.03em;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+txt+'</span>'; }
-  function bM(){ return '<span style="display:inline-block;width:16px;height:16px;line-height:14px;text-align:center;border:1px solid #0F0F0F;border-radius:50%;color:#0F0F0F;font-size:8px;font-weight:800;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">M</span>'; }
-  function bLine(m,sq){ var c=LCOL[m]||[SLATE,IVORY]; var n=m.replace('RER ',''); return '<span style="display:inline-block;min-width:16px;height:16px;line-height:16px;padding:0 3px;text-align:center;background:'+c[0]+';color:'+c[1]+';border-radius:'+(sq?'3px':'50%')+';font-size:8.5px;font-weight:800;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+n+'</span>'; }
-  function bBus(n){ return '<span style="display:inline-block;min-width:18px;height:16px;line-height:16px;padding:0 3px;text-align:center;background:'+SLATE+';color:'+IVORY+';border-radius:3px;font-size:8.5px;font-weight:700;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+n+'</span>'; }
+  var LCOL={M1:['#FFCE00','#0F0F0F'],M3:['#837902','#FFFFFF'],M7:['#FA9ABA','#0F0F0F'],M8:['#E19BDF','#0F0F0F'],M9:['#B6BD00','#0F0F0F'],'RER A':['#E2231A','#FFFFFF'],'RER C':['#FFCE00','#0F0F0F']};
+  var BUSC={'42':['#FFCE00','#000'],'72':['#C51A2B','#fff'],'80':['#F4A3B6','#000'],'20':['#FFCE00','#000'],'29':['#C51A2B','#fff'],'39':['#C51A2B','#fff'],'74':['#F4A3B6','#000']};
+  function bPre(txt){ return '<span style="display:inline-block;height:14px;line-height:12px;padding:0 4px;border:1px solid #0F0F0F;border-radius:3px;color:#0F0F0F;font-size:6.5px;font-weight:700;letter-spacing:.03em;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+txt+'</span>'; }
+  function bM(){ return '<span style="display:inline-block;width:14px;height:14px;line-height:13px;text-align:center;border:1px solid #0F0F0F;border-radius:50%;color:#0F0F0F;font-size:7px;font-weight:800;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">M</span>'; }
+  function bLine(m,sq){ var c=LCOL[m]||[SLATE,IVORY]; var n=m.replace('RER ','').replace(/^M/,''); return '<span style="display:inline-block;min-width:14px;height:14px;line-height:14px;padding:0 2px;text-align:center;background:'+c[0]+';color:'+c[1]+';border-radius:'+(sq?'3px':'50%')+';font-size:7.5px;font-weight:800;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+n+'</span>'; }
+  function bBus(n){ var c=BUSC[n]||[SLATE,IVORY]; return '<span style="display:inline-block;min-width:16px;height:14px;line-height:14px;padding:0 3px;text-align:center;background:'+c[0]+';color:'+c[1]+';border-radius:3px;font-size:7px;font-weight:700;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'+n+'</span>'; }
   function accBadges(B){
     var g='<span style="white-space:nowrap">'+bM()+' '+B.metro.map(function(m){return bLine(m,false);}).join(' ')+'</span>';
     if(B.rer&&B.rer.length) g+=' &nbsp;<span style="white-space:nowrap">'+bPre('RER')+' '+B.rer.map(function(m){return bLine(m,true);}).join(' ')+'</span>';
@@ -3862,8 +3863,9 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   var ctaLabel=isEN?'BOOK A VISIT':'RÉSERVER UNE VISITE';
   var CAL_URL='https://calendar.app.google/TpzHDUHnLvaxVLL59';
   var GFONTS='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Spectral:ital,wght@0,400;1,400&display=swap';
-  var LOGO_URL='https://teamlounge.thebureau.paris/logo-thebureau.png';
-  var CHEV_URL='https://teamlounge.thebureau.paris/chevrons-or.png';
+  var _ORG=(window.location&&typeof window.location.origin==='string'&&window.location.origin.indexOf('http')===0)?window.location.origin:'https://teamlounge.thebureau.paris';
+  var LOGO_URL=_ORG+'/logo-thebureau.png';
+  var CHEV_URL=_ORG+'/chevrons-or.png';
   var _dH=new Date(); var _pH=function(n){return(n<10?'0':'')+n;}; var _dateStr=_pH(_dH.getDate())+'/'+_pH(_dH.getMonth()+1)+'/'+_dH.getFullYear();
 
   /* ===== Eyebrow helper ===== */
@@ -3884,7 +3886,12 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<tr><td class="ep" style="background:#ffffff;padding:30px 36px 24px;border-bottom:1px solid '+GOLD+'">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="vertical-align:middle"><img src="'+LOGO_URL+'" alt="The Bureau" height="30" style="display:block;height:30px;width:auto"/></td></tr></table>';
   h+='<div style="font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+GOLDAA+';font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:20px">'+propLabel+' <span style="color:'+GR+';font-weight:600;letter-spacing:.06em"> · '+_dateStr+'</span></div>';
-  h+='<div style="font-size:30px;font-weight:200;letter-spacing:-.02em;line-height:1.05;color:'+INK+';font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:8px">'+(isEN?'For ':'Pour ')+'<b style="font-weight:800">'+esc(civ)+'</b>'+(soc?' <span style="font-size:16px;font-weight:300;color:'+GR+'">· '+esc(soc)+'</span>':'')+'</div>';
+  var _noName=(civ==='Madame, Monsieur'||civ==='Sir/Madam'||civ==='Sir or Madam'||!civ);
+  var _heroHTML;
+  if(_noName && !soc){ _heroHTML='<b style="font-weight:800">'+(isEN?'Dear Sir or Madam':'Madame, Monsieur')+'</b>'; }
+  else if(_noName && soc){ _heroHTML=(isEN?'For ':'Pour ')+'<b style="font-weight:800">'+esc(soc)+'</b>'; }
+  else { _heroHTML=(isEN?'For ':'Pour ')+'<b style="font-weight:800">'+esc(civ)+'</b>'+(soc?' <span style="font-size:16px;font-weight:300;color:'+GR+'">· '+esc(soc)+'</span>':''); }
+  h+='<div style="font-size:30px;font-weight:200;letter-spacing:-.02em;line-height:1.05;color:'+INK+';font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:8px">'+_heroHTML+'</div>';
   h+='<div style="font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:'+GR+';font-family:Plus Jakarta Sans,Arial,sans-serif;margin-top:9px">'+esc(_subTxt)+'</div>';
   h+='</td></tr>';
 
@@ -3989,7 +3996,7 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
   h+='<td style="vertical-align:middle"><table cellpadding="0" cellspacing="0" border="0"><tr>';
   h+='<td width="46" style="vertical-align:middle"><img src="'+CHEV_URL+'" alt="The Bureau" height="26" style="display:block;height:26px;width:auto"/></td>';
   h+='<td style="vertical-align:middle;padding-left:14px">';
-  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.09em;color:'+IVORY+';line-height:1.1;text-transform:uppercase">'+esc(_snd2.name)+' <span style="font-weight:300;color:rgba(245,239,229,.72);letter-spacing:.03em">· '+esc(isEN?_snd2.titleEN:_snd2.title)+'</span></p>';
+  h+='<p style="margin:0;font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:13.5px;font-weight:800;letter-spacing:.08em;color:'+IVORY+';line-height:1.15;text-transform:uppercase">'+esc(_snd2.name)+' <span style="font-size:9.5px;font-weight:400;color:rgba(245,239,229,.65);letter-spacing:.1em">· '+esc(isEN?_snd2.titleEN:_snd2.title)+'</span></p>';
   h+='<p style="margin:3px 0 0;font-size:10.5px;color:rgba(245,239,229,.68);font-family:Plus Jakarta Sans,Arial,sans-serif;line-height:1.1"><a href="tel:'+_snd2.phone.replace(/\s/g,'')+'" style="color:rgba(245,239,229,.68);text-decoration:none">'+_snd2.phone+'</a> · <a href="mailto:'+_snd2.email+'" id="femail" style="color:'+GOLDLT+';text-decoration:none">'+_snd2.email+'</a> · thebureau.paris</p>';
   h+='</td></tr></table></td>';
   h+='<td align="right" style="vertical-align:middle;line-height:1.2"><div style="font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,239,229,.6);font-family:Plus Jakarta Sans,Arial,sans-serif">The Bureau Paris</div><div style="font-size:13px;font-weight:600;color:'+GOLDLT+';margin-top:2px;font-family:Plus Jakarta Sans,Arial,sans-serif">75002 · 75008</div></td>';
@@ -4028,7 +4035,7 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   h+='<tr><td style="background:'+(reco?SLATE:IVORY)+';border-bottom:1px solid '+GOLD+';padding:14px 16px">';
   h+='<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
   h+='<td valign="middle"><span style="display:inline-block;background:'+GOLD+';color:#fff;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">Option '+optNum+'</span>'+(!isPlaceholder?' <span style="font-size:16px;font-weight:600;color:'+(reco?IVORY:INK)+';font-family:Plus Jakarta Sans,Arial,sans-serif;vertical-align:middle">'+esc(pname)+'</span>':'')+(reco?' <span style="font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:'+GOLDLT+';vertical-align:middle">★ '+(isEN?'Recommended':'Recommandé')+'</span>':'')+'</td>';
-  h+='<td align="right" valign="middle" style="white-space:nowrap"><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:26px;font-weight:700;letter-spacing:-.01em;color:'+(reco?GOLDLT:SLATE)+'">'+fmt(totDefault)+'</span> <span style="font-size:11px;color:'+GOLD+'">€</span> <span style="font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:'+(reco?'rgba(245,239,229,.7)':GR)+'">'+hiLine+'</span>'+(others?'<div style="font-size:9px;font-weight:300;color:'+(reco?'rgba(245,239,229,.6)':GR)+';margin-top:3px">'+others+'</div>':'')+'</td>';
+  h+='<td align="right" valign="middle" style="white-space:nowrap;font-family:Plus Jakarta Sans,Arial,sans-serif"><span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:26px;font-weight:700;letter-spacing:-.01em;color:'+(reco?GOLDLT:SLATE)+'">'+fmt(totDefault)+'</span> <span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:11px;color:'+GOLD+'">€</span> <span style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:'+(reco?'rgba(245,239,229,.7)':GR)+'">'+hiLine+'</span>'+(others?'<div style="font-family:Plus Jakarta Sans,Arial,sans-serif;font-size:9px;font-weight:300;color:'+(reco?'rgba(245,239,229,.6)':GR)+';margin-top:3px">'+others+'</div>':'')+'</td>';
   h+='</tr></table></td></tr>';
   /* Tableau colonnes */
   h+='<tr><td style="background:#fff;padding:0 16px"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed">';
@@ -4615,10 +4622,19 @@ function exportPDF(){
   var h='<!DOCTYPE html><html lang="'+(isEN?'en':'fr')+'"><head><meta charset="UTF-8"><title>'+esc(pdfTitle)+'</title><meta name="viewport" content="width=1200,initial-scale=1"/><link href="'+GFONTS+'" rel="stylesheet"/>';
   h+='<style>*{box-sizing:border-box;margin:0;padding:0}.opt-block,.kt,tr{break-inside:avoid}a{color:'+GOLDAA+';text-decoration:none}</style></head>';
   h+='<body style="margin:0;background:'+WHITE+';"><div class="page" style="width:297mm;background:'+WHITE+';padding:9mm;font-family:\'Plus Jakarta Sans\',sans-serif;color:'+INK+';font-size:11px;line-height:1.5;-webkit-font-smoothing:antialiased;">';
-  /* En-tête */
-  h+='<div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; padding:6px 0 18px; border-bottom:1px solid '+GOLD+';">';
-  h+='<div style="display:flex; align-items:center; gap:22px;"><img src="'+logoUrl+'" alt="The Bureau" style="height:30px; width:auto; display:block;"><div style="width:0.5px; height:40px; background:rgba(15,15,15,0.18);"></div><div><div style="font-size:9px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:'+GOLDAA+';">'+(isEN?'Personalised proposal':'Proposition personnalisée')+'</div><div style="font-size:28px; line-height:1.1; letter-spacing:-0.02em; margin-top:2px;"><span style="font-weight:200;">'+(isEN?'Office ':'Sélection ')+'</span><span style="font-weight:800; color:'+GOLD+';">'+(isEN?'selection':'bureaux')+'</span></div></div></div>';
-  h+='<div style="text-align:right;"><div style="font-family:Spectral,serif; font-size:22px; font-weight:400; line-height:1; color:'+INK+';">'+dateFr+'</div><div style="font-size:9px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:rgba(15,15,15,0.55); margin-top:6px;">'+esc(clientLine)+'</div></div></div>';
+  /* En-tête éditorial (client d'abord, date discrète) — identique au mail */
+  var _sitesH=[]; selData.forEach(function(b){ if(!b.isItin&&b.site&&_sitesH.indexOf(b.site)<0)_sitesH.push(b.site); });
+  var _zoneH=_sitesH.length===1?(BLD[_sitesH[0]]?BLD[_sitesH[0]].zone:''):(_sitesH.length>1?(_sitesH.length+(isEN?' sites':' sites')):'');
+  var _nmH=((_pren+' '+_nom).trim());
+  var _nameMain=_nmH||soc||(isEN?'Your proposal':'Votre proposition');
+  var _nameSec=(_nmH&&soc)?soc:'';
+  var _subH=countLine+(_zoneH?(' · '+_zoneH):'');
+  h+='<div style="padding:6px 0 18px; border-bottom:1px solid '+GOLD+';">';
+  h+='<img src="'+logoUrl+'" alt="The Bureau" style="height:34px; width:auto; display:block;">';
+  h+='<div style="font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:'+GOLDAA+'; margin-top:16px;">'+(isEN?'Personalised proposal':'Proposition personnalisée')+' <span style="color:rgba(15,15,15,0.5); font-weight:600; letter-spacing:0.06em;"> · '+dateFr+'</span></div>';
+  h+='<div style="font-size:30px; font-weight:200; letter-spacing:-0.02em; line-height:1.05; margin-top:8px;">'+(isEN?'For ':'Pour ')+'<b style="font-weight:800;">'+esc(_nameMain)+'</b>'+(_nameSec?' <span style="font-size:17px; font-weight:300; color:#5a5248;">· '+esc(_nameSec)+'</span>':'')+'</div>';
+  h+='<div style="font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(15,15,15,0.55); margin-top:9px;">'+esc(_subH)+'</div>';
+  h+='</div>';
   /* Ligne de section */
   h+='<div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin:22px 0 10px;"><div style="display:flex; align-items:center; gap:10px;"><span style="display:block; width:28px; height:1px; background:'+GOLD+';"></span><span style="font-size:10px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:'+SLATE+';">'+esc(sectionTitle)+'</span></div><div style="font-size:9px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:rgba(15,15,15,0.5);">'+(isEN?'Prices excl. VAT, per month':'Prix hors taxes, par mois')+'</div></div>';
   /* ===== MULTI ===== */
