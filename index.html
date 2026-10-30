@@ -3753,7 +3753,7 @@ function renderOptPanel() {
     var _ro=(typeof PROP_RECO!=='undefined'?parseInt(PROP_RECO):0)||0;
     var _opts='<option value="0"'+(_ro?'':' selected')+'>Aucune</option>';
     OPTIONS.forEach(function(o,i){ _opts+='<option value="'+(i+1)+'"'+(_ro===i+1?' selected':'')+'>Option '+(i+1)+(o.label&&o.label!=='Texte personnalisé'?' · '+esc(o.label):'')+'</option>'; });
-    html += '<div class="reco-row" style="margin-top:14px;padding:11px 14px;background:var(--creme);border:1px solid var(--cf);border-radius:3px"><label class="flbl" style="display:block;margin-bottom:6px">★ Option recommandée <span style="font-weight:400;color:var(--gc)">· mise en avant dans le PDF (facultatif)</span></label><select class="fsel" id="recoSelect" onchange="PROP_RECO=parseInt(this.value)||0" style="width:100%">'+_opts+'</select></div>';
+    html += '<div class="reco-row" style="margin-top:14px;padding:11px 14px;background:var(--creme);border:1px solid var(--cf);border-radius:3px"><label class="flbl" style="display:block;margin-bottom:6px">★ Option recommandée <span style="font-weight:400;color:var(--gc)">· mise en avant dans le mail et le PDF (facultatif)</span></label><select class="fsel" id="recoSelect" onchange="PROP_RECO=parseInt(this.value)||0" style="width:100%">'+_opts+'</select></div>';
   } else if(typeof PROP_RECO!=='undefined'){ PROP_RECO=0; }
   el.innerHTML = html;
   var _oc=document.getElementById('optCount'); if(_oc) _oc.textContent=OPTIONS.length;
