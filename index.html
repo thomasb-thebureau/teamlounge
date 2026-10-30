@@ -3908,7 +3908,7 @@ function buildOptionsEmail(allData, isEN, civ, soc, customMsg, LOGO_B64, CHEV_B6
     h+='</tr>';
     enrichedOpts.forEach(function(opt,oi){
       var reco=(typeof PROP_RECO!=='undefined'&&PROP_RECO===oi+1);
-      var _lab=opt.label; var _ph=!_lab||_lab==='Texte personnalisé'||_lab==='Custom text'||/^option\s*\d+$/i.test((_lab||'').trim());
+      var _lab=opt.label; var _ph=!_lab||_lab==='Texte personnalisé'||_lab==='Custom text'||/^option\s/i.test((_lab||'').trim());
       var bg=reco?SLATE:'#ffffff', tx=reco?IVORY:INK, sub=reco?'rgba(245,239,229,.7)':GR, eu=reco?GOLDLT:GOLD;
       h+='<tr>';
       h+='<td style="background:'+bg+';border-top:0.5px solid '+(reco?'rgba(245,239,229,.18)':'rgba(15,15,15,.1)')+';'+(reco?'border-left:3px solid '+GOLD+';':'')+'padding:11px 10px;text-align:left;vertical-align:middle;font-family:Plus Jakarta Sans,Arial,sans-serif">'
@@ -4025,7 +4025,7 @@ function buildOptionEmail(allData, opt, isEN, optNum, LOGO_B64, CHEV_B64) {
   var _sel=getSelectedTiers();
   var others=_sel.filter(function(pi){return pi!==dt;}).map(function(pi){return mainLabels[pi]+' '+fmt(optTotalAt(1-paliers[pi].d))+' €';}).join(' · ');
   var pname=opt.label||'';
-  var isPlaceholder=!pname||pname==='Texte personnalisé'||pname==='Custom text'||/^option\s*\d+$/i.test(pname.trim());
+  var isPlaceholder=!pname||pname==='Texte personnalisé'||pname==='Custom text'||/^option\s/i.test(pname.trim());
   function _floorStr(b){ if(b.isItin)return '—'; if(isEN){return b.etage===0?'GF':(b.etage+(b.etage===1?'st':b.etage===2?'nd':b.etage===3?'rd':'th'));} return b.etage===0?'RDC':(b.etage===1?'1ᵉʳ':(b.etage+'ᵉ')); }
   function _dispoStr(b){ if(b.isItin)return isEN?'Immediate':'Immédiate'; return b.dispo==='immediate'?(isEN?'Immediate':'Immédiate'):(b.date?((isEN?'From ':'Dès le ')+dtLbl(b.date,isEN)):(isEN?'On request':'Sur demande')); }
   var reco=(typeof PROP_RECO!=='undefined'&&PROP_RECO===optNum);
@@ -4641,7 +4641,7 @@ function exportPDF(){
   if(isMulti){
     var optData = validOpts.map(function(opt,i){
       var offs=optOffices(opt);
-      var _isCustom = opt.label && opt.label!=='Texte personnalisé' && opt.label!=='Custom text' && !/^option\s*\d+$/i.test(opt.label.trim());
+      var _isCustom = opt.label && opt.label!=='Texte personnalisé' && opt.label!=='Custom text' && !/^option\s/i.test(opt.label.trim());
       return { opt:opt, i:i, offs:offs, label:(_isCustom?opt.label:''),
         refs:refsStr(offs), seats:sumSeats(offs), m2:sumM2(offs), reco:(reco===i+1) };
     });
